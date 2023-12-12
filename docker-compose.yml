@@ -1,0 +1,31 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: api
+    image: cmc-autox-work-api
+  client:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    image: cmc-autox-work-client
+    volumes:
+      - .:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    environment:
+      - WATCHPACK_POLLING=true
+  database:
+    image: postgres:14-alpine
+    ports:
+      - 5432:5432
+    volumes:
+      - data:/var/lib/postgresql/data
+    env_file:
+      - .env
+
+volumes:
+  data:
