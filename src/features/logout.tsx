@@ -1,13 +1,13 @@
-interface LogoutProps {
-    onClick: () => void;
-}
+import { login } from "../helpers/auth";
+import Login from "./login";
 
-const Logout = (props: LogoutProps) => {
-    return (
-        <div>
-            <button className="btn logout-btn" onClick={props.onClick}>Logout</button>
-        </div>
-    )
-}
+const Logout = () => {
+  return (
+    <div>
+      <div className="logout-msg">You have been logged out.</div>
+      <Login onClick={() => login()} />
+    </div>
+  );
+};
 
-export default Logout
+export default Logout;

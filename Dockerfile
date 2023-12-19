@@ -1,12 +1,12 @@
 FROM python:3.12 as api
 WORKDIR /app
 
-COPY api/requirements.txt api/api.py api/.flaskenv ./
+COPY api/requirements.txt api/templates api/config.cfg api/routes.py api/.flaskenv ./
 RUN pip install -r ./requirements.txt
 ENV FLASK_ENV production
 
 EXPOSE 5000
-CMD ["gunicorn", "-b", ":5000", "api:app"]
+CMD ["gunicorn", "-b", ":5000", "routes:app"]
 
 
 FROM node:20-alpine as build

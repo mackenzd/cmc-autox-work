@@ -5,6 +5,8 @@ services:
       dockerfile: Dockerfile
       target: api
     image: cmc-autox-work-api
+    ports:
+      - "5000:5000"
   client:
     build:
       context: .
@@ -25,7 +27,7 @@ services:
     volumes:
       - data:/var/lib/postgresql/data
     env_file:
-      - .env
+      - api/config.cfg
 
 volumes:
   data:

@@ -1,0 +1,16 @@
+# MSR API
+MSR_CONSUMER_KEY=''
+MSR_CONSUMER_SECRET=''
+MSR_ORGANIZATION_ID=''
+MSR_AUTHORIZATION_URL='https://www.motorsportreg.com/index.cfm/event/oauth'
+MSR_CALLBACK_URL='http://localhost:5000/auth/callback'
+MSR_API_URL='https://api.motorsportreg.com'
+
+# App
+SESSION_SECRET_KEY=''
+APP_URL='http://localhost:3000'
+
+# Database
+POSTGRES_PASSWORD=''
+POSTGRES_USER='cmc-user'
+POSTGRES_DB='cmc-autox-work'

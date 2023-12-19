@@ -5,7 +5,7 @@ interface LoginProps {
 const Login = (props: LoginProps) => {
     return (
         <div>
-            <button className="btn login-btn" onClick={props.onClick}>Login with <img src="https://msr-hotlink.s3.amazonaws.com/default/msr-logo-default.png" /></button>
+            <button className="btn login-btn" onClick={props.onClick}>Login with <img src="https://msr-hotlink.s3.amazonaws.com/default/msr-logo-default.png" alt=""/></button>
         </div>
     )
 }

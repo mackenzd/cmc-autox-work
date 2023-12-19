@@ -2,6 +2,7 @@
   "name": "cmc-autox-work",
   "version": "0.1.0",
   "private": true,
+  "proxy": "http://localhost:5000",
   "dependencies": {
     "@types/jest": "^27.5.2",
     "@types/node": "^16.18.68",
@@ -15,6 +16,9 @@
     "react-scripts": "5.0.1",
     "tailwindcss": "^3.3.6",
     "typescript": "^4.9.5"
+  },
+  "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
   },
   "scripts": {
     "dev": "docker-compose -f docker-compose.yml up",

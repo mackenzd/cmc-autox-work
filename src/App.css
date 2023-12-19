@@ -9,13 +9,23 @@
     flex-direction: column;
 }
 
+.header {
+    display: flex;
+    justify-content: space-between;
+}
+
 .content {
     width: 100%;
     height: 100%;
     display: flex;
     justify-content: center;
-    align-content: center;
+    align-content: top;
     flex-wrap: wrap;
+}
+
+.footer {
+    display: flex;
+    justify-content: flex-end;
 }
 
 .login-btn {
@@ -36,7 +46,8 @@
     font-size: large;
 }
 
-.msr-logo {
-    display: flex;
-    justify-content: flex-end;
+.logout-msg {
+    text-align: center;
+    margin: 10px;
+    font-size: large;
 }
