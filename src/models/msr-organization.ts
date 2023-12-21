@@ -1,9 +1,9 @@
-export type Organization = {
+export type MSROrganization = {
     name: string;
     uri: string;
 }
 
-export type UserOrganization = {
+export type MSRUserOrganization = {
     id: string;
     memberId: string;
     name: string;

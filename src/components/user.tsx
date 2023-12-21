@@ -1,7 +1,7 @@
 import { useLogout } from "../hooks/auth";
 import { useGetUser } from "../hooks/user";
 
-const User = () => {
+const UserAvatar = () => {
   const user = useGetUser();
   const logout = useLogout();
 
@@ -20,4 +20,4 @@ const User = () => {
   );
 };
 
-export default User;
+export default UserAvatar;

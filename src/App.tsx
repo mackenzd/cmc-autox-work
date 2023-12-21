@@ -1,13 +1,15 @@
-import { Outlet, useBlocker } from "react-router-dom";
-import { useMemo } from "react";
+import { Outlet } from "react-router-dom";
+import { useMemo, useState } from "react";
 import Login from "./features/login";
 import "./App.css";
 import { useIsAuthenticated } from "./hooks/auth";
 import { login } from "./helpers/auth";
-import User from "./components/user";
+import Navbar from "./components/navbar";
+import LoadingSpinner from "./components/loading-spinner";
 
 function App() {
-  const isAuthenticated = useIsAuthenticated();
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const isAuthenticated = useIsAuthenticated(() => setIsLoading(false));
 
   const pageContent = useMemo(
     () => (isAuthenticated ? <Outlet /> : <Login onClick={() => login()} />),
@@ -16,22 +18,10 @@ function App() {
 
   return (
     <div className="root">
-      <div className="navbar bg-base-100 header">
-        <a href="/home" className="p-3 font-semibold no-animation text-xl">
-          <img
-            style={{ width: "15%", height: "15%" }}
-            src="/large-cmc-logo.png"
-            alt="Cumberland Motor Club logo"
-          />
-          <span className="p-3">
-            Cumberland Motor Club
-            <br />
-            Work Assignments
-          </span>
-        </a>
-        {isAuthenticated ? <div className="p-3"><User /></div> : <></>}
+      <Navbar isAuthenticated={isAuthenticated} />
+      <div className="content">
+        {isLoading ? <LoadingSpinner /> : <>{pageContent}</>}
       </div>
-      <div className="content">{pageContent}</div>
       <footer className="footer">
         <a
           href="https://motorsportreg.com"

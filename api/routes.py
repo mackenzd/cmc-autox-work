@@ -3,6 +3,7 @@ import oauth2 as oauth
 import urllib.request
 import urllib.parse
 import urllib.error
+from datetime import datetime
 
 app = Flask(__name__)
 
@@ -55,13 +56,16 @@ def callback():
     if oauth_denied:
         if oauth_denied in oauth_store:
             del oauth_store[oauth_denied]
-        return render_template('error.html', error_message="the OAuth request was denied by the user")
+        app.logger.error('the OAuth request was denied by the user')
+        return redirect(app_url)
 
     if not oauth_token or not oauth_verifier:
-        return render_template('error.html', error_message="callback param(s) missing")
+        app.logger.error('callback param(s) missing')
+        return redirect(app_url)
 
     if oauth_token not in oauth_store:
-        return render_template('error.html', error_message="oauth_token not found")
+        app.logger.error('oauth_token not found')
+        return redirect(app_url)
 
     oauth_token_secret = oauth_store[oauth_token]
 
@@ -119,7 +123,7 @@ def client(token: oauth.Token):
 def user():
     access_token = token()
     if not access_token:
-        return make_response('unauthorized', 401)
+        return make_response(unauthorized, 401)
     
     msr = client(access_token)
     _, content = msr.request(api_url + '/rest/me.json', 'GET')
@@ -130,10 +134,24 @@ def user():
 def user_events():
     access_token = token()
     if not access_token:
-        return make_response('unauthorized', 401)
+        return make_response(unauthorized, 401)
     
     msr = client(access_token)
-    # _, content = msr.request(app.config['MSR_API_URL'] + '/rest/me/events.json', 'GET')
-    _, content = msr.request(api_url + '/rest/calendars/organization/' + app.config['MSR_ORGANIZATION_ID'] + '.json?start=2023-04-01&end=2024-01-01&archive=true', 'GET')
+    _, content = msr.request(app.config['MSR_API_URL'] + '/rest/me/events.json', 'GET')
+
+    return content.decode('utf-8')
+
+@app.route('/api/organization/events')
+def organization_events():
+    access_token = token()
+    if not access_token:
+        return make_response(unauthorized, 401)
+    
+    current_year = datetime.now().year
+    start = str(current_year) + '-01-01'
+    end = str(current_year + 2) + '-01-01'
+
+    msr = client(access_token)
+    _, content = msr.request(api_url + '/rest/calendars/organization/' + app.config['MSR_ORGANIZATION_ID'] + '.json?start=' + start + '&end=' + end + '&archive=true', 'GET')
 
     return content.decode('utf-8')

@@ -1,4 +1,4 @@
-export type Venue = {
+export type MSRVenue = {
     name: string;
     uri: string;
 }

@@ -1,22 +1,21 @@
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-export function useIsAuthenticated(): boolean {
+export function useIsAuthenticated(onFinish: () => void): boolean {
   const [authenticated, setAuthenticated] = useState<boolean>(false);
-
-  const user = () => {
-    return sessionStorage.getItem("user");
-  };
 
   useEffect(() => {
     fetch("/api/user")
-      .then((res) => res.json())
+      .then((res) => {
+        if (res.ok)
+        return res.json()
+      })
       .then((data) => {
         if (data) {
           setAuthenticated(true);
           sessionStorage.setItem("user", JSON.stringify(data.response.profile));
         }
-      });
+      }).finally(() => onFinish());
   }, [setAuthenticated]);
 
   return authenticated;

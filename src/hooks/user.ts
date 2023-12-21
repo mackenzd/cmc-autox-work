@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { User } from "../models/user";
+import { MSRUser } from "../models/msr-user";
 
-export function useGetUser(): User | null {
-  const [user, setUser] = useState<User | null>(null);
+export function useGetUser(): MSRUser | null {
+  const [user, setUser] = useState<MSRUser | null>(null);
 
   useEffect(() => {
     fetch("/api/user")
