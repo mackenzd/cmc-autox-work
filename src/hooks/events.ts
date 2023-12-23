@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { MSREvent } from "../models/msr-event";
 import { filterEvents } from "../helpers/events";
+import uniqBy from "lodash/uniqBy"
 
 export function useGetOrganizationEvents(): MSREvent[] | null {
   const [organizationEvents, setOrganizationEvents] = useState<MSREvent[] | null>(
@@ -44,5 +45,5 @@ export function useGetEvents(): MSREvent[] | null {
   const events = [...userEvents??[], ...organizationEvents??[]].sort((e1, e2) => new Date(e1.start) > new Date(e2.start) ? -1 : 1)
   // const events = userEvents?.sort((e1, e2) => new Date(e1.start) > new Date(e2.start) ? -1 : 1)
 
-  return events;
+  return uniqBy(events, 'id');
 }

@@ -28,13 +28,13 @@ export type WorkAssignment = {
 }
 
 export enum Bucket {
-    "None",
-    "Bucket 1",
-    "Bucket 2",
-    "Bucket 3",
-    "Bucket 4",
-    "Bucket 5",
-    "Bucket 6",
-    "Bucket 7",
-    "Bucket 8"
+    None = 0,
+    Bucket1 = 1,
+    Bucket2 = 2,
+    Bucket3 = 3,
+    Bucket4 = 4,
+    Bucket5 = 5,
+    Bucket6 = 5,
+    Bucket7 = 6,
+    Bucket8 = 7
 }

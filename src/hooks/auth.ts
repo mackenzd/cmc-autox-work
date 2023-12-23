@@ -26,8 +26,8 @@ export function useLogout(): () => void {
 
   const logout = useCallback(() => {
     fetch("/auth/logout").then(() => {
-      navigate("/logout");
       sessionStorage.removeItem("user");
+      navigate("/logout");
     });
   }, [navigate]);
 

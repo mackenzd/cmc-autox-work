@@ -5,8 +5,6 @@ export interface NavbarProps {
 }
 
 const Navbar = (props: NavbarProps) => {
-  const isAuthenticated = props.isAuthenticated;
-
   return (
     <div className="navbar bg-base-100 header">
       <a href="/home" className="p-3 font-semibold no-animation text-xl">
@@ -25,17 +23,17 @@ const Navbar = (props: NavbarProps) => {
         <div className="flex-none">
           <ul className="menu menu-horizontal px-1">
             <li>
-              <a href="https://cumberlandmotorclub.com/" target="_blank">Cumberland Motor Club</a>
+              <a href="https://cumberlandmotorclub.com/" target="_blank" rel="noreferrer">Cumberland Motor Club</a>
             </li>
             <li>
-              <a href="https://cumberlandmotorclub.com/autox-results" target="_blank">Results</a>
+              <a href="https://cumberlandmotorclub.com/autox-results" target="_blank" rel="noreferrer">Results</a>
             </li>
             <li>
-              <a href="https://live.cumberlandmotorclub.com/" target="_blank">Live Timing</a>
+              <a href="https://live.cumberlandmotorclub.com/" target="_blank" rel="noreferrer">Live Timing</a>
             </li>
           </ul>
         </div>
-        {isAuthenticated ? (
+        {props.isAuthenticated ? (
           <div className="p-3">
             <UserAvatar />
           </div>
