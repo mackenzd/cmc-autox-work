@@ -1,19 +1,15 @@
 import { useEffect, useState } from "react";
 import { MSREvent } from "../models/msr-event";
-import { filterEvents } from "../helpers/events";
-import uniqBy from "lodash/uniqBy"
+import { getOrganizationEvents, getUserEvents } from "../helpers/events";
+import uniqBy from "lodash/uniqBy";
 
 export function useGetOrganizationEvents(): MSREvent[] | null {
-  const [organizationEvents, setOrganizationEvents] = useState<MSREvent[] | null>(
-    null
-  );
+  const [organizationEvents, setOrganizationEvents] = useState<
+    MSREvent[] | null
+  >(null);
 
   useEffect(() => {
-    fetch("/api/organization/events")
-      .then((res) => res.json())
-      .then((data) => {
-        setOrganizationEvents(filterEvents(data.response.events));
-      });
+    getOrganizationEvents().then((events) => setOrganizationEvents(events));
   }, [setOrganizationEvents]);
 
   return organizationEvents;
@@ -23,27 +19,27 @@ export function useGetUserEvents(): MSREvent[] | null {
   const [userEvents, setUserEvents] = useState<MSREvent[] | null>(null);
 
   useEffect(() => {
-    fetch("/api/user/events")
-      .then((res) => res.json())
-      .then((data) => {
-        let evts = data.response.events.map((event: MSREvent) => {
-          event.registered = true;
-          return event
-        });
-
-        setUserEvents(filterEvents(evts));
-      });
+    getUserEvents().then((events) => setUserEvents(events));
   }, [setUserEvents]);
 
   return userEvents;
 }
 
 export function useGetEvents(): MSREvent[] | null {
-  const userEvents = useGetUserEvents();
-  const organizationEvents = useGetOrganizationEvents();
+  const [events, setEvents] = useState<MSREvent[] | null>(null);
 
-  const events = [...userEvents??[], ...organizationEvents??[]].sort((e1, e2) => new Date(e1.start) > new Date(e2.start) ? -1 : 1)
-  // const events = userEvents?.sort((e1, e2) => new Date(e1.start) > new Date(e2.start) ? -1 : 1)
+  useEffect(() => {
+    const p1 = getUserEvents();
+    const p2 = getOrganizationEvents();
 
-  return uniqBy(events, 'id');
+    Promise.all([p1, p2]).then(([userEvents, organizationEvents]) => {
+      const events = [
+        ...(userEvents ?? []),
+        ...(organizationEvents ?? []),
+      ].sort((e1, e2) => (new Date(e1.start) > new Date(e2.start) ? -1 : 1));
+      setEvents(events);
+    });
+  }, [setEvents]);
+
+  return uniqBy(events, "id");
 }
