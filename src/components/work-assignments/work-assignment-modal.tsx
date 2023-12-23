@@ -17,7 +17,7 @@ const WorkAssignmentsModal = (props: WorkAssignmentsModalProps) => {
   const workAssignmentBuckets = () => {
     const buckets = [];
     for (let i = 1; i <= bucketCount; i++) {
-      buckets.push(<WorkAssignmentsBucket bucket={i} />);
+      buckets.push(<WorkAssignmentsBucket key={`bucket-${i}`} bucket={i} />);
     }
 
     return buckets;
@@ -39,13 +39,14 @@ const WorkAssignmentsModal = (props: WorkAssignmentsModalProps) => {
             <span className="pr-3">Run Group</span>
             <select
               className="select select-bordered select-xs max-w-xs"
+              key={runGroup}
               value={runGroup}
               onChange={(e) => {
                 setRunGroup(e.target.value as RunGroup);
               }}
             >
               {Object.values(RunGroup).map((rg) => (
-                <option value={rg}>{rg}</option>
+                <option key={rg} value={rg}>{rg}</option>
               ))}
             </select>
           </div>

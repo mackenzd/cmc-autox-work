@@ -28,9 +28,7 @@ const EventCard = (props: EventCardProps) => {
 
   const workAssignmentModal = useMemo(
     () => (
-      <WorkAssignmentsContextProvider
-        event={props.event}
-      >
+      <WorkAssignmentsContextProvider event={props.event}>
         <WorkAssignmentsModal
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
@@ -42,10 +40,7 @@ const EventCard = (props: EventCardProps) => {
 
   return (
     <>
-      <div
-        key={props.event?.id}
-        className="card lg:card-side bg-base-100 shadow-xl"
-      >
+      <div className="card lg:card-side bg-base-100 shadow-xl">
         <div className="card-body">
           <div className="event-header">
             <h2 className="card-title">{props.event?.name}</h2>
