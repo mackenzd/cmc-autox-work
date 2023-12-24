@@ -8,7 +8,7 @@ export function useIsAuthenticated(onFinish: () => void): boolean {
     fetch("/api/user")
       .then((res) => {
         if (res.ok)
-        return res.json()
+        return res.json();
       })
       .then((data) => {
         if (data) {

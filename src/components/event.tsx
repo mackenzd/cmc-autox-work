@@ -1,7 +1,6 @@
 import { useMemo, useState } from "react";
 import { MSREvent } from "../models/msr-event";
 import WorkAssignmentsModal from "./work-assignments/work-assignment-modal";
-import { RunGroup } from "../models/run-group";
 import { WorkAssignmentsContextProvider } from "./work-assignments/work-assignments-context";
 
 export interface EventCardProps {
@@ -10,7 +9,7 @@ export interface EventCardProps {
 
 const EventCard = (props: EventCardProps) => {
   const isSingleDayEvent = useMemo(
-    () => props.event.start == props.event.end,
+    () => props.event.start === props.event.end,
     [props.event.start, props.event.end]
   );
 

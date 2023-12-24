@@ -1,18 +1,12 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo } from "react";
 import {
   Bucket,
-  WorkAssignment,
   WorkAssignmentType,
 } from "../../models/work-assignment";
 import {
-  getUserForWorkAssignment,
   getWorkAssignment,
 } from "../../helpers/work-assignments";
 import { getCurrentUser } from "../../helpers/auth";
-import {
-  setWorkAssignment,
-  unsetWorkAssignment,
-} from "../../helpers/work-assignments";
 import { useWorkAssignmentsContext } from "./work-assignments-context";
 
 export interface WorkAssignmentProps {
@@ -26,28 +20,27 @@ const WorkAssignmentEntry = (props: WorkAssignmentProps) => {
   const currentUser = getCurrentUser();
   const currentCarNumber = "000";
 
-  const curAssignment = useMemo(
+  const currentAssignment = useMemo(
     () => getWorkAssignment(assignments, runGroup, props.type, props.bucket),
 
     [JSON.stringify(assignments), runGroup, props.type, props.bucket]
   );
 
   const classNames = useMemo(() => {
-    if (curAssignment && curAssignment.user?.id === currentUser?.id) {
+    if (currentAssignment && currentAssignment.user?.id === currentUser?.id) {
       return "btn btn-sm btn-warning no-animation work-assignment";
-    } else if (curAssignment) {
+    } else if (currentAssignment) {
       return "btn btn-sm btn-error no-animation work-assignment";
     } else {
       return "btn btn-sm btn-success no-animation work-assignment";
     }
-  }, [curAssignment, curAssignment?.user?.id, currentUser?.id]);
+  }, [currentAssignment, currentAssignment?.user?.id, currentUser?.id]);
 
-  const onClickDude = useCallback(() => {
-    if (!curAssignment) {
-      // add me if i have perms
-      const myCurAss = assignments.find((a) => a.user.id === currentUser?.id);
+  const onClickWorkAssignment = useCallback(() => {
+    if (!currentAssignment) {
+      const currentUserAssignment = assignments.find((a) => a.user.id === currentUser?.id);
 
-      if (myCurAss) {
+      if (currentUserAssignment) {
         setAssignments(
           assignments.map((a) =>
             a.user.id === currentUser?.id
@@ -70,13 +63,12 @@ const WorkAssignmentEntry = (props: WorkAssignmentProps) => {
         };
         setAssignments([...assignments, newAssignment]);
       }
-    } else if (curAssignment && curAssignment.user?.id === currentUser?.id) {
-      // remove me from this plz
+    } else if (currentAssignment && currentAssignment.user?.id === currentUser?.id) {
       setAssignments(assignments.filter((a) => a.user.id !== currentUser?.id));
     }
   }, [
-    curAssignment,
-    curAssignment?.user?.id,
+    currentAssignment,
+    currentAssignment?.user?.id,
     currentUser,
     currentUser?.id,
     currentCarNumber,
@@ -89,13 +81,13 @@ const WorkAssignmentEntry = (props: WorkAssignmentProps) => {
 
   return (
     <div className="py-1 work-assignment">
-      <button className={classNames} onClick={() => onClickDude()}>
+      <button className={classNames} onClick={() => onClickWorkAssignment()}>
         {props.type}
       </button>
-      {curAssignment ? (
+      {currentAssignment ? (
         <div className="px-2">
-          {curAssignment.user?.firstName} {curAssignment.user?.lastName} #
-          {curAssignment.carNumber}
+          {currentAssignment.user?.firstName} {currentAssignment.user?.lastName} #
+          {currentAssignment.carNumber}
         </div>
       ) : (
         <></>

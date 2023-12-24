@@ -149,7 +149,7 @@ def organization_events():
     
     current_year = datetime.now().year
     start = str(current_year) + '-01-01'
-    end = str(current_year + 2) + '-01-01'
+    end = str(current_year + 1) + '-12-31'
 
     msr = client(access_token)
     _, content = msr.request(api_url + '/rest/calendars/organization/' + app.config['MSR_ORGANIZATION_ID'] + '.json?start=' + start + '&end=' + end + '&archive=true', 'GET')

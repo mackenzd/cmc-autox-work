@@ -1,7 +1,6 @@
 import WorkAssignmentsOther from "./work-assignments-other";
 import WorkAssignmentsBucket from "./work-assignments-bucket";
 import { RunGroup } from "../../models/run-group";
-import { useMemo } from "react";
 import { useWorkAssignmentsContext } from "./work-assignments-context";
 
 export interface WorkAssignmentsModalProps {
@@ -59,12 +58,6 @@ const WorkAssignmentsModal = (props: WorkAssignmentsModalProps) => {
         <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <>{workAssignmentBuckets()}</>
         </div>
-
-        {/* <div className="card-actions justify-end">
-          <button className="btn btn-primary" onClick={props.onClose}>
-            Close
-          </button>
-        </div> */}
       </div>
     </dialog>
   ) : (
