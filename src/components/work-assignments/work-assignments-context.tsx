@@ -113,6 +113,7 @@ export const WorkAssignmentsContextProvider = (
     </WorkAssignmentsContext.Provider>
   );
 };
+
 export const useWorkAssignmentsContext = (): Props => {
   return React.useContext<Props>(WorkAssignmentsContext);
 };

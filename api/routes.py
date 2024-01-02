@@ -12,12 +12,12 @@ app.debug = False
 app.config.from_pyfile('config.cfg', silent=True)
 app.secret_key = app.config["SESSION_SECRET_KEY"]
 
-request_token_url = app.config['MSR_API_URL'] + '/rest/tokens/request'
-access_token_url = app.config['MSR_API_URL'] + '/rest/tokens/access'
-authorization_url = app.config['MSR_AUTHORIZATION_URL']
-callback_url = app.config['MSR_CALLBACK_URL']
 app_url = app.config['APP_URL']
 api_url = app.config['MSR_API_URL']
+authorization_url = app.config['MSR_AUTHORIZATION_URL']
+callback_url = app.config['MSR_CALLBACK_URL']
+request_token_url = api_url + '/rest/tokens/request'
+access_token_url = api_url + '/rest/tokens/access'
 
 oauth_store = {}
 
@@ -137,7 +137,7 @@ def user_events():
         return make_response(unauthorized, 401)
     
     msr = client(access_token)
-    _, content = msr.request(app.config['MSR_API_URL'] + '/rest/me/events.json', 'GET')
+    _, content = msr.request(api_url + '/rest/me/events.json', 'GET')
 
     return content.decode('utf-8')
 
