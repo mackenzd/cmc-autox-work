@@ -16,12 +16,10 @@ export interface WorkAssignmentProps {
 
 const WorkAssignmentEntry = (props: WorkAssignmentProps) => {
   const { vehicleNumber, assignments, setAssignments, runGroup, segment } = useWorkAssignmentsContext();
-
-  const {user} = useAuthorizationContext();
+  const { user } = useAuthorizationContext();
 
   const currentAssignment = useMemo(
-    () => getWorkAssignment(assignments, runGroup, segment, props.type, props.bucket),
-
+    () => getWorkAssignment(assignments, runGroup, props.type, props.bucket, segment),
     [JSON.stringify(assignments), runGroup, segment, props.type, props.bucket]
   );
 

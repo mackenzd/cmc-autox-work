@@ -52,7 +52,7 @@ export function useGetEventAssignments(event: MSREvent): MSRAssignment[] {
     if (event.id && !eventHasEnded(event)) {
       getEventAssignments(event.id).then((assignments) => setEventAssignments(assignments));
     }
-  }, [setEventAssignments, event.id]);
+  }, [setEventAssignments, event, event.id]);
 
   return eventAssignments;
 }

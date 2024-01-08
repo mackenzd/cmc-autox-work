@@ -25,7 +25,7 @@ export type WorkAssignment = {
     type: WorkAssignmentType;
     bucket: Bucket;
     runGroup: RunGroup;
-    segment: MSRSegment;
+    segment?: MSRSegment;
 }
 
 export enum Bucket {

@@ -1,4 +1,10 @@
-import { PropsWithChildren, createContext, useState } from "react";
+import {
+  PropsWithChildren,
+  createContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { RunGroup } from "../../models/run-group";
 import {
   Bucket,
@@ -114,10 +120,10 @@ interface Props {
   setAssignments: (assignments: WorkAssignment[]) => void;
   runGroup: RunGroup;
   setRunGroup: (runGroup: RunGroup) => void;
-  segment: MSRSegment;
+  segment?: MSRSegment;
   setSegment: (segment: MSRSegment) => void;
   vehicleNumber?: string;
-  availableSegments:  MSRSegment[];
+  availableSegments: MSRSegment[];
 }
 
 export const DefaultContext: Props = {
@@ -152,8 +158,17 @@ export const WorkAssignmentsContextProvider = (
       assignment.lastName === user?.lastName
   );
 
-  const availableSegments = uniq(entries.map((e) => e.segment as MSRSegment));
-  const [segment, setSegment] = useState<MSRSegment>(availableSegments[0]);
+  const availableSegments = useMemo(
+    () => uniq(entries.map((e) => e.segment as MSRSegment)),
+    [JSON.stringify(entries)]
+  );
+  const [segment, setSegment] = useState<MSRSegment | undefined>(
+    availableSegments.at(0)
+  );
+
+  useEffect(() => {
+    if (!segment) setSegment(availableSegments[0]);
+  }, [JSON.stringify(availableSegments), segment]);
 
   let vehicleNumber = entries.find((e) => e.segment === segment)?.vehicleNumber;
   let defaultRunGroup =
@@ -161,8 +176,6 @@ export const WorkAssignmentsContextProvider = (
       ? RunGroup.Even
       : RunGroup.Odd;
   const [runGroup, setRunGroup] = useState<RunGroup>(defaultRunGroup);
-
-
 
   return (
     <WorkAssignmentsContext.Provider
