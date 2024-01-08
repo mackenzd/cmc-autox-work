@@ -15,14 +15,14 @@ export interface WorkAssignmentProps {
 }
 
 const WorkAssignmentEntry = (props: WorkAssignmentProps) => {
-  const { vehicleNumber, assignments, setAssignments, runGroup } = useWorkAssignmentsContext();
+  const { vehicleNumber, assignments, setAssignments, runGroup, segment } = useWorkAssignmentsContext();
 
   const {user} = useAuthorizationContext();
 
   const currentAssignment = useMemo(
-    () => getWorkAssignment(assignments, runGroup, props.type, props.bucket),
+    () => getWorkAssignment(assignments, runGroup, segment, props.type, props.bucket),
 
-    [JSON.stringify(assignments), runGroup, props.type, props.bucket]
+    [JSON.stringify(assignments), runGroup, segment, props.type, props.bucket]
   );
 
   const classNames = useMemo(() => {
@@ -37,17 +37,17 @@ const WorkAssignmentEntry = (props: WorkAssignmentProps) => {
 
   const onClickWorkAssignment = useCallback(() => {
     if (!currentAssignment) {
-      const currentUserAssignment = assignments.find((a) => a.user?.id === user?.id);
+      const currentUserAssignment = assignments.find((a) => a.user?.id === user?.id && a.segment === segment);
 
       if (currentUserAssignment) {
         setAssignments(
           assignments.map((a) =>
-            a.user?.id === user?.id
+            a.user?.id === user?.id && a.segment === segment
               ? {
                   ...a,
                   type: props.type,
                   bucket: props.bucket,
-                  runGroup: runGroup,
+                  runGroup: runGroup
                 }
               : a
           )
@@ -59,6 +59,7 @@ const WorkAssignmentEntry = (props: WorkAssignmentProps) => {
           type: props.type,
           bucket: props.bucket,
           runGroup: runGroup,
+          segment: segment
         };
         setAssignments([...assignments, newAssignment]);
       }
@@ -76,6 +77,7 @@ const WorkAssignmentEntry = (props: WorkAssignmentProps) => {
     props.type,
     props.bucket,
     runGroup,
+    segment
   ]);
 
   return (

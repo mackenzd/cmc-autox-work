@@ -1,3 +1,4 @@
+import { MSRSegment } from "./msr-segment";
 import { MSRUser } from "./msr-user";
 import { RunGroup } from "./run-group";
 
@@ -24,6 +25,7 @@ export type WorkAssignment = {
     type: WorkAssignmentType;
     bucket: Bucket;
     runGroup: RunGroup;
+    segment: MSRSegment;
 }
 
 export enum Bucket {
