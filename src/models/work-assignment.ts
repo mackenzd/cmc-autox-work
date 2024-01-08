@@ -19,7 +19,7 @@ export enum WorkAssignmentType {
 }
 
 export type WorkAssignment = {
-    user: MSRUser;
+    user: MSRUser | undefined;
     vehicleNumber: string | undefined;
     type: WorkAssignmentType;
     bucket: Bucket;

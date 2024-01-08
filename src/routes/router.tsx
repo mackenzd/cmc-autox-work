@@ -1,6 +1,6 @@
 import { createBrowserRouter, Navigate, Outlet } from "react-router-dom";
 import App from "../App"
-import Home from "../features/home";
+import Events from "../features/events";
 import { ErrorBoundary } from "react-error-boundary";
 import { Path } from "./path";
 import PageNotFound from "../components/errors/page_not_found";
@@ -29,15 +29,15 @@ const router = createBrowserRouter([
         children: [
           {
             path: Path.Unknown,
-            element: <Navigate replace to={Path.Home} />,
+            element: <Navigate replace to={Path.Events} />,
           },
           {
-            path: "/home",
-            element: <Home />,
+            path: Path.Events,
+            element: <Events />,
             errorElement: <PageNotFound />,
           },
           {
-            path: "/logout",
+            path: Path.Logout,
             element: <Logout />,
             errorElement: <PageNotFound />,
           }

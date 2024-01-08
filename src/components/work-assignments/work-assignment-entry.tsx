@@ -6,8 +6,8 @@ import {
 import {
   getWorkAssignment,
 } from "../../helpers/work-assignments";
-import { getCurrentUser } from "../../helpers/auth";
 import { useWorkAssignmentsContext } from "./work-assignments-context";
+import { useAuthorizationContext } from "../../authorization-context";
 
 export interface WorkAssignmentProps {
   type: WorkAssignmentType;
@@ -17,7 +17,7 @@ export interface WorkAssignmentProps {
 const WorkAssignmentEntry = (props: WorkAssignmentProps) => {
   const { vehicleNumber, assignments, setAssignments, runGroup } = useWorkAssignmentsContext();
 
-  const currentUser = getCurrentUser();
+  const {user} = useAuthorizationContext();
 
   const currentAssignment = useMemo(
     () => getWorkAssignment(assignments, runGroup, props.type, props.bucket),
@@ -26,23 +26,23 @@ const WorkAssignmentEntry = (props: WorkAssignmentProps) => {
   );
 
   const classNames = useMemo(() => {
-    if (currentAssignment && currentAssignment.user?.id === currentUser?.id) {
+    if (currentAssignment && currentAssignment.user?.id === user?.id) {
       return "btn btn-sm btn-warning no-animation work-assignment";
     } else if (currentAssignment) {
       return "btn btn-sm btn-error no-animation work-assignment";
     } else {
       return "btn btn-sm btn-success no-animation work-assignment";
     }
-  }, [currentAssignment, currentAssignment?.user?.id, currentUser?.id]);
+  }, [currentAssignment, currentAssignment?.user?.id, user?.id]);
 
   const onClickWorkAssignment = useCallback(() => {
     if (!currentAssignment) {
-      const currentUserAssignment = assignments.find((a) => a.user.id === currentUser?.id);
+      const currentUserAssignment = assignments.find((a) => a.user?.id === user?.id);
 
       if (currentUserAssignment) {
         setAssignments(
           assignments.map((a) =>
-            a.user.id === currentUser?.id
+            a.user?.id === user?.id
               ? {
                   ...a,
                   type: props.type,
@@ -54,7 +54,7 @@ const WorkAssignmentEntry = (props: WorkAssignmentProps) => {
         );
       } else {
         const newAssignment = {
-          user: currentUser,
+          user: user,
           vehicleNumber: vehicleNumber,
           type: props.type,
           bucket: props.bucket,
@@ -62,14 +62,14 @@ const WorkAssignmentEntry = (props: WorkAssignmentProps) => {
         };
         setAssignments([...assignments, newAssignment]);
       }
-    } else if (currentAssignment && currentAssignment.user?.id === currentUser?.id) {
-      setAssignments(assignments.filter((a) => a.user.id !== currentUser?.id));
+    } else if (currentAssignment && currentAssignment.user?.id === user?.id) {
+      setAssignments(assignments.filter((a) => a.user?.id !== user?.id));
     }
   }, [
     currentAssignment,
     currentAssignment?.user?.id,
-    currentUser,
-    currentUser?.id,
+    user,
+    user?.id,
     vehicleNumber,
     setAssignments,
     JSON.stringify(assignments),

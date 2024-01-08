@@ -72,7 +72,7 @@ export function unsetWorkAssignment(
 ): WorkAssignment[] {
   const assignment = getWorkAssignment(assignments, runGroup, type, bucket);
 
-  if (assignment?.user.id === user.id) {
+  if (assignment?.user?.id === user.id) {
     assignments.splice(assignments.indexOf(assignment));
   }
 
@@ -85,5 +85,5 @@ export function canSetWorkAssignment(
   assignments: WorkAssignment[],
   user: MSRUser
 ): boolean {
-  return !assignments.some((a) => a.user.id === user.id);
+  return !assignments.some((a) => a.user?.id === user.id);
 }

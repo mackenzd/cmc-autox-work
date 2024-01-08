@@ -1,7 +1,7 @@
 import EventCard from "../components/event";
 import { useGetEvents } from "../hooks/events";
 
-const Home = () => {
+const Events = () => {
   const events = useGetEvents();
 
   return (
@@ -13,4 +13,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Events;

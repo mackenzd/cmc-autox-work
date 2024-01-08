@@ -8,7 +8,7 @@ import {
 import React from "react";
 import { MSREvent } from "../../models/msr-event";
 import { useGetEventAssignments } from "../../hooks/events";
-import { getCurrentUser } from "../../helpers/auth";
+import { useAuthorizationContext } from "../../authorization-context";
 
 const stubAssignments: WorkAssignment[] = [
   {
@@ -69,8 +69,6 @@ const stubAssignments: WorkAssignment[] = [
   },
 ];
 
-const stubDefaultRunGroup = RunGroup.Even;
-
 const setStateDefaultFunction = () => {
   return;
 };
@@ -101,12 +99,20 @@ export const WorkAssignmentsContextProvider = (
   props: PropsWithChildren<ContextProps>
 ) => {
   const eventAssignments = useGetEventAssignments(props.event);
-  const currentUser = getCurrentUser();
-  const vehicleNumber = eventAssignments?.find((assignment) => assignment.firstName === currentUser.firstName && assignment.lastName === currentUser.lastName)?.vehicleNumber;
-  
+  const { user } = useAuthorizationContext();
+  const vehicleNumber = eventAssignments?.find(
+    (assignment) =>
+      assignment.firstName === user?.firstName &&
+      assignment.lastName === user?.lastName
+  )?.vehicleNumber;
+
   const [assignments, setAssignments] =
     useState<WorkAssignment[]>(stubAssignments);
-  const [runGroup, setRunGroup] = useState<RunGroup>(vehicleNumber && parseInt(vehicleNumber.charAt(-1)) % 2 ? RunGroup.Even : RunGroup.Odd);
+  const [runGroup, setRunGroup] = useState<RunGroup>(
+    vehicleNumber && parseInt(vehicleNumber.charAt(-1)) % 2
+      ? RunGroup.Even
+      : RunGroup.Odd
+  );
 
   return (
     <WorkAssignmentsContext.Provider
@@ -115,7 +121,7 @@ export const WorkAssignmentsContextProvider = (
         setAssignments,
         runGroup,
         setRunGroup,
-        vehicleNumber: vehicleNumber
+        vehicleNumber: vehicleNumber,
       }}
     >
       {props.children}
