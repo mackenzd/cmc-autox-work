@@ -15,13 +15,12 @@ export enum WorkAssignmentType {
     Leader = 'Leader',
     Runner1 = 'Runner 1',
     Runner2 = 'Runner 2',
-    Runner3 = 'Runner 3',
-    Runner4 = 'Runner 4'
+    Runner3 = 'Runner 3'
 }
 
 export type WorkAssignment = {
     user: MSRUser;
-    carNumber: string;
+    vehicleNumber: string | undefined;
     type: WorkAssignmentType;
     bucket: Bucket;
     runGroup: RunGroup;

@@ -26,10 +26,6 @@ const WorkAssignmentBucket = (props: WorkAssignmentBucketProps) => {
           type={WorkAssignmentType.Runner3}
           bucket={props.bucket}
         />
-        <WorkAssignmentEntry
-          type={WorkAssignmentType.Runner4}
-          bucket={props.bucket}
-        />
       </div>
     </div>
   );

@@ -33,11 +33,13 @@ const WorkAssignmentsModal = (props: WorkAssignmentsModalProps) => {
         </button>
 
         <div className="gap-4 work-assignments-header">
-          <h3 className="font-bold text-lg">Work Assignments</h3>
-          <div className="label-text">
-            <span className="pr-3">Run Group</span>
+          <h3 className="font-bold text-lg">Work Assignment Request</h3>
+          <label className="form-control w-full max-w-xs">
+            <div className="label">
+              <span className="font-bold label-text">Run Group</span>
+            </div>
             <select
-              className="select select-bordered select-xs max-w-xs"
+              className="select select-primary select-xs max-w-xs"
               key={runGroup}
               value={runGroup}
               onChange={(e) => {
@@ -45,10 +47,15 @@ const WorkAssignmentsModal = (props: WorkAssignmentsModalProps) => {
               }}
             >
               {Object.values(RunGroup).map((rg) => (
-                <option key={rg} value={rg}>{rg}</option>
+                <option key={rg} value={rg}>
+                  {rg}
+                </option>
               ))}
             </select>
-          </div>
+            <div className="label">
+              <span className="label-text-alt">Your default run group is determined by your car number.</span>
+            </div>
+          </label>
         </div>
 
         <div className="py-4">
