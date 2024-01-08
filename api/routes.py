@@ -126,7 +126,7 @@ def user():
         return make_response(unauthorized, 401)
     
     msr = client(access_token)
-    _, content = msr.request(api_url + '/rest/me.json', 'GET')
+    _, content = msr.request(uri=f'{api_url}/rest/me.json', method='GET')
 
     return content.decode('utf-8')
 
@@ -137,7 +137,7 @@ def user_events():
         return make_response(unauthorized, 401)
     
     msr = client(access_token)
-    _, content = msr.request(api_url + '/rest/me/events.json', 'GET')
+    _, content = msr.request(uri=f'{api_url}/rest/me/events.json', method='GET')
 
     return content.decode('utf-8')
 
@@ -148,10 +148,21 @@ def organization_events():
         return make_response(unauthorized, 401)
     
     current_year = datetime.now().year
-    start = str(current_year) + '-01-01'
+    start = str(current_year - 1) + '-01-01'
     end = str(current_year + 1) + '-12-31'
 
     msr = client(access_token)
-    _, content = msr.request(api_url + '/rest/calendars/organization/' + app.config['MSR_ORGANIZATION_ID'] + '.json?start=' + start + '&end=' + end + '&archive=true', 'GET')
+    _, content = msr.request(uri=f'{api_url}/rest/calendars/organization/{app.config['MSR_ORGANIZATION_ID']}.json?start={start}&end={end}&archive=true', method='GET')
+
+    return content.decode('utf-8')
+
+@app.route('/api/events/<event_id>/assignments')
+def event_entry_list(event_id):
+    access_token = token()
+    if not access_token:
+        return make_response(unauthorized, 401)
+    
+    msr = client(access_token)
+    _, content = msr.request(uri=f'{api_url}/rest/events/{event_id}/entrylist.json', method='GET')
 
     return content.decode('utf-8')

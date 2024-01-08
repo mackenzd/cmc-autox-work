@@ -7,6 +7,8 @@ import {
 } from "../../models/work-assignment";
 import React from "react";
 import { MSREvent } from "../../models/msr-event";
+import { useGetEventAssignments } from "../../hooks/events";
+import { getCurrentUser } from "../../helpers/auth";
 
 const stubAssignments: WorkAssignment[] = [
   {
@@ -18,7 +20,7 @@ const stubAssignments: WorkAssignment[] = [
       lastName: "Karp",
       organizations: [],
     },
-    carNumber: "37",
+    vehicleNumber: "37",
     type: WorkAssignmentType.Computer,
     bucket: Bucket.None,
     runGroup: RunGroup.Even,
@@ -32,7 +34,7 @@ const stubAssignments: WorkAssignment[] = [
       lastName: "McTesterson",
       organizations: [],
     },
-    carNumber: "123",
+    vehicleNumber: "123",
     type: WorkAssignmentType.Runner2,
     bucket: Bucket.Bucket5,
     runGroup: RunGroup.Even,
@@ -46,7 +48,7 @@ const stubAssignments: WorkAssignment[] = [
       lastName: "Jim",
       organizations: [],
     },
-    carNumber: "45",
+    vehicleNumber: "45",
     type: WorkAssignmentType.Instructor2,
     bucket: Bucket.None,
     runGroup: RunGroup.Odd,
@@ -60,7 +62,7 @@ const stubAssignments: WorkAssignment[] = [
       lastName: "Fred",
       organizations: [],
     },
-    carNumber: "1",
+    vehicleNumber: "1",
     type: WorkAssignmentType.Leader,
     bucket: Bucket.Bucket1,
     runGroup: RunGroup.Odd,
@@ -78,13 +80,15 @@ interface Props {
   setAssignments: (assignments: WorkAssignment[]) => void;
   runGroup: RunGroup;
   setRunGroup: (runGroup: RunGroup) => void;
+  vehicleNumber?: string;
 }
 
 export const DefaultContext: Props = {
   assignments: [],
   setAssignments: setStateDefaultFunction,
-  runGroup: RunGroup.Even,
+  runGroup: RunGroup.Odd,
   setRunGroup: setStateDefaultFunction,
+  vehicleNumber: undefined,
 };
 
 const WorkAssignmentsContext = createContext<Props>(DefaultContext);
@@ -96,9 +100,13 @@ interface ContextProps {
 export const WorkAssignmentsContextProvider = (
   props: PropsWithChildren<ContextProps>
 ) => {
+  const eventAssignments = useGetEventAssignments(props.event);
+  const currentUser = getCurrentUser();
+  const vehicleNumber = eventAssignments?.find((assignment) => assignment.firstName === currentUser.firstName && assignment.lastName === currentUser.lastName)?.vehicleNumber;
+  
   const [assignments, setAssignments] =
     useState<WorkAssignment[]>(stubAssignments);
-  const [runGroup, setRunGroup] = useState<RunGroup>(stubDefaultRunGroup);
+  const [runGroup, setRunGroup] = useState<RunGroup>(vehicleNumber && parseInt(vehicleNumber.charAt(-1)) % 2 ? RunGroup.Even : RunGroup.Odd);
 
   return (
     <WorkAssignmentsContext.Provider
@@ -107,6 +115,7 @@ export const WorkAssignmentsContextProvider = (
         setAssignments,
         runGroup,
         setRunGroup,
+        vehicleNumber: vehicleNumber
       }}
     >
       {props.children}

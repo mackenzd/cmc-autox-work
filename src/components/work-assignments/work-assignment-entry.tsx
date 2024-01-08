@@ -15,10 +15,9 @@ export interface WorkAssignmentProps {
 }
 
 const WorkAssignmentEntry = (props: WorkAssignmentProps) => {
-  const { assignments, setAssignments, runGroup } = useWorkAssignmentsContext();
+  const { vehicleNumber, assignments, setAssignments, runGroup } = useWorkAssignmentsContext();
 
   const currentUser = getCurrentUser();
-  const currentCarNumber = "000";
 
   const currentAssignment = useMemo(
     () => getWorkAssignment(assignments, runGroup, props.type, props.bucket),
@@ -56,7 +55,7 @@ const WorkAssignmentEntry = (props: WorkAssignmentProps) => {
       } else {
         const newAssignment = {
           user: currentUser,
-          carNumber: currentCarNumber,
+          vehicleNumber: vehicleNumber,
           type: props.type,
           bucket: props.bucket,
           runGroup: runGroup,
@@ -71,7 +70,7 @@ const WorkAssignmentEntry = (props: WorkAssignmentProps) => {
     currentAssignment?.user?.id,
     currentUser,
     currentUser?.id,
-    currentCarNumber,
+    vehicleNumber,
     setAssignments,
     JSON.stringify(assignments),
     props.type,
@@ -86,8 +85,7 @@ const WorkAssignmentEntry = (props: WorkAssignmentProps) => {
       </button>
       {currentAssignment ? (
         <div className="px-2">
-          {currentAssignment.user?.firstName} {currentAssignment.user?.lastName} #
-          {currentAssignment.carNumber}
+          {currentAssignment.user?.firstName} {currentAssignment.user?.lastName} {currentAssignment.vehicleNumber ? "#" + currentAssignment.vehicleNumber : <></>}
         </div>
       ) : (
         <></>

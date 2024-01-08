@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { MSREvent } from "../models/msr-event";
 import WorkAssignmentsModal from "./work-assignments/work-assignment-modal";
 import { WorkAssignmentsContextProvider } from "./work-assignments/work-assignments-context";
+import { eventHasEnded } from "../helpers/events";
 
 export interface EventCardProps {
   event: MSREvent;
@@ -14,14 +15,15 @@ const EventCard = (props: EventCardProps) => {
   );
 
   const startDate = useMemo(
-    () => new Date(`${props.event?.start} EST`),
+    () => new Date(`${props.event?.start} UTC`),
     [props.event.start]
   );
   const endDate = useMemo(
-    () => new Date(`${props.event?.end} EST`),
+    () => new Date(`${props.event?.end} UTC`),
     [props.event.end]
   );
-  const hasEnded = useMemo(() => endDate < new Date(), [endDate]);
+
+  const hasEnded = useMemo(() => eventHasEnded(props.event), [props.event]);
 
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 

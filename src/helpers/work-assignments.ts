@@ -13,7 +13,7 @@ export function getUserForWorkAssignment(
   bucket: Bucket
 ): [MSRUser | undefined] | [MSRUser | undefined, string | undefined] {
   const assignment = getWorkAssignment(assignments, runGroup, type, bucket);
-  return [assignment?.user, assignment?.carNumber];
+  return [assignment?.user, assignment?.vehicleNumber];
 }
 
 export function getWorkAssignment(
@@ -33,7 +33,7 @@ export function setWorkAssignment(
   type: WorkAssignmentType,
   bucket: Bucket,
   user: MSRUser,
-  carNumber: string,
+  vehicleNumber: string,
   onCallback: () => void
 ): WorkAssignment[] {
   if (!canSetWorkAssignment(assignments, user)) {
@@ -44,7 +44,7 @@ export function setWorkAssignment(
 
   const newAssignment: WorkAssignment = {
     user: user,
-    carNumber: carNumber,
+    vehicleNumber: vehicleNumber,
     type: type,
     bucket: bucket,
     runGroup: runGroup,

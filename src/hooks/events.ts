@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { MSREvent } from "../models/msr-event";
-import { getOrganizationEvents, getUserEvents } from "../helpers/events";
+import { eventHasEnded, getEventAssignments, getOrganizationEvents, getUserEvents } from "../helpers/events";
 import uniqBy from "lodash/uniqBy";
+import { MSRAssignment } from "../models/msr-assignment";
 
 export function useGetOrganizationEvents(): MSREvent[] | null {
   const [organizationEvents, setOrganizationEvents] = useState<
@@ -42,4 +43,16 @@ export function useGetEvents(): MSREvent[] | null {
   }, [setEvents]);
 
   return uniqBy(events, "id");
+}
+
+export function useGetEventAssignments(event: MSREvent): MSRAssignment[] {
+  const [eventAssignments, setEventAssignments] = useState<MSRAssignment[]>([]);
+
+  useEffect(() => {
+    if (event.id && !eventHasEnded(event)) {
+      getEventAssignments(event.id).then((assignments) => setEventAssignments(assignments));
+    }
+  }, [setEventAssignments, event.id]);
+
+  return eventAssignments;
 }
