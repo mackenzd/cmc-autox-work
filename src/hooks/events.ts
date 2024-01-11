@@ -1,13 +1,16 @@
 import { useEffect, useState } from "react";
 import { MSREvent } from "../models/msr-event";
-import { eventHasEnded, getEventAssignments, getOrganizationEvents, getUserEvents } from "../helpers/events";
+import {
+  eventHasEnded,
+  getEventAssignments,
+  getOrganizationEvents,
+  getUserEvents,
+} from "../helpers/events";
 import uniqBy from "lodash/uniqBy";
 import { MSRAssignment } from "../models/msr-assignment";
 
-export function useGetOrganizationEvents(): MSREvent[] | null {
-  const [organizationEvents, setOrganizationEvents] = useState<
-    MSREvent[] | null
-  >(null);
+export function useGetOrganizationEvents(): MSREvent[] {
+  const [organizationEvents, setOrganizationEvents] = useState<MSREvent[]>([]);
 
   useEffect(() => {
     getOrganizationEvents().then((events) => setOrganizationEvents(events));
@@ -16,8 +19,8 @@ export function useGetOrganizationEvents(): MSREvent[] | null {
   return organizationEvents;
 }
 
-export function useGetUserEvents(): MSREvent[] | null {
-  const [userEvents, setUserEvents] = useState<MSREvent[] | null>(null);
+export function useGetUserEvents(): MSREvent[] {
+  const [userEvents, setUserEvents] = useState<MSREvent[]>([]);
 
   useEffect(() => {
     getUserEvents().then((events) => setUserEvents(events));
@@ -26,8 +29,8 @@ export function useGetUserEvents(): MSREvent[] | null {
   return userEvents;
 }
 
-export function useGetEvents(): MSREvent[] | null {
-  const [events, setEvents] = useState<MSREvent[] | null>(null);
+export function useGetEvents(): MSREvent[] {
+  const [events, setEvents] = useState<MSREvent[]>([]);
 
   useEffect(() => {
     const p1 = getUserEvents();
@@ -50,7 +53,9 @@ export function useGetEventAssignments(event: MSREvent): MSRAssignment[] {
 
   useEffect(() => {
     if (event.id && !eventHasEnded(event)) {
-      getEventAssignments(event.id).then((assignments) => setEventAssignments(assignments));
+      getEventAssignments(event.id).then((assignments) =>
+        setEventAssignments(assignments)
+      );
     }
   }, [setEventAssignments, event, event.id]);
 

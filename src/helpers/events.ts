@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import { MSRAssignment } from "../models/msr-assignment";
 import { MSREvent } from "../models/msr-event";
 
@@ -12,20 +11,34 @@ export function filterEvents(events: MSREvent[]): MSREvent[] {
 
 export function eventHasEnded(event: MSREvent): boolean {
   const endDate = new Date(`${event?.end} UTC`);
-  return endDate < new Date()
+  return endDate < new Date();
 }
 
 export function getOrganizationEvents(): Promise<MSREvent[]> {
   return fetch("/api/organization/events")
-    .then((res) => res.json())
+    .then((res) => {
+      if (res.ok) {
+        return res.json();
+      }
+      return Promise.reject(res);
+    })
     .then((data) => {
       return filterEvents(data.response.events);
+    })
+    .catch((error) => {
+      console.log(error);
+      return [];
     });
 }
 
 export function getUserEvents(): Promise<MSREvent[]> {
   return fetch("/api/user/events")
-    .then((res) => res.json())
+    .then((res) => {
+      if (res.ok) {
+        return res.json();
+      }
+      return Promise.reject(res);
+    })
     .then((data) => {
       let evts = data.response.events.map((event: MSREvent) => {
         event.registered = true;
@@ -33,13 +46,27 @@ export function getUserEvents(): Promise<MSREvent[]> {
       });
 
       return filterEvents(evts);
+    })
+    .catch((error) => {
+      console.log(error);
+      return [];
     });
 }
 
-export function getEventAssignments(eventId: string): Promise<MSRAssignment[]> {
+export function getEventAssignments(
+  eventId: string
+): Promise<MSRAssignment[]> {
   return fetch(`/api/events/${eventId}/assignments`)
-    .then((res) => res.json())
+    .then((res) => {
+      if (res.ok) {
+        return res.json();
+      }
+    })
     .then((data) => {
       return data.response.assignments;
+    })
+    .catch((error) => {
+      console.log(error);
+      return [];
     });
 }

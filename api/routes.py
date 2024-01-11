@@ -116,53 +116,35 @@ def client(token: oauth.Token):
         app.config['MSR_CONSUMER_KEY'], app.config['MSR_CONSUMER_SECRET'])
 
     client = oauth.Client(consumer, token)
-
     return client
+
+def msr_request(uri, method):
+    access_token = token()
+    if not access_token:
+        return make_response(unauthorized, 401)
+    
+    msr = client(access_token)
+    response, content = msr.request(uri=uri, method=method)
+
+    return make_response(content.decode('utf-8'), response.status)
+
 
 @app.route('/api/user')
 def user():
-    access_token = token()
-    if not access_token:
-        return make_response(unauthorized, 401)
-    
-    msr = client(access_token)
-    _, content = msr.request(uri=f'{api_url}/rest/me.json', method='GET')
-
-    return content.decode('utf-8')
+    return msr_request(uri=f'{api_url}/rest/me.json', method='GET')
 
 @app.route('/api/user/events')
 def user_events():
-    access_token = token()
-    if not access_token:
-        return make_response(unauthorized, 401)
-    
-    msr = client(access_token)
-    _, content = msr.request(uri=f'{api_url}/rest/me/events.json', method='GET')
-
-    return content.decode('utf-8')
+    return msr_request(uri=f'{api_url}/rest/me/events.json', method='GET')
 
 @app.route('/api/organization/events')
-def organization_events():
-    access_token = token()
-    if not access_token:
-        return make_response(unauthorized, 401)
-    
+def organization_events():   
     current_year = datetime.now().year
     start = str(current_year - 1) + '-01-01'
     end = str(current_year + 1) + '-12-31'
 
-    msr = client(access_token)
-    _, content = msr.request(uri=f'{api_url}/rest/calendars/organization/{app.config['MSR_ORGANIZATION_ID']}.json?start={start}&end={end}&archive=true', method='GET')
-
-    return content.decode('utf-8')
+    return msr_request(uri=f'{api_url}/rest/calendars/organization/{app.config['MSR_ORGANIZATION_ID']}.json?start={start}&end={end}&archive=true', method='GET')
 
 @app.route('/api/events/<event_id>/assignments')
 def event_entry_list(event_id):
-    access_token = token()
-    if not access_token:
-        return make_response(unauthorized, 401)
-    
-    msr = client(access_token)
-    _, content = msr.request(uri=f'{api_url}/rest/events/{event_id}/entrylist.json', method='GET')
-
-    return content.decode('utf-8')
+    return msr_request(uri=f'{api_url}/rest/events/{event_id}/entrylist.json', method='GET')

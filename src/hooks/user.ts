@@ -6,10 +6,17 @@ export function useGetUser(onFinish: () => void): MSRUser | undefined {
 
   useEffect(() => {
     fetch("/api/user")
-      .then((res) => res.json())
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        }
+        return Promise.reject(res);
+      })
       .then((data) => {
         setUser(data.response.profile);
-      }).finally(() => onFinish());
+      })
+      .catch((error) => console.log(error))
+      .finally(() => onFinish());
   }, [setUser]);
 
   return user;
