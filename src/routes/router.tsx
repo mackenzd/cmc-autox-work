@@ -4,7 +4,6 @@ import Events from "../features/events";
 import { ErrorBoundary } from "react-error-boundary";
 import { Path } from "./path";
 import PageNotFound from "../components/errors/page_not_found";
-import Logout from "../features/logout";
 
 const errorBoundaryErrorHandler = () => {
   return;
@@ -38,7 +37,7 @@ const router = createBrowserRouter([
           },
           {
             path: Path.Logout,
-            element: <Logout />,
+            element: <Navigate replace to={Path.Logout} />,
             errorElement: <PageNotFound />,
           }
         ],

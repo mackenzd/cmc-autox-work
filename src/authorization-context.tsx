@@ -9,31 +9,34 @@ const setStateDefaultFunction = () => {
 
 interface Props {
   user?: MSRUser;
+  setUser: (user?: MSRUser) => void;
   isAuthenticated: boolean;
   isLoading: boolean;
-  setIsLoading: ((isLoading: boolean) => void);
+  setIsLoading: (isLoading: boolean) => void;
 }
 
 export const DefaultContext: Props = {
   user: undefined,
+  setUser: setStateDefaultFunction,
   isAuthenticated: false,
   isLoading: true,
-  setIsLoading: setStateDefaultFunction
+  setIsLoading: setStateDefaultFunction,
 };
 
 const AuthorizationContext = createContext<Props>(DefaultContext);
 
 export const AuthorizationContextProvider = (props: PropsWithChildren) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const user = useGetUser(() => setIsLoading(false));
+  const [user, setUser] = useGetUser(() => setIsLoading(false));
 
   return (
     <AuthorizationContext.Provider
       value={{
         user,
+        setUser,
         isAuthenticated: !!user,
         isLoading,
-        setIsLoading
+        setIsLoading,
       }}
     >
       {props.children}

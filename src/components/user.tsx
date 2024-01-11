@@ -1,9 +1,8 @@
 import { useAuthorizationContext } from "../authorization-context";
 import { useLogout } from "../hooks/auth";
-import { useGetUser } from "../hooks/user";
 
 const UserAvatar = () => {
-  const {user} = useAuthorizationContext();
+  const { user } = useAuthorizationContext();
   const logout = useLogout();
 
   return (

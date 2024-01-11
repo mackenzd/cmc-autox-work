@@ -9,8 +9,15 @@ app.debug = False
 app.config.from_pyfile('config.cfg', silent=True)
 app.secret_key = app.config["SESSION_SECRET_KEY"]
 
+def fetch_token():
+    token = session.get('token')
+    if token is None:
+        token = {'oauth_token': None}
+
+    return token
+
 oauth = OAuth(app)
-oauth.register('msr', fetch_token=lambda: session.get('token'))
+oauth.register('msr', fetch_token=fetch_token)
 
 ## Auth
 @app.route('/auth/login')
@@ -20,17 +27,19 @@ def login():
 
 @app.route('/auth/callback')
 def callback():
-    token = oauth.msr.authorize_access_token()
-    session['token'] = token
-
-    return redirect(app.config['APP_URL'])
+    try:
+        token = oauth.msr.authorize_access_token()
+        session['token'] = token
+    except Exception as e:
+        app.logger.error(e)
+    finally:
+        return redirect(app.config['APP_URL'])
 
 @app.route('/auth/logout')
 def logout():
-    session.pop('oauth_token', None)
-    session.pop('oauth_token_secret', None)
+    session.pop('token', None)
 
-    return make_response(None, 200)
+    return make_response({}, 200)
 
 ## API
 @app.route('/api/user')

@@ -1,7 +1,12 @@
 import { useEffect, useState } from "react";
 import { MSRUser } from "../models/msr-user";
 
-export function useGetUser(onFinish: () => void): MSRUser | undefined {
+export function useGetUser(
+  onFinish: () => void
+): [
+  MSRUser | undefined,
+  React.Dispatch<React.SetStateAction<MSRUser | undefined>>
+] {
   const [user, setUser] = useState<MSRUser | undefined>(undefined);
 
   useEffect(() => {
@@ -19,5 +24,5 @@ export function useGetUser(onFinish: () => void): MSRUser | undefined {
       .finally(() => onFinish());
   }, [setUser]);
 
-  return user;
+  return [user, setUser];
 }

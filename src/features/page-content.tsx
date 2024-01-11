@@ -17,7 +17,7 @@ function PageContent() {
 
   return (
     <div className="root">
-      <Navbar isAuthenticated={isAuthenticated} />
+      <Navbar />
       <div className="content">
         {isLoading ? <LoadingSpinner /> : <>{pageContent}</>}
       </div>
