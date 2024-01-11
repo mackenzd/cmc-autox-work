@@ -1,5 +1,5 @@
 export function login(): void {
-  fetch("/auth/request")
+  fetch("/auth/login")
     .then((res) => {
       if (res.ok) {
         return res.text();
@@ -7,7 +7,7 @@ export function login(): void {
       return Promise.reject(res);
     })
     .then((data) => {
-      window.location.href = `https://www.motorsportreg.com/index.cfm/event/oauth?oauth_token=${data}`;
+      window.location.href = data;
     })
     .catch((error) => console.log(error));
 }
