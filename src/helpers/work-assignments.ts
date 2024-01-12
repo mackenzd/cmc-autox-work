@@ -2,7 +2,7 @@ import { MSRSegment } from "../models/msr-segment";
 import { MSRUser } from "../models/msr-user";
 import { RunGroup } from "../models/run-group";
 import {
-  Bucket,
+  Station,
   WorkAssignment,
   WorkAssignmentType,
 } from "../models/work-assignment";
@@ -12,9 +12,9 @@ export function getUserForWorkAssignment(
   runGroup: RunGroup,
   segment: MSRSegment,
   type: WorkAssignmentType,
-  bucket: Bucket
+  station: Station
 ): [MSRUser | undefined] | [MSRUser | undefined, string | undefined] {
-  const assignment = getWorkAssignment(assignments, runGroup, type, bucket, segment);
+  const assignment = getWorkAssignment(assignments, runGroup, type, station, segment);
   return [assignment?.user, assignment?.vehicleNumber];
 }
 
@@ -22,11 +22,11 @@ export function getWorkAssignment(
   assignments: WorkAssignment[],
   runGroup: RunGroup,
   type: WorkAssignmentType,
-  bucket: Bucket,
+  station: Station,
   segment?: MSRSegment,
 ): WorkAssignment | undefined {
   return assignments.find(
-    (a) => a.runGroup === runGroup && a.segment === segment && a.type === type && a.bucket === bucket
+    (a) => a.runGroup === runGroup && a.segment === segment && a.type === type && a.station === station
   );
 }
 
@@ -35,7 +35,7 @@ export function setWorkAssignment(
   runGroup: RunGroup,
   segment: MSRSegment,
   type: WorkAssignmentType,
-  bucket: Bucket,
+  station: Station,
   user: MSRUser,
   vehicleNumber: string,
   onCallback: () => void
@@ -44,13 +44,13 @@ export function setWorkAssignment(
     return assignments;
   }
 
-  const assignment = getWorkAssignment(assignments, runGroup, type, bucket, segment);
+  const assignment = getWorkAssignment(assignments, runGroup, type, station, segment);
 
   const newAssignment: WorkAssignment = {
     user: user,
     vehicleNumber: vehicleNumber,
     type: type,
-    bucket: bucket,
+    station: station,
     runGroup: runGroup,
     segment: segment
   };
@@ -71,11 +71,11 @@ export function unsetWorkAssignment(
   runGroup: RunGroup,
   segment: MSRSegment,
   type: WorkAssignmentType,
-  bucket: Bucket,
+  station: Station,
   user: MSRUser,
   onCallback: () => void
 ): WorkAssignment[] {
-  const assignment = getWorkAssignment(assignments, runGroup, type, bucket, segment);
+  const assignment = getWorkAssignment(assignments, runGroup, type, station, segment);
 
   if (assignment?.user?.id === user.id) {
     assignments.splice(assignments.indexOf(assignment));

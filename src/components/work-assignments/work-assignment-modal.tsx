@@ -1,5 +1,5 @@
 import WorkAssignmentsOther from "./work-assignments-other";
-import WorkAssignmentsBucket from "./work-assignments-bucket";
+import WorkAssignmentsStation from "./work-assignments-station";
 import { RunGroup } from "../../models/run-group";
 import { useWorkAssignmentsContext } from "./work-assignments-context";
 import { MSRSegment } from "../../models/msr-segment";
@@ -9,19 +9,19 @@ export interface WorkAssignmentsModalProps {
   onClose: () => void;
 }
 
-const bucketCount = 8;
+const stationCount = 8;
 
 const WorkAssignmentsModal = (props: WorkAssignmentsModalProps) => {
   const { availableSegments, segment, setSegment, runGroup, setRunGroup } =
     useWorkAssignmentsContext();
 
-  const workAssignmentBuckets = () => {
-    const buckets = [];
-    for (let i = 1; i <= bucketCount; i++) {
-      buckets.push(<WorkAssignmentsBucket key={`bucket-${i}`} bucket={i} />);
+  const workAssignmentStations = () => {
+    const stations = [];
+    for (let i = 1; i <= stationCount; i++) {
+      stations.push(<WorkAssignmentsStation key={`station-${i}`} station={i} />);
     }
 
-    return buckets;
+    return stations;
   };
 
   return props.isOpen ? (
@@ -93,7 +93,7 @@ const WorkAssignmentsModal = (props: WorkAssignmentsModalProps) => {
         </div>
 
         <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <>{workAssignmentBuckets()}</>
+          <>{workAssignmentStations()}</>
         </div>
       </div>
     </dialog>

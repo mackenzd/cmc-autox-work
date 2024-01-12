@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from "react";
 import {
-  Bucket,
+  Station,
   WorkAssignmentType,
 } from "../../models/work-assignment";
 import {
@@ -11,7 +11,7 @@ import { useAuthorizationContext } from "../../authorization-context";
 
 export interface WorkAssignmentProps {
   type: WorkAssignmentType;
-  bucket: Bucket;
+  station: Station;
 }
 
 const WorkAssignmentEntry = (props: WorkAssignmentProps) => {
@@ -19,8 +19,8 @@ const WorkAssignmentEntry = (props: WorkAssignmentProps) => {
   const { user } = useAuthorizationContext();
 
   const currentAssignment = useMemo(
-    () => getWorkAssignment(assignments, runGroup, props.type, props.bucket, segment),
-    [JSON.stringify(assignments), runGroup, segment, props.type, props.bucket]
+    () => getWorkAssignment(assignments, runGroup, props.type, props.station, segment),
+    [JSON.stringify(assignments), runGroup, segment, props.type, props.station]
   );
 
   const classNames = useMemo(() => {
@@ -44,7 +44,7 @@ const WorkAssignmentEntry = (props: WorkAssignmentProps) => {
               ? {
                   ...a,
                   type: props.type,
-                  bucket: props.bucket,
+                  station: props.station,
                   runGroup: runGroup
                 }
               : a
@@ -55,7 +55,7 @@ const WorkAssignmentEntry = (props: WorkAssignmentProps) => {
           user: user,
           vehicleNumber: vehicleNumber,
           type: props.type,
-          bucket: props.bucket,
+          station: props.station,
           runGroup: runGroup,
           segment: segment
         };
@@ -73,7 +73,7 @@ const WorkAssignmentEntry = (props: WorkAssignmentProps) => {
     setAssignments,
     JSON.stringify(assignments),
     props.type,
-    props.bucket,
+    props.station,
     runGroup,
     segment
   ]);

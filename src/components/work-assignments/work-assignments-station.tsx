@@ -1,34 +1,34 @@
-import { Bucket, WorkAssignmentType } from "../../models/work-assignment";
+import { Station, WorkAssignmentType } from "../../models/work-assignment";
 import WorkAssignmentEntry from "./work-assignment-entry";
 
-export interface WorkAssignmentBucketProps {
-  bucket: Bucket;
+export interface WorkAssignmentStationProps {
+  station: Station;
 }
 
-const WorkAssignmentBucket = (props: WorkAssignmentBucketProps) => {
+const WorkAssignmentStation = (props: WorkAssignmentStationProps) => {
   return (
     <div>
-      <div className="font-bold text-md py-2">Bucket {props.bucket}</div>
+      <div className="font-bold text-md py-2">Station {props.station}</div>
       <div>
         <WorkAssignmentEntry
           type={WorkAssignmentType.Leader}
-          bucket={props.bucket}
+          station={props.station}
         />
         <WorkAssignmentEntry
           type={WorkAssignmentType.Runner1}
-          bucket={props.bucket}
+          station={props.station}
         />
         <WorkAssignmentEntry
           type={WorkAssignmentType.Runner2}
-          bucket={props.bucket}
+          station={props.station}
         />
         <WorkAssignmentEntry
           type={WorkAssignmentType.Runner3}
-          bucket={props.bucket}
+          station={props.station}
         />
       </div>
     </div>
   );
 };
 
-export default WorkAssignmentBucket;
+export default WorkAssignmentStation;

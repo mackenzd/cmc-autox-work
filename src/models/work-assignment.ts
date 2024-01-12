@@ -23,19 +23,19 @@ export type WorkAssignment = {
     user: MSRUser | undefined;
     vehicleNumber: string | undefined;
     type: WorkAssignmentType;
-    bucket: Bucket;
+    station: Station;
     runGroup: RunGroup;
     segment?: MSRSegment;
 }
 
-export enum Bucket {
+export enum Station {
     None = 0,
-    Bucket1 = 1,
-    Bucket2 = 2,
-    Bucket3 = 3,
-    Bucket4 = 4,
-    Bucket5 = 5,
-    Bucket6 = 5,
-    Bucket7 = 6,
-    Bucket8 = 7
+    Station1 = 1,
+    Station2 = 2,
+    Station3 = 3,
+    Station4 = 4,
+    Station5 = 5,
+    Station6 = 5,
+    Station7 = 6,
+    Station8 = 7
 }
