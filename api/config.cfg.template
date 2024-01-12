@@ -12,3 +12,6 @@ MSR_AUTHORIZE_URL='https://www.motorsportreg.com/index.cfm/event/oauth'
 SESSION_SECRET_KEY=''
 APP_URL='http://localhost:3000'
 CALLBACK_URL='http://localhost:5000/auth/callback'
+
+# Database
+DATABASE_NAME='app.db'
