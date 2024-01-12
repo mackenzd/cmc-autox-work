@@ -22,7 +22,7 @@ oauth.register('msr', fetch_token=fetch_token)
 ## Auth
 @app.route('/auth/login')
 def login():
-    res = oauth.msr.authorize_redirect(app.config['MSR_CALLBACK_URL'])
+    res = oauth.msr.authorize_redirect(app.config['CALLBACK_URL'])
     return res.location
 
 @app.route('/auth/callback')
