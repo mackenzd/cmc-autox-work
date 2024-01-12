@@ -14,8 +14,16 @@ export function eventHasEnded(event: MSREvent): boolean {
   return endDate < new Date();
 }
 
-export function getOrganizationEvents(): Promise<MSREvent[]> {
-  return fetch("/api/organization/events")
+export function getOrganizationEvents(start?: string, end?: string): Promise<MSREvent[]> {
+  const params: string[] = [];
+  if (start) {
+    params.push(`start=${encodeURIComponent(start)}`);
+  }
+  if (end) {
+    params.push(`end=${encodeURIComponent(end)}`);
+  }
+
+  return fetch(`/api/organization/events${params.length > 0 ? `?${params.join("&")}` : ""}`)
     .then((res) => {
       if (res.ok) {
         return res.json();

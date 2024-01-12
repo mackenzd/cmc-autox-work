@@ -1,4 +1,4 @@
-from flask import Flask, redirect, session, make_response
+from flask import Flask, redirect, session, make_response, request
 from flask_sqlalchemy import SQLAlchemy
 from authlib.integrations.flask_client import OAuth
 from datetime import datetime
@@ -94,16 +94,6 @@ def logout():
     return make_response({}, 200)
 
 ## API
-@app.route('/app_status')
-def app_status():
-    try:
-        db.session.query(text('1')).from_statement(text('SELECT 1')).all()
-        return '<h1>Good</h1>'
-    except Exception as e:
-        return f'<p>Error:<br>{str(e)}</p>'
-
-
-
 @app.route('/api/user')
 def user():
     res = oauth.msr.get('rest/me.json')
@@ -115,10 +105,9 @@ def user_events():
     return make_response(res.content, res.status_code)
 
 @app.route('/api/organization/events')
-def organization_events():   
-    current_year = datetime.now().year
-    start = str(current_year - 1) + '-01-01'
-    end = str(current_year + 1) + '-12-31'
+def organization_events():
+    start = request.args['start']
+    end = request.args['end']
 
     res = oauth.msr.get(f'rest/calendars/organization/{app.config['MSR_ORGANIZATION_ID']}.json', params={'start': start, 'end': end, 'archive': True})
     return make_response(res.content, res.status_code)

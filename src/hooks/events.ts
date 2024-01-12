@@ -9,11 +9,11 @@ import {
 import uniqBy from "lodash/uniqBy";
 import { MSRAssignment } from "../models/msr-assignment";
 
-export function useGetOrganizationEvents(): MSREvent[] {
+export function useGetOrganizationEvents(start?: string, end?: string): MSREvent[] {
   const [organizationEvents, setOrganizationEvents] = useState<MSREvent[]>([]);
 
   useEffect(() => {
-    getOrganizationEvents().then((events) => setOrganizationEvents(events));
+    getOrganizationEvents(start, end).then((events) => setOrganizationEvents(events));
   }, [setOrganizationEvents]);
 
   return organizationEvents;
@@ -29,12 +29,12 @@ export function useGetUserEvents(): MSREvent[] {
   return userEvents;
 }
 
-export function useGetEvents(): MSREvent[] {
+export function useGetEvents(start?: string, end?: string): MSREvent[] {
   const [events, setEvents] = useState<MSREvent[]>([]);
 
   useEffect(() => {
     const p1 = getUserEvents();
-    const p2 = getOrganizationEvents();
+    const p2 = getOrganizationEvents(start, end);
 
     Promise.all([p1, p2]).then(([userEvents, organizationEvents]) => {
       const events = [
