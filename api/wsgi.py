@@ -1,8 +1,9 @@
-from flask import Flask, redirect, session, make_response, request
+from flask import Flask, redirect, session, make_response, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from authlib.integrations.flask_client import OAuth
-from datetime import datetime
 from sqlalchemy.dialects.sqlite import insert
+from sqlalchemy import UniqueConstraint
+from dataclasses import dataclass
 import json
 
 db = SQLAlchemy()
@@ -17,6 +18,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{app.config['DATABASE_NAME']
 
 db.init_app(app)
 
+@dataclass
 class User(db.Model):
     __tablename__ = 'user'
 
@@ -26,17 +28,31 @@ class User(db.Model):
     last_name = db.Column(db.String(64), unique=False, nullable=False)
     work_assignments = db.relationship('WorkAssignment', backref='user', cascade='all, delete, delete-orphan')
 
+@dataclass
 class WorkAssignment(db.Model):
     __tablename__ = 'work_assignment'
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "eventId": self.event_id,
+            "userId": self.user_id,
+            "vehicleNumber": self.vehicle_number,
+            "type": self.work_assignment_type,
+            "station": self.work_assignment_station,
+            "runGroup": self.work_assignment_run_group,
+            "segment": self.work_assignment_segment
+        }
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     event_id = db.Column(db.String(35), unique=False, nullable=False)
     user_id = db.Column(db.String(35), db.ForeignKey('user.id'), unique=False, nullable=False)
-    vehicle_number = db.Column(db.String(3), unique=False, nullable=False)
+    vehicle_number = db.Column(db.String(3), unique=False, nullable=True)
     work_assignment_type = db.Column(db.String(64), unique=False, nullable=False)
     work_assignment_station = db.Column(db.Integer, unique=False, nullable=False)
     work_assignment_run_group = db.Column(db.String(64), unique=False, nullable=False)
     work_assignment_segment = db.Column(db.String(64), unique=False, nullable=False)
+    UniqueConstraint(event_id, user_id, work_assignment_segment, name='uq_workassignment_event_user_segment')
 
 def fetch_token():
     token = session.get('token')
@@ -66,7 +82,7 @@ def callback():
         res = oauth.msr.get('rest/me.json')
         res.raise_for_status()
 
-        profile = json.loads(res.content)['response']['profile']
+        profile = json.loads(res.content).get('response').get('profile')
         stmt = insert(User).values(
             id = profile['id'],
             email = profile['email'],
@@ -78,10 +94,11 @@ def callback():
             set_={
                 User.email: stmt.excluded.email,
                 User.first_name: stmt.excluded.first_name,
-                User.last_name: stmt.excluded.last_name,
+                User.last_name: stmt.excluded.last_name
             }
         )
         db.session.execute(stmt)
+        db.session.commit()
     except Exception as e:
         app.logger.error(e)
     finally:
@@ -94,25 +111,66 @@ def logout():
     return make_response({}, 200)
 
 ## API
-@app.route('/api/user')
-def user():
+@app.route('/api/me')
+def get_user():
     res = oauth.msr.get('rest/me.json')
     return make_response(res.content, res.status_code)
 
-@app.route('/api/user/events')
-def user_events():
+@app.route('/api/me/events')
+def get_user_events():
     res = oauth.msr.get('rest/me/events.json')    
     return make_response(res.content, res.status_code)
 
 @app.route('/api/organization/events')
-def organization_events():
+def get_organization_events():
     start = request.args['start']
     end = request.args['end']
 
     res = oauth.msr.get(f'rest/calendars/organization/{app.config['MSR_ORGANIZATION_ID']}.json', params={'start': start, 'end': end, 'archive': True})
     return make_response(res.content, res.status_code)
 
-@app.route('/api/events/<event_id>/assignments')
-def event_assignments(event_id):
+@app.route('/api/events/<event_id>/entrylist')
+def get_entrylist(event_id):
     res = oauth.msr.get(f'rest/events/{event_id}/entrylist.json')    
     return make_response(res.content, res.status_code)
+
+@app.route('/api/events/<event_id>/assignments', methods=['GET'])
+def get_work_assignments(event_id):
+    try:
+        q = WorkAssignment.query.filter(WorkAssignment.event_id == event_id).all()
+        assignments = [a.serialize() for a in q]
+    except Exception as e:
+        app.logger.error(e)
+        return make_response({}, 500)
+
+    return jsonify(assignments)
+
+@app.route('/api/events/<event_id>/assignments', methods=['POST'])
+def post_work_assignment(event_id):
+    try:
+        data = json.loads(request.data)
+        stmt = insert(WorkAssignment).values(
+            event_id = event_id,
+            user_id = data.get('user').get('id'),
+            vehicle_number = data.get('vehicleNumber'),
+            work_assignment_type =  data.get('type'),
+            work_assignment_station =  data.get('station'),
+            work_assignment_run_group =  data.get('runGroup'),
+            work_assignment_segment =  data.get('segment')
+        )
+        stmt = stmt.on_conflict_do_update(
+            index_elements=[WorkAssignment.user_id, WorkAssignment.event_id, WorkAssignment.work_assignment_segment],
+            set_={
+                WorkAssignment.vehicle_number: stmt.excluded.vehicle_number,
+                WorkAssignment.work_assignment_type: stmt.excluded.work_assignment_type,
+                WorkAssignment.work_assignment_station: stmt.excluded.work_assignment_station,
+                WorkAssignment.work_assignment_run_group: stmt.excluded.work_assignment_run_group
+            }
+        )
+        db.session.execute(stmt)
+        db.session.commit()
+    except Exception as e:
+        app.logger.error(e)
+        return make_response(json.dumps({'error': e}), 500)
+
+    return make_response({}, 200)

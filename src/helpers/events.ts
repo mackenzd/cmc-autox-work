@@ -40,7 +40,7 @@ export function getOrganizationEvents(start?: string, end?: string): Promise<MSR
 }
 
 export function getUserEvents(): Promise<MSREvent[]> {
-  return fetch("/api/user/events")
+  return fetch("/api/me/events")
     .then((res) => {
       if (res.ok) {
         return res.json();
@@ -64,7 +64,7 @@ export function getUserEvents(): Promise<MSREvent[]> {
 export function getEventAssignments(
   eventId: string
 ): Promise<MSRAssignment[]> {
-  return fetch(`/api/events/${eventId}/assignments`)
+  return fetch(`/api/events/${eventId}/entrylist`)
     .then((res) => {
       if (res.ok) {
         return res.json();

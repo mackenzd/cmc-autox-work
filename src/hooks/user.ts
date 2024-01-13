@@ -10,7 +10,7 @@ export function useGetUser(
   const [user, setUser] = useState<MSRUser | undefined>(undefined);
 
   useEffect(() => {
-    fetch("/api/user")
+    fetch("/api/me")
       .then((res) => {
         if (res.ok) {
           return res.json();

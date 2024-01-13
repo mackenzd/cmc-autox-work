@@ -17,6 +17,7 @@ import { useGetEventAssignments } from "../../hooks/events";
 import { useAuthorizationContext } from "../../authorization-context";
 import { MSRSegment } from "../../models/msr-segment";
 import uniq from "lodash/uniq";
+import { useGetWorkAssignments } from "../../hooks/work-assignment";
 
 const stubAssignments: WorkAssignment[] = [
   {
@@ -116,6 +117,7 @@ const setStateDefaultFunction = () => {
 };
 
 interface Props {
+  event?: MSREvent;
   assignments: WorkAssignment[];
   setAssignments: (assignments: WorkAssignment[]) => void;
   runGroup: RunGroup;
@@ -127,6 +129,7 @@ interface Props {
 }
 
 export const DefaultContext: Props = {
+  event: undefined,
   assignments: [],
   setAssignments: setStateDefaultFunction,
   runGroup: RunGroup.Odd,
@@ -148,15 +151,20 @@ export const WorkAssignmentsContextProvider = (
 ) => {
   const { user } = useAuthorizationContext();
   const eventAssignments = useGetEventAssignments(props.event);
+  const workAssignments = useGetWorkAssignments(props.event);
 
   const [assignments, setAssignments] =
-    useState<WorkAssignment[]>(stubAssignments);
+    useState<WorkAssignment[]>([]);
 
   const entries = eventAssignments?.filter(
     (assignment) =>
       assignment.firstName === user?.firstName &&
       assignment.lastName === user?.lastName
   );
+
+  useEffect(() => {
+    setAssignments(workAssignments);
+  }, [JSON.stringify(workAssignments)]);
 
   const availableSegments = useMemo(
     () => uniq(entries.map((e) => e.segment as MSRSegment)),
@@ -180,6 +188,7 @@ export const WorkAssignmentsContextProvider = (
   return (
     <WorkAssignmentsContext.Provider
       value={{
+        event: props.event,
         assignments,
         setAssignments,
         runGroup,

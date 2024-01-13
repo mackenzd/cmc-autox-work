@@ -14,18 +14,18 @@ export function getUserForWorkAssignment(
   type: WorkAssignmentType,
   station: Station
 ): [MSRUser | undefined] | [MSRUser | undefined, string | undefined] {
-  const assignment = getWorkAssignment(assignments, runGroup, type, station, segment);
+  const assignment = getWorkAssignment(runGroup, type, station, assignments, segment);
   return [assignment?.user, assignment?.vehicleNumber];
 }
 
 export function getWorkAssignment(
-  assignments: WorkAssignment[],
   runGroup: RunGroup,
   type: WorkAssignmentType,
   station: Station,
+  assignments?: WorkAssignment[],
   segment?: MSRSegment,
 ): WorkAssignment | undefined {
-  return assignments.find(
+  return assignments?.find(
     (a) => a.runGroup === runGroup && a.segment === segment && a.type === type && a.station === station
   );
 }
@@ -44,7 +44,7 @@ export function setWorkAssignment(
     return assignments;
   }
 
-  const assignment = getWorkAssignment(assignments, runGroup, type, station, segment);
+  const assignment = getWorkAssignment(runGroup, type, station, assignments, segment);
 
   const newAssignment: WorkAssignment = {
     user: user,
@@ -75,7 +75,7 @@ export function unsetWorkAssignment(
   user: MSRUser,
   onCallback: () => void
 ): WorkAssignment[] {
-  const assignment = getWorkAssignment(assignments, runGroup, type, station, segment);
+  const assignment = getWorkAssignment(runGroup, type, station, assignments, segment);
 
   if (assignment?.user?.id === user.id) {
     assignments.splice(assignments.indexOf(assignment));
