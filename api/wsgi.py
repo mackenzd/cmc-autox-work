@@ -32,18 +32,6 @@ class User(db.Model):
 class WorkAssignment(db.Model):
     __tablename__ = 'work_assignment'
 
-    def serialize(self):
-        return {
-            "id": self.id,
-            "eventId": self.event_id,
-            "userId": self.user_id,
-            "vehicleNumber": self.vehicle_number,
-            "type": self.work_assignment_type,
-            "station": self.work_assignment_station,
-            "runGroup": self.work_assignment_run_group,
-            "segment": self.work_assignment_segment
-        }
-
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     event_id = db.Column(db.String(35), unique=False, nullable=False)
     user_id = db.Column(db.String(35), db.ForeignKey('user.id'), unique=False, nullable=False)
@@ -137,8 +125,23 @@ def get_entrylist(event_id):
 @app.route('/api/events/<event_id>/assignments', methods=['GET'])
 def get_work_assignments(event_id):
     try:
-        q = WorkAssignment.query.filter(WorkAssignment.event_id == event_id).all()
-        assignments = [a.serialize() for a in q]
+        q = WorkAssignment.query.join(User, WorkAssignment.user_id == User.id) \
+            .filter(WorkAssignment.event_id == event_id) \
+            .add_columns(User.id, User.first_name, User.last_name).all()
+        assignments = [{
+            "id": a[0].id,
+            "eventId": a[0].event_id,
+            "user": {
+                "id": a.id,
+                "firstName": a.first_name,
+                "lastName": a.last_name
+            },
+            "vehicleNumber": a[0].vehicle_number,
+            "type": a[0].work_assignment_type,
+            "station": a[0].work_assignment_station,
+            "runGroup": a[0].work_assignment_run_group,
+            "segment": a[0].work_assignment_segment
+        } for a in q]
     except Exception as e:
         app.logger.error(e)
         return make_response({}, 500)
