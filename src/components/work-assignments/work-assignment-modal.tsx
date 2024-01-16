@@ -28,7 +28,7 @@ const WorkAssignmentsModal = (props: WorkAssignmentsModalProps) => {
 
   return props.isOpen ? (
     <dialog className="modal" open={props.isOpen}>
-      <div className="modal-box work-assignments-content">
+      <div className="modal-box border border-current work-assignments-content">
         <button
           className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
           onClick={props.onClose}
@@ -97,7 +97,7 @@ const WorkAssignmentsModal = (props: WorkAssignmentsModalProps) => {
         <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <>{workAssignmentStations()}</>
         </div>
-        <div className="work-assignments-footer">
+        <div className="modal-action">
           <button className="btn btn-outline btn-sm" onClick={props.onClose}>
             Close
           </button>

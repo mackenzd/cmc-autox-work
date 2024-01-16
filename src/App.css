@@ -72,12 +72,6 @@
     max-width: 100vw;
 }
 
-.work-assignments-footer {
-    display: flex;
-    justify-content: flex-end;
-    align-content: center;
-}
-
 .work-assignment {
     display: flex;
     align-items: center;

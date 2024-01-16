@@ -18,10 +18,10 @@ function PageContent() {
   return (
     <div className="root">
       <Navbar />
-      <div className="p-5 border-t bg-base-100 border-indigo-400 content">
+      <div className="p-5 border-t bg-base-200 border-indigo-400 content">
         {isLoading ? <LoadingSpinner /> : <>{pageContent}</>}
       </div>
-      <footer className="footer border-t bg-base-100 border-base-300">
+      <footer className="footer border-t bg-base-200 border-base-300">
         <div className="justify-self-end">
           <a
             href="https://motorsportreg.com"
