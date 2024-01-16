@@ -19,7 +19,7 @@ const Navbar = () => {
 
   return (
     <div className="navbar bg-base-100 header">
-      <a href="/home" className="p-3 font-semibold no-animation text-xl">
+      <a href="/" className="font-semibold no-animation text-xl">
         <img
           style={{ width: "15%", height: "15%" }}
           src="/large-cmc-logo.png"
@@ -32,7 +32,7 @@ const Navbar = () => {
         </span>
       </a>
       <div>
-        <div className="flex-none">
+        <div className="flex-none hidden sm:block">
           <ul className="menu menu-horizontal px-1">
             <li>
               <a

@@ -21,7 +21,7 @@ function PageContent() {
       <div className="content">
         {isLoading ? <LoadingSpinner /> : <>{pageContent}</>}
       </div>
-      <footer className="footer">
+      <footer className="static bottom-0 right-0 footer">
         <a
           href="https://motorsportreg.com"
           style={{ display: "inline-block", padding: "15px" }}
