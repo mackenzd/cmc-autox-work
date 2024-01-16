@@ -27,6 +27,16 @@ class User(db.Model):
     first_name = db.Column(db.String(64), unique=False, nullable=False)
     last_name = db.Column(db.String(64), unique=False, nullable=False)
     work_assignments = db.relationship('WorkAssignment', backref='user', cascade='all, delete, delete-orphan')
+    roles = db.relationship('Role', backref='user', cascade='all, delete, delete-orphan')
+
+@dataclass
+class Role(db.Model):
+    __tablename__ = 'role'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    user_id = db.Column(db.String(35), db.ForeignKey('user.id'), unique=False, nullable=False)
+    role = db.Column(db.String(64), unique=False, nullable=False)
+    UniqueConstraint(user_id, role, name='uq_user_role')
 
 @dataclass
 class WorkAssignment(db.Model):
@@ -177,3 +187,31 @@ def post_work_assignment(event_id):
         return make_response(json.dumps({'error': e}), 500)
 
     return make_response({}, 200)
+
+@app.route('/api/user/all')
+def get_users():
+    try:
+        q = User.query.all()
+        users = [{
+            "id": a.id,
+            "firstName": a.first_name,
+            "lastName": a.last_name,
+            "email": a.email
+        } for a in q]
+    except Exception as e:
+        app.logger.error(e)
+        return make_response(json.dumps({'error': e}), 500)
+
+    return jsonify(users)
+
+@app.route('/api/user/<user_id>/roles')
+def get_user_roles(user_id):
+    try:
+        q = User.query.join(Role, user_id == Role.user_id) \
+            .add_columns(Role.role).all()
+        roles = [a.role for a in q]
+    except Exception as e:
+        app.logger.error(e)
+        return make_response(json.dumps({'error': e}), 500)
+
+    return jsonify(roles)

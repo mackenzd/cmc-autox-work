@@ -6,11 +6,7 @@ import {
   useState,
 } from "react";
 import { RunGroup } from "../../models/run-group";
-import {
-  Station,
-  WorkAssignment,
-  WorkAssignmentType,
-} from "../../models/work-assignment";
+import { WorkAssignment } from "../../models/work-assignment";
 import React from "react";
 import { MSREvent } from "../../models/msr-event";
 import { useGetEventAssignments } from "../../hooks/events";
@@ -18,99 +14,6 @@ import { useAuthorizationContext } from "../../authorization-context";
 import { MSRSegment } from "../../models/msr-segment";
 import uniq from "lodash/uniq";
 import { useGetWorkAssignments } from "../../hooks/work-assignment";
-
-const stubAssignments: WorkAssignment[] = [
-  {
-    user: {
-      avatar: "",
-      email: "",
-      firstName: "Riley",
-      id: "",
-      lastName: "Karp",
-      organizations: [],
-    },
-    vehicleNumber: "37",
-    type: WorkAssignmentType.Computer,
-    station: Station.None,
-    runGroup: RunGroup.Even,
-    segment: MSRSegment.Saturday,
-  },
-  {
-    user: {
-      avatar: "",
-      email: "",
-      firstName: "Testy",
-      id: "",
-      lastName: "McTesterson",
-      organizations: [],
-    },
-    vehicleNumber: "123",
-    type: WorkAssignmentType.Runner2,
-    station: Station.Station5,
-    runGroup: RunGroup.Even,
-    segment: MSRSegment.Saturday,
-  },
-  {
-    user: {
-      avatar: "",
-      email: "",
-      firstName: "Earthworm",
-      id: "",
-      lastName: "Jim",
-      organizations: [],
-    },
-    vehicleNumber: "45",
-    type: WorkAssignmentType.Instructor2,
-    station: Station.None,
-    runGroup: RunGroup.Odd,
-    segment: MSRSegment.Saturday,
-  },
-  {
-    user: {
-      avatar: "",
-      email: "",
-      firstName: "Joe",
-      id: "",
-      lastName: "Fred",
-      organizations: [],
-    },
-    vehicleNumber: "1",
-    type: WorkAssignmentType.Leader,
-    station: Station.Station1,
-    runGroup: RunGroup.Odd,
-    segment: MSRSegment.Saturday,
-  },
-  {
-    user: {
-      avatar: "",
-      email: "",
-      firstName: "Billy",
-      id: "",
-      lastName: "Bob",
-      organizations: [],
-    },
-    vehicleNumber: "1",
-    type: WorkAssignmentType.Leader,
-    station: Station.Station2,
-    runGroup: RunGroup.Odd,
-    segment: MSRSegment.Sunday,
-  },
-  {
-    user: {
-      avatar: "",
-      email: "",
-      firstName: "Pinchy",
-      id: "",
-      lastName: "Crab",
-      organizations: [],
-    },
-    vehicleNumber: "1",
-    type: WorkAssignmentType.Instructor3,
-    station: Station.None,
-    runGroup: RunGroup.Even,
-    segment: MSRSegment.Sunday,
-  },
-];
 
 const setStateDefaultFunction = () => {
   return;
@@ -153,8 +56,7 @@ export const WorkAssignmentsContextProvider = (
   const eventAssignments = useGetEventAssignments(props.event);
   const workAssignments = useGetWorkAssignments(props.event);
 
-  const [assignments, setAssignments] =
-    useState<WorkAssignment[]>([]);
+  const [assignments, setAssignments] = useState<WorkAssignment[]>([]);
 
   const entries = eventAssignments?.filter(
     (assignment) =>

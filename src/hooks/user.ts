@@ -26,3 +26,23 @@ export function useGetUser(
 
   return [user, setUser];
 }
+
+export function useGetUserRoles(user?: MSRUser): string[] {
+  const [roles, setRoles] = useState<string[]>([]);
+
+  useEffect(() => {
+    fetch(`/api/user/${user?.id}/roles`)
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        }
+        return Promise.reject(res);
+      })
+      .then((data) => {
+        setRoles(data);
+      })
+      .catch((error) => console.log(error));
+  }, [setRoles]);
+
+  return roles;
+}

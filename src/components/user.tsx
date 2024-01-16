@@ -1,9 +1,32 @@
+import { useNavigate } from "react-router-dom";
 import { useAuthorizationContext } from "../authorization-context";
 import { useLogout } from "../hooks/auth";
+import { useMemo } from "react";
 
 const UserAvatar = () => {
-  const { user } = useAuthorizationContext();
+  const { user, isAdmin } = useAuthorizationContext();
   const logout = useLogout();
+  const navigate = useNavigate();
+
+  const logoutButton = (
+    <li>
+      <button onClick={() => logout()}>Logout</button>
+    </li>
+  );
+  const dropdownItems = useMemo(() => {
+    if (isAdmin) {
+      return (
+        <>
+          <li>
+            <button onClick={() => navigate("/admin")}>Admin</button>
+          </li>
+          {logoutButton}
+        </>
+      );
+    } else {
+      return logoutButton;
+    }
+  }, [isAdmin, logoutButton]);
 
   return (
     <div className="avatar dropdown dropdown-bottom dropdown-end">
@@ -15,9 +38,7 @@ const UserAvatar = () => {
           tabIndex={0}
           className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52"
         >
-          <li>
-            <button onClick={() => logout()}>Logout</button>
-          </li>
+          {dropdownItems}
         </ul>
       </div>
     </div>
