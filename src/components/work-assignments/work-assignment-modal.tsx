@@ -18,7 +18,9 @@ const WorkAssignmentsModal = (props: WorkAssignmentsModalProps) => {
   const workAssignmentStations = () => {
     const stations = [];
     for (let i = 1; i <= stationCount; i++) {
-      stations.push(<WorkAssignmentsStation key={`station-${i}`} station={i} />);
+      stations.push(
+        <WorkAssignmentsStation key={`station-${i}`} station={i} />
+      );
     }
 
     return stations;
@@ -94,6 +96,11 @@ const WorkAssignmentsModal = (props: WorkAssignmentsModalProps) => {
 
         <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <>{workAssignmentStations()}</>
+        </div>
+        <div className="work-assignments-footer">
+          <button className="btn btn-outline btn-sm" onClick={props.onClose}>
+            Close
+          </button>
         </div>
       </div>
     </dialog>

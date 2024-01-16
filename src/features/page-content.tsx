@@ -18,21 +18,23 @@ function PageContent() {
   return (
     <div className="root">
       <Navbar />
-      <div className="content">
+      <div className="p-5 border-t bg-base-100 border-indigo-400 content">
         {isLoading ? <LoadingSpinner /> : <>{pageContent}</>}
       </div>
-      <footer className="static bottom-0 right-0 footer">
-        <a
-          href="https://motorsportreg.com"
-          style={{ display: "inline-block", padding: "15px" }}
-        >
-          <img
-            src="https://msr-hotlink.s3.amazonaws.com/powered-by/powered-by-msr-outline@2x.png"
-            alt="Online registration and event management service for motorsport events powered by MotorsportReg.com"
-            title="Online registration and event management service for motorsport events powered by MotorsportReg.com"
-            style={{ width: "165px", height: "29px" }}
-          />
-        </a>
+      <footer className="footer border-t bg-base-100 border-base-300">
+        <div className="justify-self-end">
+          <a
+            href="https://motorsportreg.com"
+            style={{ display: "inline-block", padding: "15px" }}
+          >
+            <img
+              src="https://msr-hotlink.s3.amazonaws.com/powered-by/powered-by-msr-outline@2x.png"
+              alt="Online registration and event management service for motorsport events powered by MotorsportReg.com"
+              title="Online registration and event management service for motorsport events powered by MotorsportReg.com"
+              style={{ width: "165px", height: "29px" }}
+            />
+          </a>
+        </div>
       </footer>
     </div>
   );

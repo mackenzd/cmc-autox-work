@@ -4,7 +4,7 @@
 
 .root {
     width: 100%;
-    height: 100%;
+    height: 100vh;
     display: flex;
     flex-direction: column;
 }
@@ -21,11 +21,8 @@
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
-}
-
-.footer {
-    display: flex;
-    justify-content: flex-end;
+    overflow: auto;
+    overscroll-behavior: contain;
 }
 
 .login-btn {
@@ -60,6 +57,7 @@
 .event-footer {
     flex-flow: row;
     align-items: end;
+    height: 48px;
 }
 
 .work-assignments-header {
@@ -72,6 +70,12 @@
 .work-assignments-content {
     max-height: 100vh;
     max-width: 100vw;
+}
+
+.work-assignments-footer {
+    display: flex;
+    justify-content: flex-end;
+    align-content: center;
 }
 
 .work-assignment {
