@@ -1,10 +1,15 @@
-import { createBrowserRouter, Navigate, Outlet } from "react-router-dom";
-import App from "../App"
+import {
+  createBrowserRouter,
+  Navigate,
+  Outlet
+} from "react-router-dom";
+import App from "../App";
 import Events from "../features/events";
 import { ErrorBoundary } from "react-error-boundary";
 import { Path } from "./path";
 import PageNotFound from "../components/errors/page_not_found";
 import Admin from "../features/admin";
+import { useAuthorizationContext } from "../authorization-context";
 
 const errorBoundaryErrorHandler = () => {
   return;
@@ -18,6 +23,16 @@ const ErrorBoundaryLayout = () => (
     <Outlet />
   </ErrorBoundary>
 );
+
+const ProtectedAdmin = () => {
+  const isAdmin = useAuthorizationContext();
+
+  if (!isAdmin) {
+    return <Navigate replace to={Path.Home} />;
+  }
+
+  return <Admin />;
+};
 
 const router = createBrowserRouter([
   {
@@ -38,7 +53,7 @@ const router = createBrowserRouter([
           },
           {
             path: Path.Admin,
-            element: <Admin />,
+            element: <ProtectedAdmin />,
             errorElement: <PageNotFound />,
           },
           {
@@ -57,4 +72,4 @@ const router = createBrowserRouter([
   },
 ]);
 
-export default router
+export default router;

@@ -42,7 +42,7 @@ export function useGetUserRoles(user?: MSRUser): string[] {
         setRoles(data);
       })
       .catch((error) => console.log(error));
-  }, [setRoles]);
+  }, [user?.id, setRoles]);
 
   return roles;
 }
