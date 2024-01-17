@@ -9,11 +9,15 @@ import { RunGroup } from "../../models/run-group";
 import { WorkAssignment } from "../../models/work-assignment";
 import React from "react";
 import { MSREvent } from "../../models/msr-event";
-import { useGetEventAssignments } from "../../hooks/events";
+import {
+  useGetEventAssignments,
+  useGetEventSettings,
+} from "../../hooks/events";
 import { useAuthorizationContext } from "../../authorization-context";
 import { MSRSegment } from "../../models/msr-segment";
 import uniq from "lodash/uniq";
 import { useGetWorkAssignments } from "../../hooks/work-assignment";
+import { EventSettings } from "../../models/event-settings";
 
 const setStateDefaultFunction = () => {
   return;
@@ -25,10 +29,12 @@ interface Props {
   setAssignments: (assignments: WorkAssignment[]) => void;
   runGroup: RunGroup;
   setRunGroup: (runGroup: RunGroup) => void;
-  segment?: MSRSegment;
+  segment: MSRSegment;
   setSegment: (segment: MSRSegment) => void;
   vehicleNumber?: string;
   availableSegments: MSRSegment[];
+  settings: EventSettings;
+  setSettings: (settings: EventSettings) => void;
 }
 
 export const DefaultContext: Props = {
@@ -41,6 +47,8 @@ export const DefaultContext: Props = {
   setSegment: setStateDefaultFunction,
   vehicleNumber: undefined,
   availableSegments: [],
+  settings: {},
+  setSettings: setStateDefaultFunction
 };
 
 const WorkAssignmentsContext = createContext<Props>(DefaultContext);
@@ -72,8 +80,8 @@ export const WorkAssignmentsContextProvider = (
     () => uniq(entries.map((e) => e.segment as MSRSegment)),
     [JSON.stringify(entries)]
   );
-  const [segment, setSegment] = useState<MSRSegment | undefined>(
-    availableSegments.at(0)
+  const [segment, setSegment] = useState<MSRSegment>(
+    availableSegments.at(0)!
   );
 
   useEffect(() => {
@@ -87,6 +95,13 @@ export const WorkAssignmentsContextProvider = (
       : RunGroup.Odd;
   const [runGroup, setRunGroup] = useState<RunGroup>(defaultRunGroup);
 
+  const eventSettings = useGetEventSettings(props.event);
+  const [settings, setSettings] = useState<EventSettings>({});
+
+  useEffect(() => {
+    setSettings(eventSettings);
+  }, [JSON.stringify(eventSettings)]);
+
   return (
     <WorkAssignmentsContext.Provider
       value={{
@@ -99,6 +114,8 @@ export const WorkAssignmentsContextProvider = (
         setSegment,
         vehicleNumber,
         availableSegments,
+        settings,
+        setSettings
       }}
     >
       {props.children}

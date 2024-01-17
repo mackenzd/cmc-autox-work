@@ -8,12 +8,18 @@ import {
 } from "../helpers/events";
 import uniqBy from "lodash/uniqBy";
 import { MSRAssignment } from "../models/msr-assignment";
+import { EventSettings } from "../models/event-settings";
 
-export function useGetOrganizationEvents(start?: string, end?: string): MSREvent[] {
+export function useGetOrganizationEvents(
+  start?: string,
+  end?: string
+): MSREvent[] {
   const [organizationEvents, setOrganizationEvents] = useState<MSREvent[]>([]);
 
   useEffect(() => {
-    getOrganizationEvents(start, end).then((events) => setOrganizationEvents(events));
+    getOrganizationEvents(start, end).then((events) =>
+      setOrganizationEvents(events)
+    );
   }, [setOrganizationEvents]);
 
   return organizationEvents;
@@ -60,4 +66,45 @@ export function useGetEventAssignments(event: MSREvent): MSRAssignment[] {
   }, [setEventAssignments, event, event.id]);
 
   return eventAssignments;
+}
+
+export function useGetEventSettings(event?: MSREvent): EventSettings {
+  const [settings, setSettings] = useState<EventSettings>({});
+
+  useEffect(() => {
+    fetch(`/api/events/${event?.id}/settings`)
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        }
+        return Promise.reject(res);
+      })
+      .then((data) => {
+        setSettings(data);
+      })
+      .catch((error) => console.log(error));
+  }, [event?.id, setSettings]);
+
+  return settings;
+}
+
+export function useSetEventSettings(
+  onSuccess: () => void,
+  event?: MSREvent
+): (settings: EventSettings) => void {
+  const setEventSettings = (settings: EventSettings) => {
+    fetch(`/api/events/${event?.id}/settings`, {
+      method: "POST",
+      body: JSON.stringify(settings),
+    })
+      .then((res) => {
+        if (res.ok) {
+          onSuccess();
+        }
+        return Promise.reject(res);
+      })
+      .catch((error) => console.log(error));
+  };
+
+  return setEventSettings;
 }

@@ -3,19 +3,25 @@ import WorkAssignmentsStation from "./work-assignments-station";
 import { RunGroup } from "../../models/run-group";
 import { useWorkAssignmentsContext } from "./work-assignments-context";
 import { MSRSegment } from "../../models/msr-segment";
+import { useMemo } from "react";
 
 export interface WorkAssignmentsModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-const stationCount = 8;
-
 const WorkAssignmentsModal = (props: WorkAssignmentsModalProps) => {
-  const { availableSegments, segment, setSegment, runGroup, setRunGroup } =
-    useWorkAssignmentsContext();
+  const {
+    availableSegments,
+    segment,
+    setSegment,
+    runGroup,
+    setRunGroup,
+    settings,
+  } = useWorkAssignmentsContext();
 
-  const workAssignmentStations = () => {
+  const workAssignmentStations = useMemo(() => {
+    const stationCount = settings.stations || 8;
     const stations = [];
     for (let i = 1; i <= stationCount; i++) {
       stations.push(
@@ -24,7 +30,7 @@ const WorkAssignmentsModal = (props: WorkAssignmentsModalProps) => {
     }
 
     return stations;
-  };
+  }, [settings.stations]);
 
   return props.isOpen ? (
     <dialog className="modal" open={props.isOpen}>
@@ -95,7 +101,7 @@ const WorkAssignmentsModal = (props: WorkAssignmentsModalProps) => {
         </div>
 
         <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <>{workAssignmentStations()}</>
+          {workAssignmentStations}
         </div>
         <div className="modal-action">
           <button className="btn btn-outline btn-sm" onClick={props.onClose}>

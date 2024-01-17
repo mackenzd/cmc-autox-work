@@ -6,7 +6,7 @@ export function useSetWorkAssignment(
   onSuccess: () => void,
   event?: MSREvent
 ): (workAssignment: WorkAssignment) => void {
-  const poster = (workAssignment: WorkAssignment) => {
+  const setWorkAssignment = (workAssignment: WorkAssignment) => {
     fetch(`/api/events/${event?.id}/assignments`, {
       method: "POST",
       body: JSON.stringify(workAssignment),
@@ -20,7 +20,7 @@ export function useSetWorkAssignment(
       .catch((error) => console.log(error));
   };
 
-  return poster;
+  return setWorkAssignment;
 }
 
 export function useGetWorkAssignments(

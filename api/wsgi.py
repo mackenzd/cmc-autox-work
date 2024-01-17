@@ -52,6 +52,14 @@ class WorkAssignment(db.Model):
     work_assignment_segment = db.Column(db.String(64), unique=False, nullable=False)
     UniqueConstraint(event_id, user_id, work_assignment_segment, name='uq_workassignment_event_user_segment')
 
+@dataclass
+class EventSettings(db.Model):
+    __tablename__ = 'event_settings'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    event_id = db.Column(db.String(35), unique=True, nullable=False)
+    stations = db.Column(db.Integer, unique=False, nullable=True)
+
 def fetch_token():
     token = session.get('token')
     if token is None:
@@ -178,6 +186,45 @@ def post_work_assignment(event_id):
                 WorkAssignment.work_assignment_type: stmt.excluded.work_assignment_type,
                 WorkAssignment.work_assignment_station: stmt.excluded.work_assignment_station,
                 WorkAssignment.work_assignment_run_group: stmt.excluded.work_assignment_run_group
+            }
+        )
+        db.session.execute(stmt)
+        db.session.commit()
+    except Exception as e:
+        app.logger.error(e)
+        return make_response(json.dumps({'error': e}), 500)
+
+    return make_response({}, 200)
+
+@app.route('/api/events/<event_id>/settings')
+def get_event_settings(event_id):
+    try:
+        q = EventSettings.query.filter(EventSettings.event_id == event_id).first()
+        if q is None:
+            return make_response({}, 200)
+        settings = {
+            "id": q.id,
+            "eventId": q.event_id,
+            "stations": q.stations
+        }
+    except Exception as e:
+        app.logger.error(e)
+        return make_response({}, 500)
+
+    return jsonify(settings)
+
+@app.route('/api/events/<event_id>/settings', methods=['POST'])
+def post_event_settings(event_id):
+    try:
+        data = json.loads(request.data)
+        stmt = insert(EventSettings).values(
+            event_id = event_id,
+            stations = data.get('stations')
+        )
+        stmt = stmt.on_conflict_do_update(
+            index_elements=[EventSettings.event_id],
+            set_={
+                EventSettings.stations: stmt.excluded.stations
             }
         )
         db.session.execute(stmt)

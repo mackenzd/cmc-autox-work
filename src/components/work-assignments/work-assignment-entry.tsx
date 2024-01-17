@@ -85,11 +85,11 @@ const WorkAssignmentEntry = (props: WorkAssignmentProps) => {
     segment,
   ]);
 
-  const posterDude = useSetWorkAssignment(onSuccess, event);
+  const setWorkAssignment = useSetWorkAssignment(onSuccess, event);
 
   const onClickWorkAssignment = useCallback(() => {
-    posterDude(newAssignment);
-  }, [posterDude, newAssignment]);
+    setWorkAssignment(newAssignment);
+  }, [setWorkAssignment, newAssignment]);
 
   const classNames = useMemo(() => {
     if (currentAssignment && currentAssignment.user?.id === user?.id) {

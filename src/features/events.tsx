@@ -1,4 +1,4 @@
-import EventCard from "../components/event";
+import EventCard from "../components/events/event";
 import { useGetEvents } from "../hooks/events";
 import moment from "moment";
 
