@@ -33,28 +33,36 @@ const EventCard = (props: EventCardProps) => {
     useState<boolean>(false);
 
   const settingsModal = useMemo(
-    () => (
-      <WorkAssignmentsContextProvider event={props.event}>
-        <EventSettingsModal
-          event={props.event}
-          isOpen={isSettingsModalOpen}
-          onClose={() => {setIsSettingsModalOpen(false)}}
-        />
-      </WorkAssignmentsContextProvider>
+    () => isSettingsModalOpen && (
+      <EventSettingsModal
+        event={props.event}
+        isOpen={isSettingsModalOpen}
+        onClose={() => {
+          setIsSettingsModalOpen(false);
+        }}
+      />
     ),
     [isSettingsModalOpen, props.event, setIsSettingsModalOpen]
   );
 
   const workAssignmentModal = useMemo(
-    () => (
-      <WorkAssignmentsContextProvider event={props.event}>
-        <WorkAssignmentsModal
-          isOpen={isWorkAssignmentModalOpen}
-          onClose={() => setIsWorkAssignmentModalOpen(false)}
-        />
-      </WorkAssignmentsContextProvider>
+    () => isWorkAssignmentModalOpen &&  (
+      <WorkAssignmentsModal
+        isOpen={isWorkAssignmentModalOpen}
+        onClose={() => setIsWorkAssignmentModalOpen(false)}
+      />
     ),
     [isWorkAssignmentModalOpen, props.event, setIsWorkAssignmentModalOpen]
+  );
+
+  const modals = useMemo(
+    () => (isWorkAssignmentModalOpen || isSettingsModalOpen) &&  (
+      <WorkAssignmentsContextProvider event={props.event}>
+        {settingsModal}
+        {workAssignmentModal}
+      </WorkAssignmentsContextProvider>
+    ),
+    [isWorkAssignmentModalOpen, isSettingsModalOpen, settingsModal, workAssignmentModal, props.event]
   );
 
   const { isAdmin } = useAuthorizationContext();
@@ -117,8 +125,7 @@ const EventCard = (props: EventCardProps) => {
           </div>
         </div>
       </div>
-      {settingsModal}
-      {workAssignmentModal}
+      {modals}
     </>
   );
 };

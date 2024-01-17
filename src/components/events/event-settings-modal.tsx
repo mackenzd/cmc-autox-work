@@ -1,8 +1,7 @@
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { MSREvent } from "../../models/msr-event";
 import { useWorkAssignmentsContext } from "../work-assignments/work-assignments-context";
 import { useSetEventSettings } from "../../hooks/events";
-import { EventSettings } from "../../models/event-settings";
 
 export interface EventSettingsModalProps {
   event: MSREvent;
@@ -12,7 +11,8 @@ export interface EventSettingsModalProps {
 
 const EventSettingsModal = (props: EventSettingsModalProps) => {
   const maxStations = 12;
-  const { settings, setSettings } = useWorkAssignmentsContext();
+  const { settings, setSettings, initializeSettings, setInitialSettings } =
+    useWorkAssignmentsContext();
 
   const onChangeStations = useCallback(
     (stations: string) => {
@@ -27,13 +27,39 @@ const EventSettingsModal = (props: EventSettingsModalProps) => {
 
   const onSave = useCallback(() => {
     setEventSettings(settings);
+    setInitialSettings(settings);
     props.onClose();
-  }, [setEventSettings, settings]);
+  }, [setEventSettings, settings, setInitialSettings]);
 
   const onClose = () => {
-    setSettings(settings);
+    initializeSettings();
     props.onClose();
   };
+
+  const stationsInput = useMemo(
+    () => (
+      <select
+        className="select select-primary select-xs max-w-xs"
+        value={settings?.stations}
+        onChange={(e) => {
+          onChangeStations(e.target.value);
+        }}
+      >
+        {(() => {
+          const options = [];
+          for (let i = 1; i <= maxStations; i++) {
+            options.push(
+              <option key={i} value={i}>
+                {i}
+              </option>
+            );
+          }
+          return options;
+        })()}
+      </select>
+    ),
+    [settings?.stations, onChangeStations]
+  );
 
   return props.isOpen ? (
     <dialog className="modal" open={props.isOpen}>
@@ -55,25 +81,7 @@ const EventSettingsModal = (props: EventSettingsModalProps) => {
             <div className="label">
               <span className="font-bold label-text">Cone Stations</span>
             </div>
-            <select
-              className="select select-primary select-xs max-w-xs"
-              value={settings?.stations}
-              onChange={(e) => {
-                onChangeStations(e.target.value);
-              }}
-            >
-              {(() => {
-                const options = [];
-                for (let i = 1; i <= maxStations; i++) {
-                  options.push(
-                    <option key={i} value={i}>
-                      {i}
-                    </option>
-                  );
-                }
-                return options;
-              })()}
-            </select>
+            {stationsInput}
             <div className="label">
               <span className="label-text-alt">
                 The number of cone stations to display on the work assignment

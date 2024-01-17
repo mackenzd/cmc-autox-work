@@ -1,6 +1,7 @@
 import {
   PropsWithChildren,
   createContext,
+  useCallback,
   useEffect,
   useMemo,
   useState,
@@ -35,6 +36,8 @@ interface Props {
   availableSegments: MSRSegment[];
   settings: EventSettings;
   setSettings: (settings: EventSettings) => void;
+  initializeSettings: () => void;
+  setInitialSettings: (settings: EventSettings) => void;
 }
 
 export const DefaultContext: Props = {
@@ -48,7 +51,9 @@ export const DefaultContext: Props = {
   vehicleNumber: undefined,
   availableSegments: [],
   settings: {},
-  setSettings: setStateDefaultFunction
+  setSettings: setStateDefaultFunction,
+  initializeSettings: setStateDefaultFunction,
+  setInitialSettings: setStateDefaultFunction,
 };
 
 const WorkAssignmentsContext = createContext<Props>(DefaultContext);
@@ -80,9 +85,7 @@ export const WorkAssignmentsContextProvider = (
     () => uniq(entries.map((e) => e.segment as MSRSegment)),
     [JSON.stringify(entries)]
   );
-  const [segment, setSegment] = useState<MSRSegment>(
-    availableSegments.at(0)!
-  );
+  const [segment, setSegment] = useState<MSRSegment>(availableSegments.at(0)!);
 
   useEffect(() => {
     if (!segment) setSegment(availableSegments[0]);
@@ -96,11 +99,27 @@ export const WorkAssignmentsContextProvider = (
   const [runGroup, setRunGroup] = useState<RunGroup>(defaultRunGroup);
 
   const eventSettings = useGetEventSettings(props.event);
-  const [settings, setSettings] = useState<EventSettings>({});
+  const [initialSettings, setInitialSettings] =
+    useState<EventSettings>(eventSettings);
+  const [settings, setSettings] = useState<EventSettings>({stations: 8});
+
+  const initializeSettings = useCallback(() => {
+    if (initialSettings?.stations) {
+      setSettings(initialSettings);
+    } else {
+      setSettings({ stations: 8 });
+    }
+  }, [JSON.stringify(initialSettings), setSettings]);
 
   useEffect(() => {
-    setSettings(eventSettings);
-  }, [JSON.stringify(eventSettings)]);
+    if (!initialSettings?.stations) setInitialSettings(eventSettings);
+    initializeSettings();
+  }, [
+    initialSettings?.stations,
+    initializeSettings,
+    setInitialSettings,
+    JSON.stringify(eventSettings),
+  ]);
 
   return (
     <WorkAssignmentsContext.Provider
@@ -115,7 +134,9 @@ export const WorkAssignmentsContextProvider = (
         vehicleNumber,
         availableSegments,
         settings,
-        setSettings
+        setSettings,
+        initializeSettings,
+        setInitialSettings,
       }}
     >
       {props.children}

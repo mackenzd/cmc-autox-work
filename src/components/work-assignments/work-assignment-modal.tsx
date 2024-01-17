@@ -21,9 +21,8 @@ const WorkAssignmentsModal = (props: WorkAssignmentsModalProps) => {
   } = useWorkAssignmentsContext();
 
   const workAssignmentStations = useMemo(() => {
-    const stationCount = settings.stations || 8;
     const stations = [];
-    for (let i = 1; i <= stationCount; i++) {
+    for (let i = 1; i <= settings.stations!; i++) {
       stations.push(
         <WorkAssignmentsStation key={`station-${i}`} station={i} />
       );
