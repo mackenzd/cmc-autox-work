@@ -25,10 +25,10 @@ const ErrorBoundaryLayout = () => (
 );
 
 const ProtectedAdmin = () => {
-  const isAdmin = useAuthorizationContext();
+  const { isAdmin } = useAuthorizationContext();
 
   if (!isAdmin) {
-    return <Navigate replace to={Path.Home} />;
+    return <PageNotFound />;
   }
 
   return <Admin />;
