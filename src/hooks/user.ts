@@ -46,3 +46,24 @@ export function useGetUserRoles(user?: MSRUser): string[] {
 
   return roles;
 }
+
+export function useGetUsers(): MSRUser[] {
+  const [users, setUsers] = useState<MSRUser[]>([]);
+
+  useEffect(() => {
+    fetch(`/api/user/all`)
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        }
+        return Promise.reject(res);
+      })
+      .then((data) => {
+        setUsers(data);
+      })
+      .catch((error) => console.log(error));
+  }, [setUsers]);
+
+  return users;
+}
+

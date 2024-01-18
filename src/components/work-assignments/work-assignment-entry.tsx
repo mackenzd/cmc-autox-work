@@ -3,7 +3,10 @@ import { Station, WorkAssignmentType } from "../../models/work-assignment";
 import { getWorkAssignment } from "../../helpers/work-assignments";
 import { useWorkAssignmentsContext } from "./work-assignments-context";
 import { useAuthorizationContext } from "../../authorization-context";
-import { useSetWorkAssignment } from "../../hooks/work-assignment";
+import {
+  useSetWorkAssignment,
+  useUnsetWorkAssignment,
+} from "../../hooks/work-assignment";
 
 export interface WorkAssignmentProps {
   type: WorkAssignmentType;
@@ -67,8 +70,8 @@ const WorkAssignmentEntry = (props: WorkAssignmentProps) => {
       } else {
         setAssignments([...assignments, newAssignment]);
       }
-    } else if (currentAssignment && currentAssignment.user?.id === user?.id) {
-      setAssignments(assignments?.filter((a) => a.user?.id !== user?.id));
+    } else if (currentAssignment.user?.id === user?.id) {
+      setAssignments(assignments.filter((a) => a !== currentAssignment));
     }
   }, [
     currentAssignment,
@@ -86,9 +89,20 @@ const WorkAssignmentEntry = (props: WorkAssignmentProps) => {
   ]);
 
   const setWorkAssignment = useSetWorkAssignment(onSuccess, event);
+  const unsetWorkAssignment = useUnsetWorkAssignment(onSuccess, event);
 
   const onClickWorkAssignment = useCallback(() => {
-    setWorkAssignment(newAssignment);
+    if (
+      currentAssignment?.user?.id === user?.id &&
+      currentAssignment?.runGroup === runGroup &&
+      currentAssignment.segment === segment &&
+      currentAssignment.type === props.type &&
+      currentAssignment.station === props.station
+    ) {
+      unsetWorkAssignment(currentAssignment);
+    } else if (currentAssignment?.user?.id === undefined) {
+      setWorkAssignment(newAssignment);
+    }
   }, [setWorkAssignment, newAssignment]);
 
   const classNames = useMemo(() => {

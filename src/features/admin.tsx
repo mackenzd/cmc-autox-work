@@ -1,9 +1,7 @@
+import UserAdmin from "../components/admin/users";
+
 const Admin = () => {
-  return (
-    <div>
-      Admin Page
-    </div>
-  );
+  return <UserAdmin />;
 };
 
 export default Admin;

@@ -23,6 +23,27 @@ export function useSetWorkAssignment(
   return setWorkAssignment;
 }
 
+export function useUnsetWorkAssignment(
+  onSuccess: () => void,
+  event?: MSREvent
+): (workAssignment: WorkAssignment) => void {
+  const unsetWorkAssignment = (workAssignment: WorkAssignment) => {
+    fetch(`/api/events/${event?.id}/assignments`, {
+      method: "DELETE",
+      body: JSON.stringify(workAssignment),
+    })
+      .then((res) => {
+        if (res.ok) {
+          onSuccess();
+        }
+        return Promise.reject(res);
+      })
+      .catch((error) => console.log(error));
+  };
+
+  return unsetWorkAssignment;
+}
+
 export function useGetWorkAssignments(
   event?: MSREvent
 ): WorkAssignment[] {

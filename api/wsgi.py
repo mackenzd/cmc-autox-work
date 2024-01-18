@@ -2,7 +2,7 @@ from flask import Flask, redirect, session, make_response, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from authlib.integrations.flask_client import OAuth
 from sqlalchemy.dialects.sqlite import insert
-from sqlalchemy import UniqueConstraint
+from sqlalchemy import UniqueConstraint, delete
 from dataclasses import dataclass
 import json
 
@@ -188,6 +188,25 @@ def post_work_assignment(event_id):
                 WorkAssignment.work_assignment_run_group: stmt.excluded.work_assignment_run_group
             }
         )
+        db.session.execute(stmt)
+        db.session.commit()
+    except Exception as e:
+        app.logger.error(e)
+        return make_response(json.dumps({'error': e}), 500)
+
+    return make_response({}, 200)
+
+@app.route('/api/events/<event_id>/assignments', methods=['DELETE'])
+def delete_work_assignment(event_id):
+    try:
+        data = json.loads(request.data)
+        stmt = delete(WorkAssignment) \
+            .where(WorkAssignment.event_id == event_id) \
+            .where(WorkAssignment.user_id == data.get('user').get('id')) \
+            .where(WorkAssignment.work_assignment_type == data.get('type')) \
+            .where(WorkAssignment.work_assignment_station == data.get('station')) \
+            .where(WorkAssignment.work_assignment_run_group == data.get('runGroup')) \
+            .where(WorkAssignment.work_assignment_segment == data.get('segment'))
         db.session.execute(stmt)
         db.session.commit()
     except Exception as e:
