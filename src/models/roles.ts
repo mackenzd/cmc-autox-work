@@ -1,4 +1,5 @@
 export enum Role {
+    Admin = 'Admin',
     Computer = 'Computer',
     Assistant = 'Assistant',
     Grid = 'Grid',

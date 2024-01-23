@@ -2,6 +2,15 @@ import { MSRSegment } from "./msr-segment";
 import { MSRUser } from "./msr-user";
 import { RunGroup } from "./run-group";
 
+export type WorkAssignment = {
+    user: MSRUser | undefined;
+    vehicleNumber: string | undefined;
+    type: WorkAssignmentType;
+    station: Station;
+    runGroup: RunGroup;
+    segment?: MSRSegment;
+}
+
 export enum WorkAssignmentType {
     Computer = 'Computer',
     Assistant = 'Assistant',
@@ -17,15 +26,6 @@ export enum WorkAssignmentType {
     Runner1 = 'Runner 1',
     Runner2 = 'Runner 2',
     Runner3 = 'Runner 3'
-}
-
-export type WorkAssignment = {
-    user: MSRUser | undefined;
-    vehicleNumber: string | undefined;
-    type: WorkAssignmentType;
-    station: Station;
-    runGroup: RunGroup;
-    segment?: MSRSegment;
 }
 
 export enum Station {

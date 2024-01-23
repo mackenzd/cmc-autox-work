@@ -1,5 +1,6 @@
 import { MSRSegment } from "../models/msr-segment";
 import { MSRUser } from "../models/msr-user";
+import { Role } from "../models/roles";
 import { RunGroup } from "../models/run-group";
 import {
   Station,
@@ -92,4 +93,33 @@ export function canSetWorkAssignment(
   segment: MSRSegment
 ): boolean {
   return !assignments.some((a) => a.user?.id === user.id && a.segment === segment);
+}
+
+export function roleForWorkAssignment(type: WorkAssignmentType): Role | undefined {
+  switch (type) {
+      case WorkAssignmentType.Computer:
+          return Role.Computer;
+
+      case WorkAssignmentType.Assistant:
+          return Role.Assistant;
+
+      case WorkAssignmentType.Grid1:
+      case WorkAssignmentType.Grid2:
+          return Role.Grid;
+
+      case WorkAssignmentType.GateMarshal:
+          return Role.GateMarshal;
+
+      case WorkAssignmentType.Instructor1:
+      case WorkAssignmentType.Instructor2:
+      case WorkAssignmentType.Instructor3:
+      case WorkAssignmentType.Instructor4:
+          return Role.Instructor;
+
+      case WorkAssignmentType.Start:
+          return Role.Start;
+
+      default:
+          return undefined;
+  }
 }

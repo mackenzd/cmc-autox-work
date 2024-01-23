@@ -2,6 +2,7 @@ import { PropsWithChildren, createContext, useState } from "react";
 import React from "react";
 import { MSRUser } from "./models/msr-user";
 import { useGetUser, useGetUserRoles } from "./hooks/user";
+import { Role } from "./models/roles";
 
 const setStateDefaultFunction = () => {
   return;
@@ -33,7 +34,7 @@ export const AuthorizationContextProvider = (props: PropsWithChildren) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [user, setUser] = useGetUser(() => setIsLoading(false));
   const roles = useGetUserRoles(user);
-  const isAdmin = roles?.some((r) => r === "Admin")
+  const isAdmin = roles?.some((r) => r === Role.Admin)
 
   return (
     <AuthorizationContext.Provider
