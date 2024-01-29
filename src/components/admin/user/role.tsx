@@ -12,12 +12,12 @@ export interface UserRoleAdminProps {
 }
 
 const UserRoleAdmin = (props: UserRoleAdminProps) => {
-  const userRoles = useGetUserRoles(props.user);
+  const getUserRoles = useGetUserRoles(props.user);
   const [roles, setRoles] = useState<Role[]>([]);
 
   useEffect(() => {
-    setRoles(userRoles);
-  }, [userRoles, setRoles]);
+    setRoles(getUserRoles);
+  }, [getUserRoles, setRoles]);
 
   const onSetSuccess = useCallback(
     (role: Role) => {

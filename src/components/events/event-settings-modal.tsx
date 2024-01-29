@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { MSREvent } from "../../models/msr-event";
 import { useWorkAssignmentsContext } from "../../contexts/work-assignments-context";
 import { useSetEventSettings } from "../../hooks/events";
@@ -22,7 +22,6 @@ const EventSettingsModal = (props: EventSettingsModalProps) => {
   }, props.event);
 
   const [value, setValue] = useState<string>("");
-  const [users, setUsers] = useState<MSRUser[]>([]);
   const getUsers = useGetUsers();
 
   const onChangeStations = useCallback(
@@ -39,25 +38,24 @@ const EventSettingsModal = (props: EventSettingsModalProps) => {
         (elem as HTMLElement).blur();
       }
 
-      let users = settings.preregistrationAccess;
-      users?.push(user);
-
+      let list = settings.preregistrationAccess;
+      list?.push(user);
       setValue("");
-      setUsers((prevUsers) => [...prevUsers, user]);
-      setSettings({ ...settings, preregistrationAccess: users });
+      setSettings({ ...settings, preregistrationAccess: list });
     },
-    [settings, setSettings, setValue, setUsers, settings.preregistrationAccess]
+    [settings.preregistrationAccess, setValue, setSettings, settings]
   );
 
   const onRemoveUser = useCallback(
     (user: MSRUser) => {
-      let users = settings.preregistrationAccess;
-      users?.splice(users.indexOf(user), 1);
-
-      setUsers((prevUsers) => prevUsers.filter((u) => u !== user));
-      setSettings({ ...settings, preregistrationAccess: users });
+      setSettings({
+        ...settings,
+        preregistrationAccess: settings.preregistrationAccess?.filter((u) => {
+          return u.id !== user.id;
+        }),
+      });
     },
-    [settings, setSettings, setValue, setUsers, settings.preregistrationAccess]
+    [settings.preregistrationAccess, setSettings, settings]
   );
 
   const onSave = useCallback(() => {
@@ -75,7 +73,7 @@ const EventSettingsModal = (props: EventSettingsModalProps) => {
     () => (
       <select
         className="select select-primary select-md"
-        value={settings?.stations}
+        value={settings.stations}
         onChange={(e) => {
           onChangeStations(e.target.value);
         }}
@@ -93,7 +91,7 @@ const EventSettingsModal = (props: EventSettingsModalProps) => {
         })()}
       </select>
     ),
-    [settings?.stations, onChangeStations]
+    [settings.stations, onChangeStations]
   );
 
   const usersOptions = useMemo(() => {
@@ -102,7 +100,9 @@ const EventSettingsModal = (props: EventSettingsModalProps) => {
         {getUsers
           .filter((user) => {
             return (
-              !users.includes(user) &&
+              !settings.preregistrationAccess?.some((u) => {
+                return u.id === user.id;
+              }) &&
               `${user.firstName} ${user.lastName}`
                 .toLowerCase()
                 .includes(value.toLowerCase())
@@ -118,7 +118,7 @@ const EventSettingsModal = (props: EventSettingsModalProps) => {
           })}
       </>
     );
-  }, [users, getUsers, value]);
+  }, [getUsers, settings.preregistrationAccess, value, onAddUser]);
 
   const usersInput = useMemo(() => {
     return (
@@ -134,9 +134,7 @@ const EventSettingsModal = (props: EventSettingsModalProps) => {
             }}
           />
         </label>
-        <div
-          className="dropdown-content z-[1] shadow bg-base-100 rounded-box"
-        >
+        <div className="dropdown-content z-[1] shadow bg-base-100 rounded-box">
           <ul className="menu menu-compact">{usersOptions}</ul>
         </div>
       </div>
@@ -144,7 +142,7 @@ const EventSettingsModal = (props: EventSettingsModalProps) => {
   }, [value, usersOptions]);
 
   const usersBadges = useMemo(() => {
-    return users.map((user) => (
+    return settings.preregistrationAccess?.map((user) => (
       <div
         key={user.id}
         className="badge badge-primary gap-2 p-3 mt-1 mb-1 mr-3"
@@ -167,7 +165,7 @@ const EventSettingsModal = (props: EventSettingsModalProps) => {
         {user.firstName} {user.lastName}
       </div>
     ));
-  }, [users]);
+  }, [settings.preregistrationAccess, onRemoveUser]);
 
   return props.isOpen ? (
     <dialog className="modal" open={props.isOpen}>

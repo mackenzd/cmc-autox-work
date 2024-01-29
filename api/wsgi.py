@@ -60,6 +60,15 @@ class EventSettings(db.Model):
     event_id = db.Column(db.String(35), unique=True, nullable=False)
     stations = db.Column(db.Integer, unique=False, nullable=True)
 
+@dataclass
+class PreregistrationAccess(db.Model):
+    __tablename__ = 'preregistration_access'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    event_id = db.Column(db.String(35), unique=False, nullable=False)
+    user_id = db.Column(db.String(35), unique=False, nullable=False)
+    UniqueConstraint(event_id, user_id, name='uq_preregistration_access_event_user_segment')
+
 def fetch_token():
     token = session.get('token')
     if token is None:
@@ -218,13 +227,21 @@ def delete_work_assignment(event_id):
 @app.route('/api/events/<event_id>/settings')
 def get_event_settings(event_id):
     try:
-        q = EventSettings.query.filter(EventSettings.event_id == event_id).first()
-        if q is None:
+        q1 = EventSettings.query.filter(EventSettings.event_id == event_id).first()
+        q2 = PreregistrationAccess.query.join(User, PreregistrationAccess.user_id == User.id) \
+             .filter(PreregistrationAccess.event_id == event_id) \
+             .add_columns(User.id, User.first_name, User.last_name).all()
+        if q1 and q2 is None:
             return make_response({}, 200)
         settings = {
-            "id": q.id,
-            "eventId": q.event_id,
-            "stations": q.stations
+            "id": q1.id,
+            "eventId": q1.event_id,
+            "stations": q1.stations,
+            "preregistrationAccess": [{
+                "id": u.id,
+                "firstName": u.first_name,
+                "lastName": u.last_name
+            } for u in q2]
         }
     except Exception as e:
         app.logger.error(e)
@@ -236,17 +253,34 @@ def get_event_settings(event_id):
 def post_event_settings(event_id):
     try:
         data = json.loads(request.data)
-        stmt = insert(EventSettings).values(
+        stmt1 = insert(EventSettings).values(
             event_id = event_id,
             stations = data.get('stations')
         )
-        stmt = stmt.on_conflict_do_update(
+        stmt1 = stmt1.on_conflict_do_update(
             index_elements=[EventSettings.event_id],
             set_={
-                EventSettings.stations: stmt.excluded.stations
+                EventSettings.stations: stmt1.excluded.stations
             }
         )
-        db.session.execute(stmt)
+        db.session.execute(stmt1)
+
+        preregistrationAccess = data.get('preregistrationAccess')
+        if (preregistrationAccess):
+            PreregistrationAccess.query.filter(PreregistrationAccess.event_id == event_id) \
+                .filter(PreregistrationAccess.user_id.not_in([u.get('id') for u in preregistrationAccess])).delete()
+            
+            stmt2 = insert(PreregistrationAccess).values([{
+                "event_id": event_id,
+                "user_id": u.get('id'),
+            } for u in preregistrationAccess])
+            stmt2 = stmt2.on_conflict_do_nothing(
+                index_elements=[PreregistrationAccess.event_id, PreregistrationAccess.user_id],
+            )
+            db.session.execute(stmt2)
+        else:
+            PreregistrationAccess.query.filter(PreregistrationAccess.event_id == event_id).delete()
+
         db.session.commit()
     except Exception as e:
         app.logger.error(e)
