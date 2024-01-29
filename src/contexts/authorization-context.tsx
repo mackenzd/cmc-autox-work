@@ -15,6 +15,8 @@ interface Props {
   isAuthenticated: boolean;
   isLoading: boolean;
   isAdmin: boolean;
+  isUnrestricted: boolean;
+  isRestricted: boolean;
   setIsLoading: (isLoading: boolean) => void;
 }
 
@@ -25,6 +27,8 @@ export const DefaultContext: Props = {
   isAuthenticated: false,
   isLoading: true,
   isAdmin: false,
+  isUnrestricted: false,
+  isRestricted: true,
   setIsLoading: setStateDefaultFunction,
 };
 
@@ -35,6 +39,8 @@ export const AuthorizationContextProvider = (props: PropsWithChildren) => {
   const [user, setUser] = useGetUser(() => setIsLoading(false));
   const roles = useGetUserRoles(user);
   const isAdmin = roles?.some((r) => r === Role.Admin);
+  const isUnrestricted = roles?.some((r) => r === Role.Unrestricted);
+  const isRestricted = roles?.some((r) => r === Role.Restricted);
 
   return (
     <AuthorizationContext.Provider
@@ -46,6 +52,8 @@ export const AuthorizationContextProvider = (props: PropsWithChildren) => {
         isLoading,
         setIsLoading,
         isAdmin,
+        isUnrestricted,
+        isRestricted
       }}
     >
       {props.children}

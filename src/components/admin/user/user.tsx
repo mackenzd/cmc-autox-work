@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
-import { useGetUsers } from "../../hooks/users";
-import { MSRUser } from "../../models/msr-user";
+import { useGetUsers } from "../../../hooks/users";
+import { MSRUser } from "../../../models/msr-user";
+import UserRoleAdmin from "./role";
 
 const UserAdmin = () => {
   const [value, setValue] = useState<string>("");
@@ -43,14 +44,14 @@ const UserAdmin = () => {
   const dropdown = useMemo(() => {
     return (
       <div className="dropdown dropdown-bottom dropdown-start">
-        <label className="form-control w-full max-w-xs">
+        <label className="form-control w-full">
           <div className="label">
-            <span className="label-text">User Admin</span>
+            <span className="label-text">Member</span>
           </div>
           <input
             type="text"
             placeholder="Enter member's name..."
-            className="input input-bordered w-full max-w-xs"
+            className="input input-bordered w-full"
             value={value}
             onChange={(e) => {
               setValue(e.target.value);
@@ -66,8 +67,34 @@ const UserAdmin = () => {
 
   return (
     <div className="justify-start user-admin">
-      {dropdown}
-      <div>{user?.email}</div>
+      <div className="font-bold text-lg">User Admin</div>
+      <div className="flex flex-row gap-5">{dropdown}</div>
+      <div className="flex flex-col mt-10 gap-3">
+        {user ? (
+          <>
+            {" "}
+            <div>
+              <div className="font-bold">MSR ID</div>
+              <div>{user?.id}</div>
+            </div>
+            <div>
+              <div className="font-bold">Name</div>
+              <div>
+                {user?.firstName} {user?.lastName}
+              </div>
+            </div>
+            <div>
+              <div className="font-bold">Email</div>
+              <div>{user?.email}</div>
+            </div>
+            <div>
+              <UserRoleAdmin user={user} />
+            </div>
+          </>
+        ) : (
+          <></>
+        )}
+      </div>
     </div>
   );
 };

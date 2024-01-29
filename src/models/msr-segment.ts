@@ -1,4 +1,4 @@
 export enum MSRSegment {
-    Saturday = 'Saturday',
-    Sunday = 'Sunday'
+  Saturday = "Saturday",
+  Sunday = "Sunday",
 }

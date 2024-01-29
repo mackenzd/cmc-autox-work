@@ -25,7 +25,8 @@ const WorkAssignmentEntry = (props: WorkAssignmentProps) => {
     runGroup,
     segment,
   } = useWorkAssignmentsContext();
-  const { user, roles, isAdmin } = useAuthorizationContext();
+  const { user, roles, isAdmin, isUnrestricted, isRestricted } =
+    useAuthorizationContext();
 
   const currentAssignment = useMemo(
     () =>
@@ -109,9 +110,16 @@ const WorkAssignmentEntry = (props: WorkAssignmentProps) => {
   }, [setWorkAssignment, newAssignment]);
 
   const requiredRole = roleForWorkAssignment(props.type);
-  const canAssign = requiredRole
-    ? roles?.some((r) => r === requiredRole) || isAdmin
-    : true;
+
+  let canAssign: boolean;
+  if (isRestricted) {
+    canAssign = false;
+  } else if (requiredRole) {
+    canAssign =
+      roles?.some((r) => r === requiredRole) || isAdmin || isUnrestricted;
+  } else {
+    canAssign = true;
+  }
 
   const classNames = useMemo(() => {
     if (currentAssignment && currentAssignment.user?.id === user?.id) {

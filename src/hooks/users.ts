@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { MSRUser } from "../models/msr-user";
+import { Role } from "../models/roles";
 
 export function useGetUser(
   onFinish: () => void
@@ -27,8 +28,8 @@ export function useGetUser(
   return [user, setUser];
 }
 
-export function useGetUserRoles(user?: MSRUser): string[] {
-  const [roles, setRoles] = useState<string[]>([]);
+export function useGetUserRoles(user?: MSRUser): Role[] {
+  const [roles, setRoles] = useState<Role[]>([]);
 
   useEffect(() => {
     fetch(`/api/user/${user?.id}/roles`)
@@ -65,4 +66,46 @@ export function useGetUsers(): MSRUser[] {
   }, [setUsers]);
 
   return users;
+}
+
+export function useSetRole(
+  onSuccess: (role: Role) => void,
+  user?: MSRUser
+): (role: Role) => void {
+  const setRole = (role: Role) => {
+    fetch(`/api/user/${user?.id}/roles`, {
+      method: "POST",
+      body: JSON.stringify({"role": role}),
+    })
+      .then((res) => {
+        if (res.ok) {
+          onSuccess(role);
+        }
+        return Promise.reject(res);
+      })
+      .catch((error) => console.log(error));
+  };
+
+  return setRole;
+}
+
+export function useUnsetRole(
+  onSuccess: (role: Role) => void,
+  user?: MSRUser
+): (role: Role) => void {
+  const unsetRole = (role: Role) => {
+    fetch(`/api/user/${user?.id}/roles`, {
+      method: "DELETE",
+      body: JSON.stringify({"role": role}),
+    })
+      .then((res) => {
+        if (res.ok) {
+          onSuccess(role);
+        }
+        return Promise.reject(res);
+      })
+      .catch((error) => console.log(error));
+  };
+
+  return unsetRole;
 }

@@ -1,4 +1,4 @@
 export type MSRVenue = {
-    name: string;
-    uri: string;
-}
+  name: string;
+  uri: string;
+};

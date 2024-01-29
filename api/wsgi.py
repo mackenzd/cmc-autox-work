@@ -2,7 +2,7 @@ from flask import Flask, redirect, session, make_response, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from authlib.integrations.flask_client import OAuth
 from sqlalchemy.dialects.sqlite import insert
-from sqlalchemy import UniqueConstraint, delete
+from sqlalchemy import UniqueConstraint, select, delete
 from dataclasses import dataclass
 import json
 
@@ -273,11 +273,44 @@ def get_users():
 @app.route('/api/user/<user_id>/roles')
 def get_user_roles(user_id):
     try:
-        q = User.query.join(Role, user_id == Role.user_id) \
-            .add_columns(Role.role).all()
+        q = Role.query.where(Role.user_id == user_id)
         roles = [a.role for a in q]
     except Exception as e:
         app.logger.error(e)
         return make_response(json.dumps({'error': e}), 500)
 
     return jsonify(roles)
+
+@app.route('/api/user/<user_id>/roles', methods=['POST'])
+def post_user_role(user_id):
+    try:
+        data = json.loads(request.data)
+        stmt = insert(Role).values(
+            user_id = user_id,
+            role = data.get('role')
+        )
+        stmt = stmt.on_conflict_do_nothing(
+            index_elements=[Role.user_id, Role.role]
+        )
+        db.session.execute(stmt)
+        db.session.commit()
+    except Exception as e:
+        app.logger.error(e)
+        return make_response(json.dumps({'error': e}), 500)
+
+    return make_response({}, 200)
+
+@app.route('/api/user/<user_id>/roles', methods=['DELETE'])
+def delete_user_role(user_id):
+    try:
+        data = json.loads(request.data)
+        stmt = delete(Role) \
+            .where(Role.user_id == user_id) \
+            .where(Role.role == data.get('role'))
+        db.session.execute(stmt)
+        db.session.commit()
+    except Exception as e:
+        app.logger.error(e)
+        return make_response(json.dumps({'error': e}), 500)
+
+    return make_response({}, 200)
