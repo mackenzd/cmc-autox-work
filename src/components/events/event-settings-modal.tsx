@@ -38,10 +38,14 @@ const EventSettingsModal = (props: EventSettingsModalProps) => {
         (elem as HTMLElement).blur();
       }
 
-      let list = settings.preregistrationAccess;
-      list?.push(user);
       setValue("");
-      setSettings({ ...settings, preregistrationAccess: list });
+      setSettings({
+        ...settings,
+        preregistrationAccess: [
+          ...(settings.preregistrationAccess || []),
+          user,
+        ],
+      });
     },
     [settings.preregistrationAccess, setValue, setSettings, settings]
   );
