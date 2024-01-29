@@ -95,21 +95,22 @@ export const WorkAssignmentsContextProvider = (
       : RunGroup.Odd;
   const [runGroup, setRunGroup] = useState<RunGroup>(defaultRunGroup);
 
+  const defaultSettings: EventSettings = { stations: 8, preregistrationAccess: [] }
   const eventSettings = useGetEventSettings(props.event);
   const [initialSettings, setInitialSettings] =
     useState<EventSettings>(eventSettings);
-  const [settings, setSettings] = useState<EventSettings>({ stations: 8 });
+  const [settings, setSettings] = useState<EventSettings>(defaultSettings);
 
   const initializeSettings = useCallback(() => {
-    if (initialSettings?.stations) {
+    if (initialSettings != defaultSettings) {
       setSettings(initialSettings);
     } else {
-      setSettings({ stations: 8 });
+      setSettings(defaultSettings);
     }
   }, [JSON.stringify(initialSettings), setSettings]);
 
   useEffect(() => {
-    if (!initialSettings?.stations) setInitialSettings(eventSettings);
+    if (initialSettings != defaultSettings) setInitialSettings(eventSettings);
     initializeSettings();
   }, [
     initialSettings?.stations,

@@ -13,8 +13,17 @@ export interface EventSettingsModalProps {
 
 const EventSettingsModal = (props: EventSettingsModalProps) => {
   const maxStations = 12;
+
   const { settings, setSettings, initializeSettings, setInitialSettings } =
     useWorkAssignmentsContext();
+
+  const setEventSettings = useSetEventSettings(() => {
+    setSettings(settings);
+  }, props.event);
+
+  const [value, setValue] = useState<string>("");
+  const [users, setUsers] = useState<MSRUser[]>([]);
+  const getUsers = useGetUsers();
 
   const onChangeStations = useCallback(
     (stations: string) => {
@@ -23,9 +32,33 @@ const EventSettingsModal = (props: EventSettingsModalProps) => {
     [settings, setSettings]
   );
 
-  const setEventSettings = useSetEventSettings(() => {
-    setSettings(settings);
-  }, props.event);
+  const onAddUser = useCallback(
+    (user: MSRUser) => {
+      const elem = document.activeElement;
+      if (elem) {
+        (elem as HTMLElement).blur();
+      }
+
+      let users = settings.preregistrationAccess;
+      users?.push(user);
+
+      setValue("");
+      setUsers((prevUsers) => [...prevUsers, user]);
+      setSettings({ ...settings, preregistrationAccess: users });
+    },
+    [settings, setSettings, setValue, setUsers, settings.preregistrationAccess]
+  );
+
+  const onRemoveUser = useCallback(
+    (user: MSRUser) => {
+      let users = settings.preregistrationAccess;
+      users?.splice(users.indexOf(user), 1);
+
+      setUsers((prevUsers) => prevUsers.filter((u) => u !== user));
+      setSettings({ ...settings, preregistrationAccess: users });
+    },
+    [settings, setSettings, setValue, setUsers, settings.preregistrationAccess]
+  );
 
   const onSave = useCallback(() => {
     setEventSettings(settings);
@@ -41,7 +74,7 @@ const EventSettingsModal = (props: EventSettingsModalProps) => {
   const stationsInput = useMemo(
     () => (
       <select
-        className="select select-primary select-xs max-w-xs"
+        className="select select-primary select-md"
         value={settings?.stations}
         onChange={(e) => {
           onChangeStations(e.target.value);
@@ -63,22 +96,7 @@ const EventSettingsModal = (props: EventSettingsModalProps) => {
     [settings?.stations, onChangeStations]
   );
 
-  const [value, setValue] = useState<string>("");
-  const [users, setUsers] = useState<MSRUser[]>([]);
-  const getUsers = useGetUsers();
-
-  const handleClick = (user: MSRUser) => {
-    const elem = document.activeElement;
-    if (elem) {
-      (elem as HTMLElement).blur();
-    }
-
-    setUsers((prevUsers) => [...prevUsers, user]);
-    setValue("");
-    // TODO: Set settings context
-  };
-
-  const options = useMemo(() => {
+  const usersOptions = useMemo(() => {
     return (
       <>
         {getUsers
@@ -94,9 +112,7 @@ const EventSettingsModal = (props: EventSettingsModalProps) => {
             const userFullName = `${user.firstName} ${user.lastName}`;
             return (
               <li key={index} tabIndex={index + 1}>
-                <button onClick={() => handleClick(user)}>
-                  {userFullName}
-                </button>
+                <button onClick={() => onAddUser(user)}>{userFullName}</button>
               </li>
             );
           })}
@@ -104,35 +120,36 @@ const EventSettingsModal = (props: EventSettingsModalProps) => {
     );
   }, [users, getUsers, value]);
 
-  const whitelistedUsersInput = useMemo(() => {
+  const usersInput = useMemo(() => {
     return (
       <div className="dropdown dropdown-bottom dropdown-start">
         <label className="form-control w-full">
           <input
             type="text"
             placeholder="Enter member's name..."
-            className="input input-bordered w-full"
+            className="input input-primary input-bordered w-full"
             value={value}
             onChange={(e) => {
               setValue(e.target.value);
             }}
           />
         </label>
-        <div className="dropdown-content z-[1] shadow bg-base-100 rounded-box w-52">
-          <ul className="menu menu-compact">{options}</ul>
+        <div
+          className="dropdown-content z-[1] shadow bg-base-100 rounded-box"
+        >
+          <ul className="menu menu-compact">{usersOptions}</ul>
         </div>
       </div>
     );
-  }, [value, options]);
+  }, [value, usersOptions]);
 
-  // TODO: Remove user from settings on X
-  const whitelistedUsersBadges = useMemo(() => {
+  const usersBadges = useMemo(() => {
     return users.map((user) => (
       <div
         key={user.id}
         className="badge badge-primary gap-2 p-3 mt-1 mb-1 mr-3"
       >
-        <button onClick={() => {}}>
+        <button onClick={() => onRemoveUser(user)}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -168,7 +185,7 @@ const EventSettingsModal = (props: EventSettingsModalProps) => {
           </h3>
         </div>
         <div>
-          <label className="form-control w-full max-w-xs">
+          <label className="form-control w-full">
             <div className="label">
               <span className="font-bold label-text">Cone Stations</span>
             </div>
@@ -180,12 +197,11 @@ const EventSettingsModal = (props: EventSettingsModalProps) => {
               </span>
             </div>
           </label>
-          <label className="form-control w-full max-w-xs">
+          <label className="form-control w-full">
             <div className="label">
               <span className="font-bold label-text">Whitelisted Members</span>
             </div>
-            {whitelistedUsersInput}
-            <div className="flex flex-row mt-1">{whitelistedUsersBadges}</div>
+            {usersInput}
             <div className="label">
               <span className="label-text-alt">
                 Members who should be granted pre-registration access to this
@@ -193,6 +209,7 @@ const EventSettingsModal = (props: EventSettingsModalProps) => {
               </span>
             </div>
           </label>
+          <div className="flex flex-row mt-1">{usersBadges}</div>
         </div>
         <div className="modal-action">
           <button className="btn btn-outline btn-sm" onClick={onSave}>
