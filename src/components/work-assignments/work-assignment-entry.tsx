@@ -1,12 +1,15 @@
 import { useCallback, useMemo } from "react";
 import { Station, WorkAssignmentType } from "../../models/work-assignment";
-import { getWorkAssignment, roleForWorkAssignment } from "../../helpers/work-assignments";
-import { useWorkAssignmentsContext } from "./work-assignments-context";
-import { useAuthorizationContext } from "../../authorization-context";
+import {
+  getWorkAssignment,
+  roleForWorkAssignment,
+} from "../../helpers/work-assignments";
+import { useWorkAssignmentsContext } from "../../contexts/work-assignments-context";
+import { useAuthorizationContext } from "../../contexts/authorization-context";
 import {
   useSetWorkAssignment,
   useUnsetWorkAssignment,
-} from "../../hooks/work-assignment";
+} from "../../hooks/work-assignments";
 
 export interface WorkAssignmentProps {
   type: WorkAssignmentType;
@@ -106,7 +109,9 @@ const WorkAssignmentEntry = (props: WorkAssignmentProps) => {
   }, [setWorkAssignment, newAssignment]);
 
   const requiredRole = roleForWorkAssignment(props.type);
-  const canAssign =  requiredRole ? roles?.some((r) => r === requiredRole) || isAdmin : true;
+  const canAssign = requiredRole
+    ? roles?.some((r) => r === requiredRole) || isAdmin
+    : true;
 
   const classNames = useMemo(() => {
     if (currentAssignment && currentAssignment.user?.id === user?.id) {
@@ -120,7 +125,11 @@ const WorkAssignmentEntry = (props: WorkAssignmentProps) => {
 
   return (
     <div className="py-1 work-assignment">
-      <button className={classNames} disabled={!canAssign} onClick={() => onClickWorkAssignment()}>
+      <button
+        className={classNames}
+        disabled={!canAssign}
+        onClick={() => onClickWorkAssignment()}
+      >
         {props.type}
       </button>
       {currentAssignment ? (

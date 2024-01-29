@@ -9,7 +9,7 @@ import { ErrorBoundary } from "react-error-boundary";
 import { Path } from "./path";
 import PageNotFound from "../components/errors/page_not_found";
 import Admin from "../features/admin";
-import { useAuthorizationContext } from "../authorization-context";
+import { useAuthorizationContext } from "../contexts/authorization-context";
 
 const errorBoundaryErrorHandler = () => {
   return;

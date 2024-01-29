@@ -1,10 +1,10 @@
 import { useMemo, useState } from "react";
 import { MSREvent } from "../../models/msr-event";
 import WorkAssignmentsModal from "../work-assignments/work-assignment-modal";
-import { WorkAssignmentsContextProvider } from "../work-assignments/work-assignments-context";
+import { WorkAssignmentsContextProvider } from "../../contexts/work-assignments-context";
 import { eventHasEnded } from "../../helpers/events";
 import EventSettingsModal from "./event-settings-modal";
-import { useAuthorizationContext } from "../../authorization-context";
+import { useAuthorizationContext } from "../../contexts/authorization-context";
 
 export interface EventCardProps {
   event: MSREvent;
@@ -33,36 +33,45 @@ const EventCard = (props: EventCardProps) => {
     useState<boolean>(false);
 
   const settingsModal = useMemo(
-    () => isSettingsModalOpen && (
-      <EventSettingsModal
-        event={props.event}
-        isOpen={isSettingsModalOpen}
-        onClose={() => {
-          setIsSettingsModalOpen(false);
-        }}
-      />
-    ),
+    () =>
+      isSettingsModalOpen && (
+        <EventSettingsModal
+          event={props.event}
+          isOpen={isSettingsModalOpen}
+          onClose={() => {
+            setIsSettingsModalOpen(false);
+          }}
+        />
+      ),
     [isSettingsModalOpen, props.event, setIsSettingsModalOpen]
   );
 
   const workAssignmentModal = useMemo(
-    () => isWorkAssignmentModalOpen &&  (
-      <WorkAssignmentsModal
-        isOpen={isWorkAssignmentModalOpen}
-        onClose={() => setIsWorkAssignmentModalOpen(false)}
-      />
-    ),
+    () =>
+      isWorkAssignmentModalOpen && (
+        <WorkAssignmentsModal
+          isOpen={isWorkAssignmentModalOpen}
+          onClose={() => setIsWorkAssignmentModalOpen(false)}
+        />
+      ),
     [isWorkAssignmentModalOpen, props.event, setIsWorkAssignmentModalOpen]
   );
 
   const modals = useMemo(
-    () => (isWorkAssignmentModalOpen || isSettingsModalOpen) &&  (
-      <WorkAssignmentsContextProvider event={props.event}>
-        {settingsModal}
-        {workAssignmentModal}
-      </WorkAssignmentsContextProvider>
-    ),
-    [isWorkAssignmentModalOpen, isSettingsModalOpen, settingsModal, workAssignmentModal, props.event]
+    () =>
+      (isWorkAssignmentModalOpen || isSettingsModalOpen) && (
+        <WorkAssignmentsContextProvider event={props.event}>
+          {settingsModal}
+          {workAssignmentModal}
+        </WorkAssignmentsContextProvider>
+      ),
+    [
+      isWorkAssignmentModalOpen,
+      isSettingsModalOpen,
+      settingsModal,
+      workAssignmentModal,
+      props.event,
+    ]
   );
 
   const { isAdmin } = useAuthorizationContext();

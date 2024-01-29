@@ -14,7 +14,10 @@ export function eventHasEnded(event: MSREvent): boolean {
   return endDate < new Date();
 }
 
-export function getOrganizationEvents(start?: string, end?: string): Promise<MSREvent[]> {
+export function getOrganizationEvents(
+  start?: string,
+  end?: string
+): Promise<MSREvent[]> {
   const params: string[] = [];
   if (start) {
     params.push(`start=${encodeURIComponent(start)}`);
@@ -23,7 +26,9 @@ export function getOrganizationEvents(start?: string, end?: string): Promise<MSR
     params.push(`end=${encodeURIComponent(end)}`);
   }
 
-  return fetch(`/api/organization/events${params.length > 0 ? `?${params.join("&")}` : ""}`)
+  return fetch(
+    `/api/organization/events${params.length > 0 ? `?${params.join("&")}` : ""}`
+  )
     .then((res) => {
       if (res.ok) {
         return res.json();
@@ -61,9 +66,7 @@ export function getUserEvents(): Promise<MSREvent[]> {
     });
 }
 
-export function getEventAssignments(
-  eventId: string
-): Promise<MSRAssignment[]> {
+export function getEventAssignments(eventId: string): Promise<MSRAssignment[]> {
   return fetch(`/api/events/${eventId}/entrylist`)
     .then((res) => {
       if (res.ok) {

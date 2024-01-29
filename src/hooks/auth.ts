@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuthorizationContext } from "../authorization-context";
+import { useAuthorizationContext } from "../contexts/authorization-context";
 
 export function useLogout(): () => void {
   const navigate = useNavigate();

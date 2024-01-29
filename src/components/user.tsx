@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useAuthorizationContext } from "../authorization-context";
+import { useAuthorizationContext } from "../contexts/authorization-context";
 import { useLogout } from "../hooks/auth";
 import { useMemo } from "react";
 

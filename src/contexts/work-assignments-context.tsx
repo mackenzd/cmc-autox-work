@@ -6,19 +6,16 @@ import {
   useMemo,
   useState,
 } from "react";
-import { RunGroup } from "../../models/run-group";
-import { WorkAssignment } from "../../models/work-assignment";
+import { RunGroup } from "../models/run-group";
+import { WorkAssignment } from "../models/work-assignment";
 import React from "react";
-import { MSREvent } from "../../models/msr-event";
-import {
-  useGetEventAssignments,
-  useGetEventSettings,
-} from "../../hooks/events";
-import { useAuthorizationContext } from "../../authorization-context";
-import { MSRSegment } from "../../models/msr-segment";
+import { MSREvent } from "../models/msr-event";
+import { useGetEventAssignments, useGetEventSettings } from "../hooks/events";
+import { useAuthorizationContext } from "./authorization-context";
+import { MSRSegment } from "../models/msr-segment";
 import uniq from "lodash/uniq";
-import { useGetWorkAssignments } from "../../hooks/work-assignment";
-import { EventSettings } from "../../models/event-settings";
+import { useGetWorkAssignments } from "../hooks/work-assignments";
+import { EventSettings } from "../models/event-settings";
 
 const setStateDefaultFunction = () => {
   return;
@@ -101,7 +98,7 @@ export const WorkAssignmentsContextProvider = (
   const eventSettings = useGetEventSettings(props.event);
   const [initialSettings, setInitialSettings] =
     useState<EventSettings>(eventSettings);
-  const [settings, setSettings] = useState<EventSettings>({stations: 8});
+  const [settings, setSettings] = useState<EventSettings>({ stations: 8 });
 
   const initializeSettings = useCallback(() => {
     if (initialSettings?.stations) {

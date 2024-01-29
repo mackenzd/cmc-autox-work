@@ -1,7 +1,7 @@
-import WorkAssignmentsOther from "./work-assignments-other";
-import WorkAssignmentsStation from "./work-assignments-station";
+import WorkAssignmentsOther from "./work-assignment-other";
+import WorkAssignmentsStation from "./work-assignment-station";
 import { RunGroup } from "../../models/run-group";
-import { useWorkAssignmentsContext } from "./work-assignments-context";
+import { useWorkAssignmentsContext } from "../../contexts/work-assignments-context";
 import { MSRSegment } from "../../models/msr-segment";
 import { useMemo } from "react";
 

@@ -3,8 +3,8 @@ import { useGetEvents } from "../hooks/events";
 import moment from "moment";
 
 const Events = () => {
-  const start = moment().subtract(1, 'year').format('YYYY-MM-DD');
-  const end = moment().add(1, 'year').format('YYYY-MM-DD');
+  const start = moment().subtract(1, "year").format("YYYY-MM-DD");
+  const end = moment().add(1, "year").format("YYYY-MM-DD");
 
   const events = useGetEvents(start, end);
 

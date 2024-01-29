@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from "react";
 import { MSREvent } from "../../models/msr-event";
-import { useWorkAssignmentsContext } from "../work-assignments/work-assignments-context";
+import { useWorkAssignmentsContext } from "../../contexts/work-assignments-context";
 import { useSetEventSettings } from "../../hooks/events";
 
 export interface EventSettingsModalProps {

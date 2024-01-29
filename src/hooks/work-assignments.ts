@@ -44,9 +44,7 @@ export function useUnsetWorkAssignment(
   return unsetWorkAssignment;
 }
 
-export function useGetWorkAssignments(
-  event?: MSREvent
-): WorkAssignment[] {
+export function useGetWorkAssignments(event?: MSREvent): WorkAssignment[] {
   const [assignments, setAssignments] = useState<WorkAssignment[]>([]);
 
   useEffect(() => {

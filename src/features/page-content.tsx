@@ -5,7 +5,7 @@ import "../App.css";
 import { login } from "../helpers/auth";
 import Navbar from "../components/navbar";
 import LoadingSpinner from "../components/loading-spinner";
-import { useAuthorizationContext } from "../authorization-context";
+import { useAuthorizationContext } from "../contexts/authorization-context";
 
 function PageContent() {
   const { isLoading, isAuthenticated } = useAuthorizationContext();

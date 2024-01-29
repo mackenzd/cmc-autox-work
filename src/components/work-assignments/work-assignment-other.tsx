@@ -1,8 +1,5 @@
 import WorkAssignmentEntry from "./work-assignment-entry";
-import {
-  Station,
-  WorkAssignmentType,
-} from "../../models/work-assignment";
+import { Station, WorkAssignmentType } from "../../models/work-assignment";
 
 const WorkAssignmentOther = () => {
   return (

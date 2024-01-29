@@ -1,5 +1,5 @@
 import "./App.css";
-import { AuthorizationContextProvider } from "./authorization-context";
+import { AuthorizationContextProvider } from "./contexts/authorization-context";
 import PageContent from "./features/page-content"
 
 function App() {

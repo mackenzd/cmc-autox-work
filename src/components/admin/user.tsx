@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { useGetUsers } from "../../hooks/user";
+import { useGetUsers } from "../../hooks/users";
 import { MSRUser } from "../../models/msr-user";
 
 const UserAdmin = () => {
@@ -10,7 +10,7 @@ const UserAdmin = () => {
   const handleClick = (user: MSRUser) => {
     const elem = document.activeElement;
     if (elem) {
-      (elem as HTMLElement).blur()
+      (elem as HTMLElement).blur();
     }
 
     setUser(user);
@@ -30,9 +30,7 @@ const UserAdmin = () => {
             const userFullName = `${user.firstName} ${user.lastName}`;
             return (
               <li key={index} tabIndex={index + 1}>
-                <button
-                  onClick={() => handleClick(user)}
-                >
+                <button onClick={() => handleClick(user)}>
                   {userFullName}
                 </button>
               </li>

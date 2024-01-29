@@ -66,4 +66,3 @@ export function useGetUsers(): MSRUser[] {
 
   return users;
 }
-
