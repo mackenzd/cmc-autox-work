@@ -4,9 +4,18 @@ import { MSRUser } from "../../models/msr-user";
 
 const UserAdmin = () => {
   const [value, setValue] = useState<string>("");
-  const [open, setOpen] = useState<boolean>(false);
   const [user, setUser] = useState<MSRUser | undefined>(undefined);
   const users = useGetUsers();
+
+  const handleClick = (user: MSRUser) => {
+    const elem = document.activeElement;
+    if (elem) {
+      (elem as HTMLElement).blur()
+    }
+
+    setUser(user);
+    setValue(`${user.firstName} ${user.lastName}`);
+  };
 
   const options = useMemo(() => {
     return (
@@ -22,11 +31,7 @@ const UserAdmin = () => {
             return (
               <li key={index} tabIndex={index + 1}>
                 <button
-                  onClick={() => {
-                    setUser(user);
-                    setValue(userFullName);
-                    setOpen(false);
-                  }}
+                  onClick={() => handleClick(user)}
                 >
                   {userFullName}
                 </button>
@@ -35,21 +40,11 @@ const UserAdmin = () => {
           })}
       </>
     );
-  }, [users, value, setValue, open, setOpen]);
+  }, [users, value]);
 
-  const classNames = useMemo(() => {
-    console.log(open)
-    
-    if (open) {
-      return "dropdown dropdown-bottom dropdown-start dropdown-open";
-    } else {
-      return "dropdown dropdown-bottom dropdown-start";
-    }
-  }, [open, setOpen]);
-
-  return (
-    <div className="justify-start user-admin">
-      <div className={classNames}>
+  const dropdown = useMemo(() => {
+    return (
+      <div className="dropdown dropdown-bottom dropdown-start">
         <label className="form-control w-full max-w-xs">
           <div className="label">
             <span className="label-text">User Admin</span>
@@ -60,7 +55,6 @@ const UserAdmin = () => {
             className="input input-bordered w-full max-w-xs"
             value={value}
             onChange={(e) => {
-
               setValue(e.target.value);
             }}
           />
@@ -69,7 +63,12 @@ const UserAdmin = () => {
           <ul className="menu menu-compact">{options}</ul>
         </div>
       </div>
+    );
+  }, [value, options]);
 
+  return (
+    <div className="justify-start user-admin">
+      {dropdown}
       <div>{user?.email}</div>
     </div>
   );
