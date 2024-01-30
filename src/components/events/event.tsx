@@ -95,7 +95,7 @@ const EventCard = (props: EventCardProps) => {
       <p>This event has ended.</p>
     ) : (
       <>
-        {props.event.registered || canPreregister ? (
+        {props.event.registered || canPreregister || isAdmin ? (
           <button
             className="btn btn-primary"
             onClick={() => setIsWorkAssignmentModalOpen(true)}
