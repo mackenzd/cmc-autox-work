@@ -4,6 +4,7 @@ import { RunGroup } from "../../models/run-group";
 import { useWorkAssignmentsContext } from "../../contexts/work-assignments-context";
 import { MSRSegment } from "../../models/msr-segment";
 import { useMemo } from "react";
+import { useAuthorizationContext } from "../../contexts/authorization-context";
 
 export interface WorkAssignmentsModalProps {
   isOpen: boolean;
@@ -19,6 +20,7 @@ const WorkAssignmentsModal = (props: WorkAssignmentsModalProps) => {
     setRunGroup,
     settings,
   } = useWorkAssignmentsContext();
+  const { isAdmin } = useAuthorizationContext();
 
   const workAssignmentStations = useMemo(() => {
     const stations = [];
@@ -104,14 +106,18 @@ const WorkAssignmentsModal = (props: WorkAssignmentsModalProps) => {
         </div>
         <div className="">
           <div className="modal-action">
-            <button
-              className="btn btn-outline btn-sm"
-              onClick={() => {
-                alert("TODO: Print work assignment worksheet.");
-              }}
-            >
-              Print
-            </button>
+            {isAdmin ? (
+              <button
+                className="btn btn-outline btn-sm"
+                onClick={() => {
+                  alert("TODO: Print work assignment worksheet.");
+                }}
+              >
+                Print
+              </button>
+            ) : (
+              <></>
+            )}
             <button className="btn btn-outline btn-sm" onClick={props.onClose}>
               Close
             </button>
