@@ -201,12 +201,12 @@ const EventSettingsModal = (props: EventSettingsModalProps) => {
           </label>
           <label className="form-control w-full">
             <div className="label">
-              <span className="font-bold label-text">Whitelisted Members</span>
+              <span className="font-bold label-text">Pre-registration Access</span>
             </div>
             {usersInput}
             <div className="label">
               <span className="label-text-alt">
-                Members who should be granted pre-registration access to this
+                Members who should be allowed pre-registration access to this
                 event.
               </span>
             </div>
