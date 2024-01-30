@@ -102,10 +102,20 @@ const WorkAssignmentsModal = (props: WorkAssignmentsModalProps) => {
         <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {workAssignmentStations}
         </div>
-        <div className="modal-action">
-          <button className="btn btn-outline btn-sm" onClick={props.onClose}>
-            Close
-          </button>
+        <div className="">
+          <div className="modal-action">
+            <button
+              className="btn btn-outline btn-sm"
+              onClick={() => {
+                alert("TODO: Print work assignment worksheet.");
+              }}
+            >
+              Print
+            </button>
+            <button className="btn btn-outline btn-sm" onClick={props.onClose}>
+              Close
+            </button>
+          </div>
         </div>
       </div>
     </dialog>
