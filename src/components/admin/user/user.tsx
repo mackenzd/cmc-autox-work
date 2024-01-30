@@ -66,7 +66,7 @@ const UserAdmin = () => {
   }, [value, options]);
 
   return (
-    <div className="justify-start user-admin">
+    <div className="justify-start">
       <div className="font-bold text-lg">User Admin</div>
       <div className="flex flex-row gap-5">{dropdown}</div>
       <div className="flex flex-col mt-10 gap-3">

@@ -8,9 +8,24 @@ const UserAvatar = () => {
   const logout = useLogout();
   const navigate = useNavigate();
 
+  // TODO: put this in a helper
+  const handleClick = () => {
+    const elem = document.activeElement;
+    if (elem) {
+      (elem as HTMLElement).blur();
+    }
+  };
+
   const logoutButton = (
     <li>
-      <button onClick={() => logout()}>Logout</button>
+      <button
+        onClick={() => {
+          handleClick();
+          logout();
+        }}
+      >
+        Logout
+      </button>
     </li>
   );
   const dropdownItems = useMemo(() => {
@@ -18,7 +33,14 @@ const UserAvatar = () => {
       return (
         <>
           <li>
-            <button onClick={() => navigate("/admin")}>Admin</button>
+            <button
+              onClick={() => {
+                handleClick();
+                navigate("/admin");
+              }}
+            >
+              Admin
+            </button>
           </li>
           {logoutButton}
         </>
