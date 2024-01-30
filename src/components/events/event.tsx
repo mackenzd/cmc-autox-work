@@ -5,6 +5,7 @@ import { WorkAssignmentsContextProvider } from "../../contexts/work-assignments-
 import { eventHasEnded } from "../../helpers/events";
 import EventSettingsModal from "./event-settings-modal";
 import { useAuthorizationContext } from "../../contexts/authorization-context";
+import { useCanPreregister } from "../../hooks/users";
 
 export interface EventCardProps {
   event: MSREvent;
@@ -74,7 +75,7 @@ const EventCard = (props: EventCardProps) => {
     ]
   );
 
-  const { isAdmin } = useAuthorizationContext();
+  const { user, isAdmin } = useAuthorizationContext();
   const eventSettingsButton =
     isAdmin && !hasEnded ? (
       <button
@@ -87,32 +88,36 @@ const EventCard = (props: EventCardProps) => {
       <></>
     );
 
-  const workAssignmentsButton = hasEnded ? (
-    <p>This event has ended.</p>
-  ) : (
-    <>
-      {props.event.registered ? (
-        <button
-          className="btn btn-primary"
-          onClick={() => setIsWorkAssignmentModalOpen(true)}
-        >
-          Work Assignments
-        </button>
-      ) : (
-        <>
-          <p>You are not registered for this event.</p>
-          <a
+  const canPreregister = useCanPreregister(user, props.event);
+
+  const workAssignmentsButton = useMemo(() => {
+    return hasEnded ? (
+      <p>This event has ended.</p>
+    ) : (
+      <>
+        {props.event.registered || canPreregister ? (
+          <button
             className="btn btn-primary"
-            href={props.event?.detailuri}
-            target="_blank"
-            rel="noreferrer"
+            onClick={() => setIsWorkAssignmentModalOpen(true)}
           >
-            Register
-          </a>
-        </>
-      )}
-    </>
-  );
+            Work Assignments
+          </button>
+        ) : (
+          <>
+            <p>You are not registered for this event.</p>
+            <a
+              className="btn btn-primary"
+              href={props.event?.detailuri}
+              target="_blank"
+              rel="noreferrer"
+            >
+              Register
+            </a>
+          </>
+        )}
+      </>
+    );
+  }, [canPreregister]);
 
   return (
     <>

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { MSRUser } from "../models/msr-user";
 import { Role } from "../models/roles";
+import { MSREvent } from "../models/msr-event";
 
 export function useGetUser(
   onFinish: () => void
@@ -75,7 +76,7 @@ export function useSetRole(
   const setRole = (role: Role) => {
     fetch(`/api/user/${user?.id}/roles`, {
       method: "POST",
-      body: JSON.stringify({"role": role}),
+      body: JSON.stringify({ role: role }),
     })
       .then((res) => {
         if (res.ok) {
@@ -96,7 +97,7 @@ export function useUnsetRole(
   const unsetRole = (role: Role) => {
     fetch(`/api/user/${user?.id}/roles`, {
       method: "DELETE",
-      body: JSON.stringify({"role": role}),
+      body: JSON.stringify({ role: role }),
     })
       .then((res) => {
         if (res.ok) {
@@ -108,4 +109,24 @@ export function useUnsetRole(
   };
 
   return unsetRole;
+}
+
+export function useCanPreregister(user?: MSRUser, event?: MSREvent): boolean {
+  const [canPreregister, setCanPreregister] = useState<boolean>(false);
+
+  useEffect(() => {
+    fetch(`/api/user/${user?.id}/can_preregister/${event?.id}`)
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        }
+        return Promise.reject(res);
+      })
+      .then((data) => {
+        setCanPreregister(data);
+      })
+      .catch((error) => console.log(error));
+  }, [setCanPreregister]);
+
+  return canPreregister;
 }

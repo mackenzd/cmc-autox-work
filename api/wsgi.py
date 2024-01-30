@@ -153,7 +153,7 @@ def get_entrylist(event_id):
 def get_work_assignments(event_id):
     try:
         q = WorkAssignment.query.join(User, WorkAssignment.user_id == User.id) \
-            .filter(WorkAssignment.event_id == event_id) \
+            .where(WorkAssignment.event_id == event_id) \
             .add_columns(User.id, User.first_name, User.last_name).all()
         assignments = [{
             "id": a[0].id,
@@ -227,9 +227,9 @@ def delete_work_assignment(event_id):
 @app.route('/api/events/<event_id>/settings')
 def get_event_settings(event_id):
     try:
-        q1 = EventSettings.query.filter(EventSettings.event_id == event_id).first()
+        q1 = EventSettings.query.where(EventSettings.event_id == event_id).first()
         q2 = PreregistrationAccess.query.join(User, PreregistrationAccess.user_id == User.id) \
-             .filter(PreregistrationAccess.event_id == event_id) \
+             .where(PreregistrationAccess.event_id == event_id) \
              .add_columns(User.id, User.first_name, User.last_name).all()
         if q1 and q2 is None:
             return make_response({}, 200)
@@ -267,8 +267,8 @@ def post_event_settings(event_id):
 
         preregistrationAccess = data.get('preregistrationAccess')
         if (preregistrationAccess):
-            PreregistrationAccess.query.filter(PreregistrationAccess.event_id == event_id) \
-                .filter(PreregistrationAccess.user_id.not_in([u.get('id') for u in preregistrationAccess])).delete()
+            PreregistrationAccess.query.where(PreregistrationAccess.event_id == event_id) \
+                .where(PreregistrationAccess.user_id.not_in([u.get('id') for u in preregistrationAccess])).delete()
             
             stmt2 = insert(PreregistrationAccess).values([{
                 "event_id": event_id,
@@ -279,7 +279,7 @@ def post_event_settings(event_id):
             )
             db.session.execute(stmt2)
         else:
-            PreregistrationAccess.query.filter(PreregistrationAccess.event_id == event_id).delete()
+            PreregistrationAccess.query.where(PreregistrationAccess.event_id == event_id).delete()
 
         db.session.commit()
     except Exception as e:
@@ -348,3 +348,15 @@ def delete_user_role(user_id):
         return make_response(json.dumps({'error': e}), 500)
 
     return make_response({}, 200)
+
+@app.route('/api/user/<user_id>/can_preregister/<event_id>')
+def get_user_preregistration_for_event(user_id, event_id):
+    try:
+        q = PreregistrationAccess.query.where(PreregistrationAccess.user_id == user_id).where(PreregistrationAccess.event_id == event_id).all()
+        if len(q) > 0:
+            return make_response("true", 200)
+    except Exception as e:
+        app.logger.error(e)
+        return make_response(json.dumps({'error': e}), 500)
+
+    return make_response("false", 200)
