@@ -111,7 +111,7 @@ const WorkAssignmentsModal = (props: WorkAssignmentsModalProps) => {
             {isAdmin ? (
               <button
                 className="btn btn-outline btn-sm"
-                onClick={() => getWorksheet(event)}
+                onClick={() => getWorksheet(event, segment, runGroup)}
               >
                 Print
               </button>

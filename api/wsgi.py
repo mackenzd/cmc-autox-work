@@ -85,9 +85,18 @@ with app.app_context():
 ## Template
 @app.route('/templates/events/<event_id>/work_assignments.html')
 def work_assignments_html(event_id):
+    segment = request.args.get('segment')
+    run_group = request.args.get('runGroup')
+
     q = WorkAssignment.query.join(User, WorkAssignment.user_id == User.id) \
             .where(WorkAssignment.event_id == event_id) \
-            .add_columns(User.id, User.first_name, User.last_name).all()
+            .add_columns(User.id, User.first_name, User.last_name)
+    
+    if segment:
+        q = q.where(WorkAssignment.work_assignment_segment == segment)
+    if run_group:
+        q = q.where(WorkAssignment.work_assignment_run_group == run_group)
+
     assignments = [{
             "id": a[0].id,
             "eventId": a[0].event_id,
@@ -101,7 +110,8 @@ def work_assignments_html(event_id):
             "station": a[0].work_assignment_station,
             "runGroup": a[0].work_assignment_run_group,
             "segment": a[0].work_assignment_segment
-        } for a in q]
+        } for a in q.all()]
+    print(assignments)
 
     return render_template('work_assignments.html', assignments=assignments)
 
@@ -161,8 +171,8 @@ def get_user_events():
 
 @app.route('/api/organization/events')
 def get_organization_events():
-    start = request.args['start']
-    end = request.args['end']
+    start = request.args.get('start')
+    end = request.args.get('end')
 
     res = oauth.msr.get(f'rest/calendars/organization/{app.config['MSR_ORGANIZATION_ID']}.json', params={'start': start, 'end': end, 'archive': True})
     return make_response(res.content, res.status_code)
