@@ -9,6 +9,11 @@ export function filterEvents(events: MSREvent[]): MSREvent[] {
   );
 }
 
+export function eventHasStarted(event: MSREvent): boolean {
+  const startDate = new Date(`${event?.start} UTC`);
+  return startDate < new Date();
+}
+
 export function eventHasEnded(event: MSREvent): boolean {
   const endDate = new Date(`${event?.end} UTC`);
   return endDate < new Date();

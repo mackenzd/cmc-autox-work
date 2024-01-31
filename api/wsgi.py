@@ -413,14 +413,13 @@ def delete_user_role(user_id):
 
     return make_response({}, 200)
 
-@app.route('/api/user/<user_id>/can_preregister/<event_id>')
-def get_user_preregistration_for_event(user_id, event_id):
+@app.route('/api/user/<user_id>/preregistration')
+def get_user_preregistration(user_id):
     try:
-        q = PreregistrationAccess.query.where(PreregistrationAccess.user_id == user_id).where(PreregistrationAccess.event_id == event_id).all()
-        if len(q) > 0:
-            return make_response('true', 200)
+        q = PreregistrationAccess.query.where(PreregistrationAccess.user_id == user_id).all()
+        preregistration = [a.event_id for a in q]
     except Exception as e:
         app.logger.error(e)
         return make_response(json.dumps({'error': e}), 500)
 
-    return make_response('false', 200)
+    return jsonify(preregistration)

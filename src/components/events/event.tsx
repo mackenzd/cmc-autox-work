@@ -2,13 +2,13 @@ import { useMemo, useState } from "react";
 import { MSREvent } from "../../models/msr-event";
 import WorkAssignmentsModal from "../work-assignments/work-assignment-modal";
 import { WorkAssignmentsContextProvider } from "../../contexts/work-assignments-context";
-import { eventHasEnded } from "../../helpers/events";
+import { eventHasEnded, eventHasStarted } from "../../helpers/events";
 import EventSettingsModal from "./event-settings-modal";
 import { useAuthorizationContext } from "../../contexts/authorization-context";
-import { useCanPreregister } from "../../hooks/users";
 
 export interface EventCardProps {
   event: MSREvent;
+  canPreregister: boolean;
 }
 
 const EventCard = (props: EventCardProps) => {
@@ -26,6 +26,7 @@ const EventCard = (props: EventCardProps) => {
     [props.event.end]
   );
 
+  const hasStarted = useMemo(() => eventHasStarted(props.event), [props.event]);
   const hasEnded = useMemo(() => eventHasEnded(props.event), [props.event]);
 
   const [isSettingsModalOpen, setIsSettingsModalOpen] =
@@ -75,9 +76,9 @@ const EventCard = (props: EventCardProps) => {
     ]
   );
 
-  const { user, isAdmin } = useAuthorizationContext();
+  const { isAdmin } = useAuthorizationContext();
   const eventSettingsButton =
-    isAdmin && !hasEnded ? (
+    isAdmin && !hasStarted ? (
       <button
         className="btn btn-primary"
         onClick={() => setIsSettingsModalOpen(true)}
@@ -88,23 +89,25 @@ const EventCard = (props: EventCardProps) => {
       <></>
     );
 
-  const canPreregister = useCanPreregister(user, props.event);
-
-  const workAssignmentsButton = useMemo(() => {
+  const footer = useMemo(() => {
     return hasEnded ? (
-        <p>This event has ended.</p>
+      <p>This event has ended.</p>
     ) : (
       <>
-        {props.event.registered || canPreregister || isAdmin ? (
-          <button
-            className="btn btn-primary"
-            onClick={() => setIsWorkAssignmentModalOpen(true)}
-          >
-            Work Assignments
-          </button>
+        {props.event.registered || props.canPreregister || isAdmin ? (
+          <>
+            {eventSettingsButton}
+            <button
+              className="btn btn-primary"
+              onClick={() => setIsWorkAssignmentModalOpen(true)}
+            >
+              Work Assignments
+            </button>
+          </>
         ) : (
           <>
             <p>You are not registered for this event.</p>
+            {eventSettingsButton}
             <a
               className="btn btn-primary"
               href={props.event?.detailuri}
@@ -117,15 +120,22 @@ const EventCard = (props: EventCardProps) => {
         )}
       </>
     );
-  }, [canPreregister]);
+  }, [props.canPreregister]);
 
   return (
     <>
       <div className="card bg-base-100 shadow-xl">
         <div className="card-body">
-          <a className="card-title" href={props.event?.detailuri} target="_blank" rel="noreferrer">{props.event?.name}</a>
+          <a
+            className="card-title"
+            href={props.event?.detailuri}
+            target="_blank"
+            rel="noreferrer"
+          >
+            {props.event?.name}
+          </a>
           <p>
-              {props.event?.venue.name}
+            {props.event?.venue.name}
             <br />
             {isSingleDayEvent
               ? startDate.toLocaleDateString()
@@ -133,10 +143,7 @@ const EventCard = (props: EventCardProps) => {
                 " - " +
                 endDate.toLocaleDateString()}
           </p>
-          <div className="card-actions justify-end event-footer">
-            {eventSettingsButton}
-            {workAssignmentsButton}
-          </div>
+          <div className="card-actions justify-end event-footer">{footer}</div>
         </div>
       </div>
       {modals}

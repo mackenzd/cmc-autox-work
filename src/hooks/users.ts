@@ -111,11 +111,11 @@ export function useUnsetRole(
   return unsetRole;
 }
 
-export function useCanPreregister(user?: MSRUser, event?: MSREvent): boolean {
-  const [canPreregister, setCanPreregister] = useState<boolean>(false);
+export function useGetPreregistration(user?: MSRUser): string[] {
+  const [getPreregistration, setGetPreregistration] = useState<string[]>([]);
 
   useEffect(() => {
-    fetch(`/api/user/${user?.id}/can_preregister/${event?.id}`)
+    fetch(`/api/user/${user?.id}/preregistration`)
       .then((res) => {
         if (res.ok) {
           return res.json();
@@ -123,10 +123,10 @@ export function useCanPreregister(user?: MSRUser, event?: MSREvent): boolean {
         return Promise.reject(res);
       })
       .then((data) => {
-        setCanPreregister(data);
+        setGetPreregistration(data);
       })
       .catch((error) => console.log(error));
-  }, [setCanPreregister]);
+  }, [setGetPreregistration]);
 
-  return canPreregister;
+  return getPreregistration;
 }
