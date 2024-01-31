@@ -23,7 +23,8 @@ class User(db.Model):
     __tablename__ = 'user'
 
     id = db.Column(db.String(35), primary_key=True)
-    email = db.Column(db.String(128), unique=False, nullable=False)
+    member_id = db.Column(db.String(35), unique=True, nullable=True)
+    email = db.Column(db.String(128), unique=False, nullable=True)
     first_name = db.Column(db.String(64), unique=False, nullable=False)
     last_name = db.Column(db.String(64), unique=False, nullable=False)
     avatar = db.Column(db.String(128), unique=False, nullable=True)
@@ -154,16 +155,20 @@ def callback():
         res.raise_for_status()
 
         profile = json.loads(res.content).get('response').get('profile')
+        member_id = next((org.get("memberId") for org in profile.get('organizations') if org.get('id') == app.config['MSR_ORGANIZATION_ID']), None)
+
         stmt = insert(User).values(
-            id = profile['id'],
-            email = profile['email'],
-            first_name = profile['firstName'],
-            last_name = profile['lastName'],
-            avatar = profile['avatar']
+            id = profile.get('id'),
+            member_id = member_id,
+            email = profile.get('email'),
+            first_name = profile.get('firstName'),
+            last_name = profile.get('lastName'),
+            avatar = profile.get('avatar')
         )
         stmt = stmt.on_conflict_do_update(
             index_elements=[User.id],
             set_={
+                User.member_id: stmt.excluded.member_id,
                 User.email: stmt.excluded.email,
                 User.first_name: stmt.excluded.first_name,
                 User.last_name: stmt.excluded.last_name,
