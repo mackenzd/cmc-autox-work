@@ -15,7 +15,7 @@ const UserAdmin = () => {
     }
 
     setUser(user);
-    setValue(`${user.firstName} ${user.lastName}`);
+    setValue("");
   };
 
   const options = useMemo(() => {
