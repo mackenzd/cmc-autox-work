@@ -72,10 +72,13 @@ const UserAdmin = () => {
       <div className="flex flex-col mt-10 gap-3">
         {user ? (
           <>
-            {" "}
             <div>
-              <div className="font-bold">MSR ID</div>
+              <div className="font-bold">User ID</div>
               <div>{user?.id}</div>
+            </div>
+            <div>
+              <div className="font-bold">Member ID</div>
+              <div>{user?.memberId ? user.memberId : "-"}</div>
             </div>
             <div>
               <div className="font-bold">Name</div>
@@ -85,7 +88,7 @@ const UserAdmin = () => {
             </div>
             <div>
               <div className="font-bold">Email</div>
-              <div>{user?.email}</div>
+              <div>{user?.email ? user.email : "-"}</div>
             </div>
             <div>
               <UserRoleAdmin user={user} />

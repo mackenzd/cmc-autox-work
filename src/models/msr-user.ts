@@ -1,10 +1,11 @@
 import { MSRUserOrganization } from "./msr-organization";
 
 export type MSRUser = {
-  avatar: string;
-  email: string;
-  firstName: string;
   id: string;
+  email?: string;
+  firstName: string;
   lastName: string;
+  avatar: string;
   organizations: MSRUserOrganization[];
+  memberId?: string;
 };

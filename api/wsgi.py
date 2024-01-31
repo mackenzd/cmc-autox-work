@@ -357,6 +357,7 @@ def get_users():
         q = User.query.all()
         users = [{
             'id': a.id,
+            'memberId': a.member_id,
             'firstName': a.first_name,
             'lastName': a.last_name,
             'email': a.email
