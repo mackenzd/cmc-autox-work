@@ -86,15 +86,16 @@ def assignments_to_dict(assignments):
     output = {}
 
     for assignment in assignments:
-        name = f"{assignment['user']['firstName']} {assignment['user']['lastName']}"
-        vehicle_number = assignment['vehicleNumber']
-        work_assignment_station = assignment['station']
-        work_assignment_type = assignment['type']
+        user = assignment.get('user')
+        name = f'{user.get('firstName')} {user.get('lastName')}'
+        vehicle_number = assignment.get('vehicleNumber') or ''
+        work_assignment_station = assignment.get('station')
+        work_assignment_type = assignment.get('type')
 
         if work_assignment_station:
-            key = f'station{work_assignment_station}_{work_assignment_type.lower().replace(" ", "")}'
+            key = f'station{work_assignment_station}_{work_assignment_type.lower().replace(' ', '')}'
         else:
-            key = f'{work_assignment_type.lower().replace(" ", "")}'
+            key = f'{work_assignment_type.lower().replace(' ', '')}'
         output[key] = [name, vehicle_number]
 
     return output
@@ -116,18 +117,18 @@ def work_assignments_html(event_id):
         q = q.where(WorkAssignment.work_assignment_run_group == run_group)
 
     assignments = [{
-            "id": a[0].id,
-            "eventId": a[0].event_id,
-            "user": {
-                "id": a.id,
-                "firstName": a.first_name,
-                "lastName": a.last_name
+            'id': a[0].id,
+            'eventId': a[0].event_id,
+            'user': {
+                'id': a.id,
+                'firstName': a.first_name,
+                'lastName': a.last_name
             },
-            "vehicleNumber": a[0].vehicle_number,
-            "type": a[0].work_assignment_type,
-            "station": a[0].work_assignment_station,
-            "runGroup": a[0].work_assignment_run_group,
-            "segment": a[0].work_assignment_segment
+            'vehicleNumber': a[0].vehicle_number,
+            'type': a[0].work_assignment_type,
+            'station': a[0].work_assignment_station,
+            'runGroup': a[0].work_assignment_run_group,
+            'segment': a[0].work_assignment_segment
         } for a in q.all()]
 
     return render_template('work_assignments.html',
@@ -210,18 +211,18 @@ def get_work_assignments(event_id):
             .where(WorkAssignment.event_id == event_id) \
             .add_columns(User.id, User.first_name, User.last_name).all()
         assignments = [{
-            "id": a[0].id,
-            "eventId": a[0].event_id,
-            "user": {
-                "id": a.id,
-                "firstName": a.first_name,
-                "lastName": a.last_name
+            'id': a[0].id,
+            'eventId': a[0].event_id,
+            'user': {
+                'id': a.id,
+                'firstName': a.first_name,
+                'lastName': a.last_name
             },
-            "vehicleNumber": a[0].vehicle_number,
-            "type": a[0].work_assignment_type,
-            "station": a[0].work_assignment_station,
-            "runGroup": a[0].work_assignment_run_group,
-            "segment": a[0].work_assignment_segment
+            'vehicleNumber': a[0].vehicle_number,
+            'type': a[0].work_assignment_type,
+            'station': a[0].work_assignment_station,
+            'runGroup': a[0].work_assignment_run_group,
+            'segment': a[0].work_assignment_segment
         } for a in q]
     except Exception as e:
         app.logger.error(e)
@@ -288,13 +289,13 @@ def get_event_settings(event_id):
         if q1 and q2 is None:
             return make_response({}, 200)
         settings = {
-            "id": q1.id,
-            "eventId": q1.event_id,
-            "stations": q1.stations,
-            "preregistrationAccess": [{
-                "id": u.id,
-                "firstName": u.first_name,
-                "lastName": u.last_name
+            'id': q1.id,
+            'eventId': q1.event_id,
+            'stations': q1.stations,
+            'preregistrationAccess': [{
+                'id': u.id,
+                'firstName': u.first_name,
+                'lastName': u.last_name
             } for u in q2]
         }
     except Exception as e:
@@ -325,8 +326,8 @@ def post_event_settings(event_id):
                 .where(PreregistrationAccess.user_id.not_in([u.get('id') for u in preregistrationAccess])).delete()
             
             stmt2 = insert(PreregistrationAccess).values([{
-                "event_id": event_id,
-                "user_id": u.get('id'),
+                'event_id': event_id,
+                'user_id': u.get('id'),
             } for u in preregistrationAccess])
             stmt2 = stmt2.on_conflict_do_nothing(
                 index_elements=[PreregistrationAccess.event_id, PreregistrationAccess.user_id],
@@ -347,10 +348,10 @@ def get_users():
     try:
         q = User.query.all()
         users = [{
-            "id": a.id,
-            "firstName": a.first_name,
-            "lastName": a.last_name,
-            "email": a.email
+            'id': a.id,
+            'firstName': a.first_name,
+            'lastName': a.last_name,
+            'email': a.email
         } for a in q]
     except Exception as e:
         app.logger.error(e)
@@ -408,9 +409,9 @@ def get_user_preregistration_for_event(user_id, event_id):
     try:
         q = PreregistrationAccess.query.where(PreregistrationAccess.user_id == user_id).where(PreregistrationAccess.event_id == event_id).all()
         if len(q) > 0:
-            return make_response("true", 200)
+            return make_response('true', 200)
     except Exception as e:
         app.logger.error(e)
         return make_response(json.dumps({'error': e}), 500)
 
-    return make_response("false", 200)
+    return make_response('false', 200)
