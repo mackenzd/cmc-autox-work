@@ -82,9 +82,27 @@ with app.app_context():
     oauth = OAuth(app)
     oauth.register('msr', fetch_token=fetch_token)
 
+def assignments_to_dict(assignments):
+    output = {}
+
+    for assignment in assignments:
+        name = f"{assignment['user']['firstName']} {assignment['user']['lastName']}"
+        vehicle_number = assignment['vehicleNumber']
+        work_assignment_station = assignment['station']
+        work_assignment_type = assignment['type']
+
+        if work_assignment_station:
+            key = f'station{work_assignment_station}_{work_assignment_type.lower().replace(" ", "")}'
+        else:
+            key = f'{work_assignment_type.lower().replace(" ", "")}'
+        output[key] = [name, vehicle_number]
+
+    return output
+
 ## Template
 @app.route('/templates/events/<event_id>/work_assignments.html')
 def work_assignments_html(event_id):
+    title = request.args.get('title')
     segment = request.args.get('segment')
     run_group = request.args.get('runGroup')
 
@@ -111,9 +129,12 @@ def work_assignments_html(event_id):
             "runGroup": a[0].work_assignment_run_group,
             "segment": a[0].work_assignment_segment
         } for a in q.all()]
-    print(assignments)
 
-    return render_template('work_assignments.html', assignments=assignments)
+    return render_template('work_assignments.html',
+                           title=title,
+                           segment=segment,
+                           run_group=run_group,
+                           assignments=assignments_to_dict(assignments))
 
 ## Auth
 @app.route('/auth/login')

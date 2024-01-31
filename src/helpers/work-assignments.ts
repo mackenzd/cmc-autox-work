@@ -157,6 +157,9 @@ export function getWorksheet(
   runGroup?: RunGroup
 ): void {
   const params: string[] = [];
+  if (event?.name) {
+    params.push(`title=${encodeURIComponent(event.name)}`);
+  }
   if (segment) {
     params.push(`segment=${encodeURIComponent(segment)}`);
   }
