@@ -97,7 +97,7 @@ const UserRoleAdmin = (props: UserRoleAdminProps) => {
 
   const dropdown = useMemo(() => {
     return (
-      <div className="dropdown dropdown-bottom badge badge-outline p-3 mt-1 mb-1 flex">
+      <div className="dropdown dropdown-right badge badge-outline p-3 mt-1 mb-1 flex">
         <button className="font-bold">Add Role</button>
         <div className="dropdown-content z-[1] shadow bg-base-100 rounded-box w-52">
           <ul className="menu menu-compact">{options}</ul>
