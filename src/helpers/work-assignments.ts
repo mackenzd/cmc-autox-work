@@ -1,3 +1,4 @@
+import { MSREvent } from "../models/msr-event";
 import { MSRSegment } from "../models/msr-segment";
 import { MSRUser } from "../models/msr-user";
 import { Role } from "../models/roles";
@@ -122,4 +123,19 @@ export function roleForWorkAssignment(type: WorkAssignmentType): Role | undefine
       default:
           return undefined;
   }
+}
+
+export function getWorksheet(event?: MSREvent): void {
+  fetch(`/templates/events/${event?.id}/work_assignments.html`)
+    .then((res) => {
+      if (res.ok) {
+        return res.text();
+      }
+      return Promise.reject(res);
+    })
+    .then((data) => {
+      var tab = window.open("", "_blank");
+      tab?.document.write(data);
+    })
+    .catch((error) => console.log(error));
 }

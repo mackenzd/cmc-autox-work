@@ -5,6 +5,7 @@ import { useWorkAssignmentsContext } from "../../contexts/work-assignments-conte
 import { MSRSegment } from "../../models/msr-segment";
 import { useMemo } from "react";
 import { useAuthorizationContext } from "../../contexts/authorization-context";
+import { getWorksheet } from "../../helpers/work-assignments";
 
 export interface WorkAssignmentsModalProps {
   isOpen: boolean;
@@ -13,6 +14,7 @@ export interface WorkAssignmentsModalProps {
 
 const WorkAssignmentsModal = (props: WorkAssignmentsModalProps) => {
   const {
+    event,
     availableSegments,
     segment,
     setSegment,
@@ -109,9 +111,7 @@ const WorkAssignmentsModal = (props: WorkAssignmentsModalProps) => {
             {isAdmin ? (
               <button
                 className="btn btn-outline btn-sm"
-                onClick={() => {
-                  alert("TODO: Print work assignment worksheet.");
-                }}
+                onClick={() => getWorksheet(event)}
               >
                 Print
               </button>

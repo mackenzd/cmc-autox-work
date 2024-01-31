@@ -1,8 +1,8 @@
-from flask import Flask, redirect, session, make_response, request, jsonify
+from flask import Flask, redirect, session, make_response, request, jsonify, render_template
 from flask_sqlalchemy import SQLAlchemy
 from authlib.integrations.flask_client import OAuth
 from sqlalchemy.dialects.sqlite import insert
-from sqlalchemy import UniqueConstraint, select, delete
+from sqlalchemy import UniqueConstraint, delete
 from dataclasses import dataclass
 import json
 
@@ -81,6 +81,29 @@ with app.app_context():
 
     oauth = OAuth(app)
     oauth.register('msr', fetch_token=fetch_token)
+
+## Template
+@app.route('/templates/events/<event_id>/work_assignments.html')
+def work_assignments_html(event_id):
+    q = WorkAssignment.query.join(User, WorkAssignment.user_id == User.id) \
+            .where(WorkAssignment.event_id == event_id) \
+            .add_columns(User.id, User.first_name, User.last_name).all()
+    assignments = [{
+            "id": a[0].id,
+            "eventId": a[0].event_id,
+            "user": {
+                "id": a.id,
+                "firstName": a.first_name,
+                "lastName": a.last_name
+            },
+            "vehicleNumber": a[0].vehicle_number,
+            "type": a[0].work_assignment_type,
+            "station": a[0].work_assignment_station,
+            "runGroup": a[0].work_assignment_run_group,
+            "segment": a[0].work_assignment_segment
+        } for a in q]
+
+    return render_template('work_assignments.html', assignments=assignments)
 
 ## Auth
 @app.route('/auth/login')

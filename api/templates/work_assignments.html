@@ -1,0 +1,712 @@
+<html>
+  <head>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      body {
+        width: 8.5in;
+        height: 11in;
+      }
+      @page {
+        size: 8.5in 11in;
+      }
+    </style>
+  </head>
+  <body class="bg-white">
+    <div id="header">
+      <div class="flex justify-between">
+        <div class="flex">
+          <div class="pr-2">Run Group</div>
+          <div class="border-b border-black w-24">TODO</div>
+        </div>
+        <div class="flex justify-end">
+          <div class="flex">
+            <div class="px-2">Work</div>
+            <div class="border-b border-black w-24">TODO</div>
+          </div>
+          <div class="flex">
+            <div class="px-2">Run</div>
+            <div class="border-b border-black w-24">TODO</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="assignments">
+      <div id="top-assignments" class="grid grid-cols-2 gap-2 py-4">
+        <div id="computer-assignments" class="text-center">
+          <div class="flex justify-end">
+            <div class="w-12">Car #</div>
+            <div class="w-8">AM</div>
+            <div class="w-8">PM</div>
+          </div>
+          <div class="flex justify-between">
+            <div class="text-right pr-2 w-52">Computer</div>
+            <div class="border-b border-black w-full"></div>
+            <div class="flex justify-end">
+              <div class="border border-black w-12"></div>
+              <div class="border border-black w-8"></div>
+              <div class="border border-black w-8"></div>
+            </div>
+          </div>
+          <div class="flex justify-between">
+            <div class="text-right pr-2 w-52">Assistant</div>
+            <div class="border-b border-black w-full"></div>
+            <div class="flex justify-end">
+              <div class="border border-black w-12"></div>
+              <div class="border border-black w-8"></div>
+              <div class="border border-black w-8"></div>
+            </div>
+          </div>
+        </div>
+        <div id="grid-assignments" class="text-center">
+          <div class="flex justify-end">
+            <div class="w-12">Car #</div>
+            <div class="w-8">AM</div>
+            <div class="w-8">PM</div>
+          </div>
+          <div class="flex justify-between">
+            <div class="text-right pr-2 w-52">Grid</div>
+            <div class="border-b border-black w-full"></div>
+            <div class="flex justify-end">
+              <div class="border border-black w-12"></div>
+              <div class="border border-black w-8"></div>
+              <div class="border border-black w-8"></div>
+            </div>
+          </div>
+          <div class="flex justify-between">
+            <div class="text-right pr-2 w-52">Grid</div>
+            <div class="border-b border-black w-full"></div>
+            <div class="flex justify-end">
+              <div class="border border-black w-12"></div>
+              <div class="border border-black w-8"></div>
+              <div class="border border-black w-8"></div>
+            </div>
+          </div>
+        </div>
+        <div id="instructor-assignments" class="text-center">
+          <div class="flex justify-end">
+            <div class="w-12">Car #</div>
+            <div class="w-8">AM</div>
+            <div class="w-8">PM</div>
+          </div>
+          <div class="flex justify-between">
+            <div class="text-right pr-2 w-52">Instructor</div>
+            <div class="border-b border-black w-full"></div>
+            <div class="flex justify-end">
+              <div class="border border-black w-12"></div>
+              <div class="border border-black w-8"></div>
+              <div class="border border-black w-8"></div>
+            </div>
+          </div>
+          <div class="flex justify-between">
+            <div class="text-right pr-2 w-52">Instructor</div>
+            <div class="border-b border-black w-full"></div>
+            <div class="flex justify-end">
+              <div class="border border-black w-12"></div>
+              <div class="border border-black w-8"></div>
+              <div class="border border-black w-8"></div>
+            </div>
+          </div>
+        </div>
+        <div id="instructor2-assignments" class="text-center">
+          <div class="flex justify-end">
+            <div class="w-12">Car #</div>
+            <div class="w-8">AM</div>
+            <div class="w-8">PM</div>
+          </div>
+          <div class="flex justify-between">
+            <div class="text-right pr-2 w-52">Instructor</div>
+            <div class="border-b border-black w-full"></div>
+            <div class="flex justify-end">
+              <div class="border border-black w-12"></div>
+              <div class="border border-black w-8"></div>
+              <div class="border border-black w-8"></div>
+            </div>
+          </div>
+          <div class="flex justify-between">
+            <div class="text-right pr-2 w-52">Instructor</div>
+            <div class="border-b border-black w-full"></div>
+            <div class="flex justify-end">
+              <div class="border border-black w-12"></div>
+              <div class="border border-black w-8"></div>
+              <div class="border border-black w-8"></div>
+            </div>
+          </div>
+        </div>
+        <div id="start-assignments" class="text-center">
+          <div class="flex justify-end">
+            <div class="w-12">Car #</div>
+            <div class="w-8">AM</div>
+            <div class="w-8">PM</div>
+          </div>
+          <div class="flex justify-between">
+            <div class="text-right pr-2 w-52">Start</div>
+            <div class="border-b border-black w-full"></div>
+            <div class="flex justify-end">
+              <div class="border border-black w-12"></div>
+              <div class="border border-black w-8"></div>
+              <div class="border border-black w-8"></div>
+            </div>
+          </div>
+        </div>
+        <div id="gate-marshal-assignments" class="text-center">
+          <div class="flex justify-end">
+            <div class="w-12">Car #</div>
+            <div class="w-8">AM</div>
+            <div class="w-8">PM</div>
+          </div>
+          <div class="flex justify-between">
+            <div class="text-right pr-2 w-52">Gate Marshal</div>
+            <div class="border-b border-black w-full"></div>
+            <div class="flex justify-end">
+              <div class="border border-black w-12"></div>
+              <div class="border border-black w-8"></div>
+              <div class="border border-black w-8"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="bottom-assignments" class="grid grid-cols-2 gap-2 py-4">
+        <div id="station-1-assignments" class="text-center">
+          <div class="h-0 font-bold">Station 1</div>
+          <div class="flex justify-end">
+            <div class="w-12">Car #</div>
+            <div class="w-8">AM</div>
+            <div class="w-8">PM</div>
+          </div>
+          <div class="flex justify-between">
+            <div class="border-b border-black font-bold text-right pr-2 w-52">Leader</div>
+            <div class="border-b border-black w-full"></div>
+            <div class="flex justify-end">
+              <div class="border border-black w-12"></div>
+              <div class="border border-black w-8"></div>
+              <div class="border border-black w-8"></div>
+            </div>
+          </div>
+          <div class="flex justify-between">
+            <div class="text-right pr-2 w-52">Runner</div>
+            <div class="border-b border-black w-full"></div>
+            <div class="flex justify-end">
+              <div class="border border-black w-12"></div>
+              <div class="border border-black w-8"></div>
+              <div class="border border-black w-8"></div>
+            </div>
+          </div>
+          <div class="flex justify-between">
+            <div class="text-right pr-2 w-52">Runner</div>
+            <div class="border-b border-black w-full"></div>
+            <div class="flex justify-end">
+              <div class="border border-black w-12"></div>
+              <div class="border border-black w-8"></div>
+              <div class="border border-black w-8"></div>
+            </div>
+          </div>
+          <div class="flex justify-between">
+            <div class="text-right pr-2 w-52">Runner</div>
+            <div class="border-b border-black w-full"></div>
+            <div class="flex justify-end">
+              <div class="border border-black w-12"></div>
+              <div class="border border-black w-8"></div>
+              <div class="border border-black w-8"></div>
+            </div>
+          </div>
+        </div>
+
+        <div id="station-2-assignments" class="text-center">
+          <div class="h-0 font-bold">Station 2</div>
+          <div class="flex justify-end">
+            <div class="w-12">Car #</div>
+            <div class="w-8">AM</div>
+            <div class="w-8">PM</div>
+          </div>
+          <div class="flex justify-between">
+            <div class="border-b border-black font-bold text-right pr-2 w-52">Leader</div>
+            <div class="border-b border-black w-full"></div>
+            <div class="flex justify-end">
+              <div class="border border-black w-12"></div>
+              <div class="border border-black w-8"></div>
+              <div class="border border-black w-8"></div>
+            </div>
+          </div>
+          <div class="flex justify-between">
+            <div class="text-right pr-2 w-52">Runner</div>
+            <div class="border-b border-black w-full"></div>
+            <div class="flex justify-end">
+              <div class="border border-black w-12"></div>
+              <div class="border border-black w-8"></div>
+              <div class="border border-black w-8"></div>
+            </div>
+          </div>
+          <div class="flex justify-between">
+            <div class="text-right pr-2 w-52">Runner</div>
+            <div class="border-b border-black w-full"></div>
+            <div class="flex justify-end">
+              <div class="border border-black w-12"></div>
+              <div class="border border-black w-8"></div>
+              <div class="border border-black w-8"></div>
+            </div>
+          </div>
+          <div class="flex justify-between">
+            <div class="text-right pr-2 w-52">Runner</div>
+            <div class="border-b border-black w-full"></div>
+            <div class="flex justify-end">
+              <div class="border border-black w-12"></div>
+              <div class="border border-black w-8"></div>
+              <div class="border border-black w-8"></div>
+            </div>
+          </div>
+        </div>
+
+        <div id="station-3-assignments" class="text-center">
+          <div class="h-0 font-bold">Station 3</div>
+          <div class="flex justify-end">
+            <div class="w-12">Car #</div>
+            <div class="w-8">AM</div>
+            <div class="w-8">PM</div>
+          </div>
+          <div class="flex justify-between">
+            <div class="border-b border-black font-bold text-right pr-2 w-52">Leader</div>
+            <div class="border-b border-black w-full"></div>
+            <div class="flex justify-end">
+              <div class="border border-black w-12"></div>
+              <div class="border border-black w-8"></div>
+              <div class="border border-black w-8"></div>
+            </div>
+          </div>
+          <div class="flex justify-between">
+            <div class="text-right pr-2 w-52">Runner</div>
+            <div class="border-b border-black w-full"></div>
+            <div class="flex justify-end">
+              <div class="border border-black w-12"></div>
+              <div class="border border-black w-8"></div>
+              <div class="border border-black w-8"></div>
+            </div>
+          </div>
+          <div class="flex justify-between">
+            <div class="text-right pr-2 w-52">Runner</div>
+            <div class="border-b border-black w-full"></div>
+            <div class="flex justify-end">
+              <div class="border border-black w-12"></div>
+              <div class="border border-black w-8"></div>
+              <div class="border border-black w-8"></div>
+            </div>
+          </div>
+          <div class="flex justify-between">
+            <div class="text-right pr-2 w-52">Runner</div>
+            <div class="border-b border-black w-full"></div>
+            <div class="flex justify-end">
+              <div class="border border-black w-12"></div>
+              <div class="border border-black w-8"></div>
+              <div class="border border-black w-8"></div>
+            </div>
+          </div>
+        </div>
+
+        <div id="station-4-assignments" class="text-center">
+          <div class="h-0 font-bold">Station 5</div>
+          <div class="flex justify-end">
+            <div class="w-12">Car #</div>
+            <div class="w-8">AM</div>
+            <div class="w-8">PM</div>
+          </div>
+          <div class="flex justify-between">
+            <div class="border-b border-black font-bold text-right pr-2 w-52">Leader</div>
+            <div class="border-b border-black w-full"></div>
+            <div class="flex justify-end">
+              <div class="border border-black w-12"></div>
+              <div class="border border-black w-8"></div>
+              <div class="border border-black w-8"></div>
+            </div>
+          </div>
+          <div class="flex justify-between">
+            <div class="text-right pr-2 w-52">Runner</div>
+            <div class="border-b border-black w-full"></div>
+            <div class="flex justify-end">
+              <div class="border border-black w-12"></div>
+              <div class="border border-black w-8"></div>
+              <div class="border border-black w-8"></div>
+            </div>
+          </div>
+          <div class="flex justify-between">
+            <div class="text-right pr-2 w-52">Runner</div>
+            <div class="border-b border-black w-full"></div>
+            <div class="flex justify-end">
+              <div class="border border-black w-12"></div>
+              <div class="border border-black w-8"></div>
+              <div class="border border-black w-8"></div>
+            </div>
+          </div>
+          <div class="flex justify-between">
+            <div class="text-right pr-2 w-52">Runner</div>
+            <div class="border-b border-black w-full"></div>
+            <div class="flex justify-end">
+              <div class="border border-black w-12"></div>
+              <div class="border border-black w-8"></div>
+              <div class="border border-black w-8"></div>
+            </div>
+          </div>
+        </div>
+
+        <div id="station-1-assignments" class="text-center">
+          <div class="h-0 font-bold">Station 5</div>
+          <div class="flex justify-end">
+            <div class="w-12">Car #</div>
+            <div class="w-8">AM</div>
+            <div class="w-8">PM</div>
+          </div>
+          <div class="flex justify-between">
+            <div class="border-b border-black font-bold text-right pr-2 w-52">Leader</div>
+            <div class="border-b border-black w-full"></div>
+            <div class="flex justify-end">
+              <div class="border border-black w-12"></div>
+              <div class="border border-black w-8"></div>
+              <div class="border border-black w-8"></div>
+            </div>
+          </div>
+          <div class="flex justify-between">
+            <div class="text-right pr-2 w-52">Runner</div>
+            <div class="border-b border-black w-full"></div>
+            <div class="flex justify-end">
+              <div class="border border-black w-12"></div>
+              <div class="border border-black w-8"></div>
+              <div class="border border-black w-8"></div>
+            </div>
+          </div>
+          <div class="flex justify-between">
+            <div class="text-right pr-2 w-52">Runner</div>
+            <div class="border-b border-black w-full"></div>
+            <div class="flex justify-end">
+              <div class="border border-black w-12"></div>
+              <div class="border border-black w-8"></div>
+              <div class="border border-black w-8"></div>
+            </div>
+          </div>
+          <div class="flex justify-between">
+            <div class="text-right pr-2 w-52">Runner</div>
+            <div class="border-b border-black w-full"></div>
+            <div class="flex justify-end">
+              <div class="border border-black w-12"></div>
+              <div class="border border-black w-8"></div>
+              <div class="border border-black w-8"></div>
+            </div>
+          </div>
+        </div>
+
+        <div id="station-6-assignments" class="text-center">
+          <div class="h-0 font-bold">Station 6</div>
+          <div class="flex justify-end">
+            <div class="w-12">Car #</div>
+            <div class="w-8">AM</div>
+            <div class="w-8">PM</div>
+          </div>
+          <div class="flex justify-between">
+            <div class="border-b border-black font-bold text-right pr-2 w-52">Leader</div>
+            <div class="border-b border-black w-full"></div>
+            <div class="flex justify-end">
+              <div class="border border-black w-12"></div>
+              <div class="border border-black w-8"></div>
+              <div class="border border-black w-8"></div>
+            </div>
+          </div>
+          <div class="flex justify-between">
+            <div class="text-right pr-2 w-52">Runner</div>
+            <div class="border-b border-black w-full"></div>
+            <div class="flex justify-end">
+              <div class="border border-black w-12"></div>
+              <div class="border border-black w-8"></div>
+              <div class="border border-black w-8"></div>
+            </div>
+          </div>
+          <div class="flex justify-between">
+            <div class="text-right pr-2 w-52">Runner</div>
+            <div class="border-b border-black w-full"></div>
+            <div class="flex justify-end">
+              <div class="border border-black w-12"></div>
+              <div class="border border-black w-8"></div>
+              <div class="border border-black w-8"></div>
+            </div>
+          </div>
+          <div class="flex justify-between">
+            <div class="text-right pr-2 w-52">Runner</div>
+            <div class="border-b border-black w-full"></div>
+            <div class="flex justify-end">
+              <div class="border border-black w-12"></div>
+              <div class="border border-black w-8"></div>
+              <div class="border border-black w-8"></div>
+            </div>
+          </div>
+        </div>
+
+        <div id="station-7-assignments" class="text-center">
+          <div class="h-0 font-bold">Station 7</div>
+          <div class="flex justify-end">
+            <div class="w-12">Car #</div>
+            <div class="w-8">AM</div>
+            <div class="w-8">PM</div>
+          </div>
+          <div class="flex justify-between">
+            <div class="border-b border-black font-bold text-right pr-2 w-52">Leader</div>
+            <div class="border-b border-black w-full"></div>
+            <div class="flex justify-end">
+              <div class="border border-black w-12"></div>
+              <div class="border border-black w-8"></div>
+              <div class="border border-black w-8"></div>
+            </div>
+          </div>
+          <div class="flex justify-between">
+            <div class="text-right pr-2 w-52">Runner</div>
+            <div class="border-b border-black w-full"></div>
+            <div class="flex justify-end">
+              <div class="border border-black w-12"></div>
+              <div class="border border-black w-8"></div>
+              <div class="border border-black w-8"></div>
+            </div>
+          </div>
+          <div class="flex justify-between">
+            <div class="text-right pr-2 w-52">Runner</div>
+            <div class="border-b border-black w-full"></div>
+            <div class="flex justify-end">
+              <div class="border border-black w-12"></div>
+              <div class="border border-black w-8"></div>
+              <div class="border border-black w-8"></div>
+            </div>
+          </div>
+          <div class="flex justify-between">
+            <div class="text-right pr-2 w-52">Runner</div>
+            <div class="border-b border-black w-full"></div>
+            <div class="flex justify-end">
+              <div class="border border-black w-12"></div>
+              <div class="border border-black w-8"></div>
+              <div class="border border-black w-8"></div>
+            </div>
+          </div>
+        </div>
+
+        <div id="station-8-assignments" class="text-center">
+          <div class="h-0 font-bold">Station 8</div>
+          <div class="flex justify-end">
+            <div class="w-12">Car #</div>
+            <div class="w-8">AM</div>
+            <div class="w-8">PM</div>
+          </div>
+          <div class="flex justify-between">
+            <div class="border-b border-black font-bold text-right pr-2 w-52">Leader</div>
+            <div class="border-b border-black w-full"></div>
+            <div class="flex justify-end">
+              <div class="border border-black w-12"></div>
+              <div class="border border-black w-8"></div>
+              <div class="border border-black w-8"></div>
+            </div>
+          </div>
+          <div class="flex justify-between">
+            <div class="text-right pr-2 w-52">Runner</div>
+            <div class="border-b border-black w-full"></div>
+            <div class="flex justify-end">
+              <div class="border border-black w-12"></div>
+              <div class="border border-black w-8"></div>
+              <div class="border border-black w-8"></div>
+            </div>
+          </div>
+          <div class="flex justify-between">
+            <div class="text-right pr-2 w-52">Runner</div>
+            <div class="border-b border-black w-full"></div>
+            <div class="flex justify-end">
+              <div class="border border-black w-12"></div>
+              <div class="border border-black w-8"></div>
+              <div class="border border-black w-8"></div>
+            </div>
+          </div>
+          <div class="flex justify-between">
+            <div class="text-right pr-2 w-52">Runner</div>
+            <div class="border-b border-black w-full"></div>
+            <div class="flex justify-end">
+              <div class="border border-black w-12"></div>
+              <div class="border border-black w-8"></div>
+              <div class="border border-black w-8"></div>
+            </div>
+          </div>
+        </div>
+
+        <div id="station-9-assignments" class="text-center">
+          <div class="h-0 font-bold">Station 9</div>
+          <div class="flex justify-end">
+            <div class="w-12">Car #</div>
+            <div class="w-8">AM</div>
+            <div class="w-8">PM</div>
+          </div>
+          <div class="flex justify-between">
+            <div class="border-b border-black font-bold text-right pr-2 w-52">Leader</div>
+            <div class="border-b border-black w-full"></div>
+            <div class="flex justify-end">
+              <div class="border border-black w-12"></div>
+              <div class="border border-black w-8"></div>
+              <div class="border border-black w-8"></div>
+            </div>
+          </div>
+          <div class="flex justify-between">
+            <div class="text-right pr-2 w-52">Runner</div>
+            <div class="border-b border-black w-full"></div>
+            <div class="flex justify-end">
+              <div class="border border-black w-12"></div>
+              <div class="border border-black w-8"></div>
+              <div class="border border-black w-8"></div>
+            </div>
+          </div>
+          <div class="flex justify-between">
+            <div class="text-right pr-2 w-52">Runner</div>
+            <div class="border-b border-black w-full"></div>
+            <div class="flex justify-end">
+              <div class="border border-black w-12"></div>
+              <div class="border border-black w-8"></div>
+              <div class="border border-black w-8"></div>
+            </div>
+          </div>
+          <div class="flex justify-between">
+            <div class="text-right pr-2 w-52">Runner</div>
+            <div class="border-b border-black w-full"></div>
+            <div class="flex justify-end">
+              <div class="border border-black w-12"></div>
+              <div class="border border-black w-8"></div>
+              <div class="border border-black w-8"></div>
+            </div>
+          </div>
+        </div>
+
+        <div id="station-10-assignments" class="text-center">
+          <div class="h-0 font-bold">Station 10</div>
+          <div class="flex justify-end">
+            <div class="w-12">Car #</div>
+            <div class="w-8">AM</div>
+            <div class="w-8">PM</div>
+          </div>
+          <div class="flex justify-between">
+            <div class="border-b border-black font-bold text-right pr-2 w-52">Leader</div>
+            <div class="border-b border-black w-full"></div>
+            <div class="flex justify-end">
+              <div class="border border-black w-12"></div>
+              <div class="border border-black w-8"></div>
+              <div class="border border-black w-8"></div>
+            </div>
+          </div>
+          <div class="flex justify-between">
+            <div class="text-right pr-2 w-52">Runner</div>
+            <div class="border-b border-black w-full"></div>
+            <div class="flex justify-end">
+              <div class="border border-black w-12"></div>
+              <div class="border border-black w-8"></div>
+              <div class="border border-black w-8"></div>
+            </div>
+          </div>
+          <div class="flex justify-between">
+            <div class="text-right pr-2 w-52">Runner</div>
+            <div class="border-b border-black w-full"></div>
+            <div class="flex justify-end">
+              <div class="border border-black w-12"></div>
+              <div class="border border-black w-8"></div>
+              <div class="border border-black w-8"></div>
+            </div>
+          </div>
+          <div class="flex justify-between">
+            <div class="text-right pr-2 w-52">Runner</div>
+            <div class="border-b border-black w-full"></div>
+            <div class="flex justify-end">
+              <div class="border border-black w-12"></div>
+              <div class="border border-black w-8"></div>
+              <div class="border border-black w-8"></div>
+            </div>
+          </div>
+        </div>
+
+        <div id="station-11-assignments" class="text-center">
+          <div class="h-0 font-bold">Station 11</div>
+          <div class="flex justify-end">
+            <div class="w-12">Car #</div>
+            <div class="w-8">AM</div>
+            <div class="w-8">PM</div>
+          </div>
+          <div class="flex justify-between">
+            <div class="border-b border-black font-bold text-right pr-2 w-52">Leader</div>
+            <div class="border-b border-black w-full"></div>
+            <div class="flex justify-end">
+              <div class="border border-black w-12"></div>
+              <div class="border border-black w-8"></div>
+              <div class="border border-black w-8"></div>
+            </div>
+          </div>
+          <div class="flex justify-between">
+            <div class="text-right pr-2 w-52">Runner</div>
+            <div class="border-b border-black w-full"></div>
+            <div class="flex justify-end">
+              <div class="border border-black w-12"></div>
+              <div class="border border-black w-8"></div>
+              <div class="border border-black w-8"></div>
+            </div>
+          </div>
+          <div class="flex justify-between">
+            <div class="text-right pr-2 w-52">Runner</div>
+            <div class="border-b border-black w-full"></div>
+            <div class="flex justify-end">
+              <div class="border border-black w-12"></div>
+              <div class="border border-black w-8"></div>
+              <div class="border border-black w-8"></div>
+            </div>
+          </div>
+          <div class="flex justify-between">
+            <div class="text-right pr-2 w-52">Runner</div>
+            <div class="border-b border-black w-full"></div>
+            <div class="flex justify-end">
+              <div class="border border-black w-12"></div>
+              <div class="border border-black w-8"></div>
+              <div class="border border-black w-8"></div>
+            </div>
+          </div>
+        </div>
+
+        <div id="station-12-assignments" class="text-center">
+          <div class="h-0 font-bold">Station 12</div>
+          <div class="flex justify-end">
+            <div class="w-12">Car #</div>
+            <div class="w-8">AM</div>
+            <div class="w-8">PM</div>
+          </div>
+          <div class="flex justify-between">
+            <div class="border-b border-black font-bold text-right pr-2 w-52">Leader</div>
+            <div class="border-b border-black w-full"></div>
+            <div class="flex justify-end">
+              <div class="border border-black w-12"></div>
+              <div class="border border-black w-8"></div>
+              <div class="border border-black w-8"></div>
+            </div>
+          </div>
+          <div class="flex justify-between">
+            <div class="text-right pr-2 w-52">Runner</div>
+            <div class="border-b border-black w-full"></div>
+            <div class="flex justify-end">
+              <div class="border border-black w-12"></div>
+              <div class="border border-black w-8"></div>
+              <div class="border border-black w-8"></div>
+            </div>
+          </div>
+          <div class="flex justify-between">
+            <div class="text-right pr-2 w-52">Runner</div>
+            <div class="border-b border-black w-full"></div>
+            <div class="flex justify-end">
+              <div class="border border-black w-12"></div>
+              <div class="border border-black w-8"></div>
+              <div class="border border-black w-8"></div>
+            </div>
+          </div>
+          <div class="flex justify-between">
+            <div class="text-right pr-2 w-52">Runner</div>
+            <div class="border-b border-black w-full"></div>
+            <div class="flex justify-end">
+              <div class="border border-black w-12"></div>
+              <div class="border border-black w-8"></div>
+              <div class="border border-black w-8"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
