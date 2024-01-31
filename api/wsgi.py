@@ -26,6 +26,7 @@ class User(db.Model):
     email = db.Column(db.String(128), unique=False, nullable=False)
     first_name = db.Column(db.String(64), unique=False, nullable=False)
     last_name = db.Column(db.String(64), unique=False, nullable=False)
+    avatar = db.Column(db.String(128), unique=False, nullable=True)
     work_assignments = db.relationship('WorkAssignment', backref='user', cascade='all, delete, delete-orphan')
     roles = db.relationship('Role', backref='user', cascade='all, delete, delete-orphan')
 
@@ -46,11 +47,11 @@ class WorkAssignment(db.Model):
     event_id = db.Column(db.String(35), unique=False, nullable=False)
     user_id = db.Column(db.String(35), db.ForeignKey('user.id'), unique=False, nullable=False)
     vehicle_number = db.Column(db.String(3), unique=False, nullable=True)
-    work_assignment_type = db.Column(db.String(64), unique=False, nullable=False)
-    work_assignment_station = db.Column(db.Integer, unique=False, nullable=False)
-    work_assignment_run_group = db.Column(db.String(64), unique=False, nullable=False)
-    work_assignment_segment = db.Column(db.String(64), unique=False, nullable=False)
-    UniqueConstraint(event_id, user_id, work_assignment_segment, name='uq_workassignment_event_user_segment')
+    type = db.Column(db.String(64), unique=False, nullable=False)
+    station = db.Column(db.Integer, unique=False, nullable=False)
+    run_group = db.Column(db.String(64), unique=False, nullable=False)
+    segment = db.Column(db.String(64), unique=False, nullable=False)
+    UniqueConstraint(event_id, user_id, segment, name='uq_workassignment_event_user_segment')
 
 @dataclass
 class EventSettings(db.Model):
@@ -112,9 +113,9 @@ def work_assignments_html(event_id):
             .add_columns(User.id, User.first_name, User.last_name)
     
     if segment:
-        q = q.where(WorkAssignment.work_assignment_segment == segment)
+        q = q.where(WorkAssignment.segment == segment)
     if run_group:
-        q = q.where(WorkAssignment.work_assignment_run_group == run_group)
+        q = q.where(WorkAssignment.run_group == run_group)
 
     assignments = [{
             'id': a[0].id,
@@ -125,10 +126,10 @@ def work_assignments_html(event_id):
                 'lastName': a.last_name
             },
             'vehicleNumber': a[0].vehicle_number,
-            'type': a[0].work_assignment_type,
-            'station': a[0].work_assignment_station,
-            'runGroup': a[0].work_assignment_run_group,
-            'segment': a[0].work_assignment_segment
+            'type': a[0].type,
+            'station': a[0].station,
+            'runGroup': a[0].run_group,
+            'segment': a[0].segment
         } for a in q.all()]
 
     return render_template('work_assignments.html',
@@ -157,14 +158,16 @@ def callback():
             id = profile['id'],
             email = profile['email'],
             first_name = profile['firstName'],
-            last_name = profile['lastName']
+            last_name = profile['lastName'],
+            avatar = profile['avatar']
         )
         stmt = stmt.on_conflict_do_update(
             index_elements=[User.id],
             set_={
                 User.email: stmt.excluded.email,
                 User.first_name: stmt.excluded.first_name,
-                User.last_name: stmt.excluded.last_name
+                User.last_name: stmt.excluded.last_name,
+                User.avatar:stmt.excluded.avatar
             }
         )
         db.session.execute(stmt)
@@ -219,10 +222,10 @@ def get_work_assignments(event_id):
                 'lastName': a.last_name
             },
             'vehicleNumber': a[0].vehicle_number,
-            'type': a[0].work_assignment_type,
-            'station': a[0].work_assignment_station,
-            'runGroup': a[0].work_assignment_run_group,
-            'segment': a[0].work_assignment_segment
+            'type': a[0].type,
+            'station': a[0].station,
+            'runGroup': a[0].run_group,
+            'segment': a[0].segment
         } for a in q]
     except Exception as e:
         app.logger.error(e)
@@ -238,18 +241,18 @@ def post_work_assignment(event_id):
             event_id = event_id,
             user_id = data.get('user').get('id'),
             vehicle_number = data.get('vehicleNumber'),
-            work_assignment_type =  data.get('type'),
-            work_assignment_station =  data.get('station'),
-            work_assignment_run_group =  data.get('runGroup'),
-            work_assignment_segment =  data.get('segment')
+            type =  data.get('type'),
+            station =  data.get('station'),
+            run_group =  data.get('runGroup'),
+            segment =  data.get('segment')
         )
         stmt = stmt.on_conflict_do_update(
-            index_elements=[WorkAssignment.user_id, WorkAssignment.event_id, WorkAssignment.work_assignment_segment],
+            index_elements=[WorkAssignment.user_id, WorkAssignment.event_id, WorkAssignment.segment],
             set_={
                 WorkAssignment.vehicle_number: stmt.excluded.vehicle_number,
-                WorkAssignment.work_assignment_type: stmt.excluded.work_assignment_type,
-                WorkAssignment.work_assignment_station: stmt.excluded.work_assignment_station,
-                WorkAssignment.work_assignment_run_group: stmt.excluded.work_assignment_run_group
+                WorkAssignment.type: stmt.excluded.type,
+                WorkAssignment.station: stmt.excluded.station,
+                WorkAssignment.run_group: stmt.excluded.run_group
             }
         )
         db.session.execute(stmt)
@@ -267,10 +270,10 @@ def delete_work_assignment(event_id):
         stmt = delete(WorkAssignment) \
             .where(WorkAssignment.event_id == event_id) \
             .where(WorkAssignment.user_id == data.get('user').get('id')) \
-            .where(WorkAssignment.work_assignment_type == data.get('type')) \
-            .where(WorkAssignment.work_assignment_station == data.get('station')) \
-            .where(WorkAssignment.work_assignment_run_group == data.get('runGroup')) \
-            .where(WorkAssignment.work_assignment_segment == data.get('segment'))
+            .where(WorkAssignment.type == data.get('type')) \
+            .where(WorkAssignment.station == data.get('station')) \
+            .where(WorkAssignment.run_group == data.get('runGroup')) \
+            .where(WorkAssignment.segment == data.get('segment'))
         db.session.execute(stmt)
         db.session.commit()
     except Exception as e:
