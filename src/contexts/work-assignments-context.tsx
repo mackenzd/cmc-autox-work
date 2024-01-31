@@ -102,7 +102,7 @@ export const WorkAssignmentsContextProvider = (
   const [settings, setSettings] = useState<EventSettings>(defaultSettings);
 
   const initializeSettings = useCallback(() => {
-    if (initialSettings != defaultSettings) {
+    if (initialSettings?.stations) {
       setSettings(initialSettings);
     } else {
       setSettings(defaultSettings);
@@ -110,7 +110,7 @@ export const WorkAssignmentsContextProvider = (
   }, [JSON.stringify(initialSettings), setSettings]);
 
   useEffect(() => {
-    if (initialSettings != defaultSettings) setInitialSettings(eventSettings);
+    if (!initialSettings?.stations) setInitialSettings(eventSettings);
     initializeSettings();
   }, [
     initialSettings?.stations,

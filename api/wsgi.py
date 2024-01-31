@@ -289,7 +289,7 @@ def get_event_settings(event_id):
         q2 = PreregistrationAccess.query.join(User, PreregistrationAccess.user_id == User.id) \
              .where(PreregistrationAccess.event_id == event_id) \
              .add_columns(User.id, User.first_name, User.last_name).all()
-        if q1 and q2 is None:
+        if q1 is None:
             return make_response({}, 200)
         settings = {
             'id': q1.id,
