@@ -180,7 +180,11 @@ export function getWorksheet(
     })
     .then((data) => {
       var tab = window.open("", "_blank");
-      tab?.document.write(data);
+      if (tab) {
+        tab.document.write(data);
+        tab.document.title = `${event?.name} -- ${segment} ${runGroup}`
+        tab.document.close();
+      }
     })
     .catch((error) => console.log(error));
 }
