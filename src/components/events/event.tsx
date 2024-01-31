@@ -92,7 +92,7 @@ const EventCard = (props: EventCardProps) => {
 
   const workAssignmentsButton = useMemo(() => {
     return hasEnded ? (
-      <p>This event has ended.</p>
+        <p>This event has ended.</p>
     ) : (
       <>
         {props.event.registered || canPreregister || isAdmin ? (
@@ -123,9 +123,9 @@ const EventCard = (props: EventCardProps) => {
     <>
       <div className="card bg-base-100 shadow-xl">
         <div className="card-body">
-          <h2 className="card-title">{props.event?.name}</h2>
+          <a className="card-title" href={props.event?.detailuri} target="_blank" rel="noreferrer">{props.event?.name}</a>
           <p>
-            {props.event?.venue.name}
+              {props.event?.venue.name}
             <br />
             {isSingleDayEvent
               ? startDate.toLocaleDateString()
