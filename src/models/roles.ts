@@ -7,6 +7,7 @@ export enum Role {
   GateMarshal = "Gate Marshal",
   Instructor = "Instructor",
 
+  Preregistration = "Preregistration",
   Unrestricted = "Unrestricted",
   Restricted = "Restricted",
 }

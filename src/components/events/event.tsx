@@ -8,7 +8,7 @@ import { useAuthorizationContext } from "../../contexts/authorization-context";
 
 export interface EventCardProps {
   event: MSREvent;
-  canPreregister: boolean;
+  allowPreregistration: boolean;
 }
 
 const EventCard = (props: EventCardProps) => {
@@ -94,7 +94,7 @@ const EventCard = (props: EventCardProps) => {
       <p>This event has ended.</p>
     ) : (
       <>
-        {props.event.registered || props.canPreregister || isAdmin ? (
+        {props.event.registered || props.allowPreregistration || isAdmin ? (
           <>
             {eventSettingsButton}
             <button
@@ -120,7 +120,7 @@ const EventCard = (props: EventCardProps) => {
         )}
       </>
     );
-  }, [props.canPreregister]);
+  }, [props.allowPreregistration]);
 
   return (
     <>

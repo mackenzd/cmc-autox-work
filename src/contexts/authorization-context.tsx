@@ -17,6 +17,7 @@ interface Props {
   isAdmin: boolean;
   isUnrestricted: boolean;
   isRestricted: boolean;
+  canPreregister: boolean;
   setIsLoading: (isLoading: boolean) => void;
 }
 
@@ -29,6 +30,7 @@ export const DefaultContext: Props = {
   isAdmin: false,
   isUnrestricted: false,
   isRestricted: true,
+  canPreregister: false,
   setIsLoading: setStateDefaultFunction,
 };
 
@@ -41,6 +43,7 @@ export const AuthorizationContextProvider = (props: PropsWithChildren) => {
   const isAdmin = roles?.some((r) => r === Role.Admin);
   const isUnrestricted = roles?.some((r) => r === Role.Unrestricted);
   const isRestricted = roles?.some((r) => r === Role.Restricted);
+  const canPreregister = roles?.some((r) => r === Role.Preregistration);
 
   return (
     <AuthorizationContext.Provider
@@ -53,7 +56,8 @@ export const AuthorizationContextProvider = (props: PropsWithChildren) => {
         setIsLoading,
         isAdmin,
         isUnrestricted,
-        isRestricted
+        isRestricted,
+        canPreregister
       }}
     >
       {props.children}

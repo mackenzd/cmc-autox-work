@@ -6,7 +6,7 @@ import { useMemo } from "react";
 import { useAuthorizationContext } from "../contexts/authorization-context";
 
 const Events = () => {
-  const { user } = useAuthorizationContext();
+  const { user, canPreregister } = useAuthorizationContext();
 
   const start = moment().subtract(1, "year").format("YYYY-MM-DD");
   const end = moment().add(1, "year").format("YYYY-MM-DD");
@@ -18,12 +18,12 @@ const Events = () => {
     return (
       <>
         {getEvents?.map((event) => {
-          const canPreregister = getPreregistration.some((e) => e === event.id);
+          const allowPreregistration = canPreregister || getPreregistration.some((e) => e === event.id);
           return (
             <EventCard
               key={event.id}
               event={event}
-              canPreregister={canPreregister}
+              allowPreregistration={allowPreregistration}
             />
           );
         })}
