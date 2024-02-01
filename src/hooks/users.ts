@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { MSRUser } from "../models/msr-user";
 import { Role } from "../models/roles";
-import { MSREvent } from "../models/msr-event";
 
 export function useGetUser(
   onFinish: () => void
@@ -24,6 +23,7 @@ export function useGetUser(
       })
       .catch((error) => console.log(error))
       .finally(() => onFinish());
+    // eslint-disable-next-line
   }, [setUser]);
 
   return [user, setUser];
@@ -81,8 +81,9 @@ export function useSetRole(
       .then((res) => {
         if (res.ok) {
           onSuccess(role);
+        } else {
+          return Promise.reject(res);
         }
-        return Promise.reject(res);
       })
       .catch((error) => console.log(error));
   };
@@ -102,8 +103,9 @@ export function useUnsetRole(
       .then((res) => {
         if (res.ok) {
           onSuccess(role);
+        } else {
+          return Promise.reject(res);
         }
-        return Promise.reject(res);
       })
       .catch((error) => console.log(error));
   };
@@ -126,7 +128,7 @@ export function useGetPreregistration(user?: MSRUser): string[] {
         setGetPreregistration(data);
       })
       .catch((error) => console.log(error));
-  }, [setGetPreregistration]);
+  }, [user?.id, setGetPreregistration]);
 
   return getPreregistration;
 }

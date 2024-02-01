@@ -76,16 +76,19 @@ export const WorkAssignmentsContextProvider = (
 
   useEffect(() => {
     setAssignments(workAssignments);
+    // eslint-disable-next-line
   }, [JSON.stringify(workAssignments)]);
 
   const availableSegments = useMemo(
     () => uniq(entries.map((e) => e.segment as MSRSegment)),
+    // eslint-disable-next-line
     [JSON.stringify(entries)]
   );
   const [segment, setSegment] = useState<MSRSegment>(availableSegments.at(0)!);
 
   useEffect(() => {
     if (!segment) setSegment(availableSegments[0]);
+    // eslint-disable-next-line
   }, [JSON.stringify(availableSegments), segment]);
 
   let vehicleNumber = entries.find((e) => e.segment === segment)?.vehicleNumber;
@@ -95,7 +98,10 @@ export const WorkAssignmentsContextProvider = (
       : RunGroup.Odd;
   const [runGroup, setRunGroup] = useState<RunGroup>(defaultRunGroup);
 
-  const defaultSettings: EventSettings = { stations: 8, preregistrationAccess: [] }
+  const defaultSettings: EventSettings = {
+    stations: 8,
+    preregistrationAccess: [],
+  };
   const eventSettings = useGetEventSettings(props.event);
   const [initialSettings, setInitialSettings] =
     useState<EventSettings>(eventSettings);
@@ -107,15 +113,18 @@ export const WorkAssignmentsContextProvider = (
     } else {
       setSettings(defaultSettings);
     }
+    // eslint-disable-next-line
   }, [JSON.stringify(initialSettings), setSettings]);
 
   useEffect(() => {
     if (!initialSettings?.stations) setInitialSettings(eventSettings);
     initializeSettings();
+    // eslint-disable-next-line
   }, [
     initialSettings?.stations,
     initializeSettings,
     setInitialSettings,
+    // eslint-disable-next-line
     JSON.stringify(eventSettings),
   ]);
 

@@ -18,7 +18,8 @@ const Events = () => {
     return (
       <>
         {getEvents?.map((event) => {
-          const allowPreregistration = canPreregister || getPreregistration.some((e) => e === event.id);
+          const allowPreregistration =
+            canPreregister || getPreregistration.some((e) => e === event.id);
           return (
             <EventCard
               key={event.id}
@@ -29,7 +30,7 @@ const Events = () => {
         })}
       </>
     );
-  }, [getEvents, getPreregistration]);
+  }, [getEvents, canPreregister, getPreregistration]);
 
   return (
     <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xxl:grid-cols-5 gap-4">

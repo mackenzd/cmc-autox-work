@@ -47,7 +47,7 @@ const EventSettingsModal = (props: EventSettingsModalProps) => {
         ],
       });
     },
-    [settings.preregistrationAccess, setValue, setSettings, settings]
+    [setValue, setSettings, settings]
   );
 
   const onRemoveUser = useCallback(
@@ -59,13 +59,14 @@ const EventSettingsModal = (props: EventSettingsModalProps) => {
         }),
       });
     },
-    [settings.preregistrationAccess, setSettings, settings]
+    [setSettings, settings]
   );
 
   const onSave = useCallback(() => {
     setEventSettings(settings);
     setInitialSettings(settings);
     props.onClose();
+    // eslint-disable-next-line
   }, [setEventSettings, settings, setInitialSettings]);
 
   const onClose = () => {
@@ -201,7 +202,9 @@ const EventSettingsModal = (props: EventSettingsModalProps) => {
           </label>
           <label className="form-control w-full">
             <div className="label">
-              <span className="font-bold label-text">Pre-registration Access</span>
+              <span className="font-bold label-text">
+                Pre-registration Access
+              </span>
             </div>
             {usersInput}
             <div className="label">

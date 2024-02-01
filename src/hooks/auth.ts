@@ -12,11 +12,12 @@ export function useLogout(): () => void {
         if (res.ok) {
           setUser(undefined);
           navigate("/logout");
+        } else {
+          return Promise.reject(res);
         }
-        return Promise.reject(res);
       })
       .catch((error) => console.log(error));
-  }, [navigate]);
+  }, [setUser, navigate]);
 
   return logout;
 }

@@ -37,6 +37,7 @@ const WorkAssignmentEntry = (props: WorkAssignmentProps) => {
         assignments,
         segment
       ),
+    // eslint-disable-next-line
     [JSON.stringify(assignments), runGroup, segment, props.type, props.station]
   );
 
@@ -77,6 +78,7 @@ const WorkAssignmentEntry = (props: WorkAssignmentProps) => {
     } else if (currentAssignment.user?.id === user?.id) {
       setAssignments(assignments.filter((a) => a !== currentAssignment));
     }
+    // eslint-disable-next-line
   }, [
     currentAssignment,
     currentAssignment?.user?.id,
@@ -85,6 +87,7 @@ const WorkAssignmentEntry = (props: WorkAssignmentProps) => {
     user?.id,
     vehicleNumber,
     setAssignments,
+    // eslint-disable-next-line
     JSON.stringify(assignments),
     props.type,
     props.station,
@@ -107,7 +110,17 @@ const WorkAssignmentEntry = (props: WorkAssignmentProps) => {
     } else if (currentAssignment?.user?.id === undefined) {
       setWorkAssignment(newAssignment);
     }
-  }, [setWorkAssignment, newAssignment]);
+  }, [
+    currentAssignment,
+    props.station,
+    props.type,
+    runGroup,
+    segment,
+    unsetWorkAssignment,
+    user?.id,
+    setWorkAssignment,
+    newAssignment,
+  ]);
 
   const requiredRole = roleForWorkAssignment(props.type);
 
@@ -129,7 +142,7 @@ const WorkAssignmentEntry = (props: WorkAssignmentProps) => {
     } else {
       return "btn btn-sm btn-success no-animation work-assignment";
     }
-  }, [currentAssignment, currentAssignment?.user?.id, user?.id]);
+  }, [currentAssignment, user?.id]);
 
   return (
     <div className="py-1 work-assignment">

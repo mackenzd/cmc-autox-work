@@ -16,19 +16,20 @@ const UserAvatar = () => {
     }
   };
 
-  const logoutButton = (
-    <li>
-      <button
-        onClick={() => {
-          handleClick();
-          logout();
-        }}
-      >
-        Logout
-      </button>
-    </li>
-  );
   const dropdownItems = useMemo(() => {
+    const logoutButton = (
+      <li>
+        <button
+          onClick={() => {
+            handleClick();
+            logout();
+          }}
+        >
+          Logout
+        </button>
+      </li>
+    );
+
     if (isAdmin) {
       return (
         <>
@@ -48,13 +49,13 @@ const UserAvatar = () => {
     } else {
       return logoutButton;
     }
-  }, [isAdmin, logoutButton]);
+  }, [logout, isAdmin, navigate]);
 
   return (
     <div className="avatar dropdown dropdown-bottom dropdown-end">
       <div className="bg-neutral text-neutral-content rounded-full w-12">
         <div tabIndex={0} role="button">
-          <img src={user?.avatar} />
+          <img src={user?.avatar} alt="User avatar" />
         </div>
         <ul
           tabIndex={0}

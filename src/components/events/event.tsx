@@ -56,7 +56,7 @@ const EventCard = (props: EventCardProps) => {
           onClose={() => setIsWorkAssignmentModalOpen(false)}
         />
       ),
-    [isWorkAssignmentModalOpen, props.event, setIsWorkAssignmentModalOpen]
+    [isWorkAssignmentModalOpen, setIsWorkAssignmentModalOpen]
   );
 
   const modals = useMemo(
@@ -77,19 +77,20 @@ const EventCard = (props: EventCardProps) => {
   );
 
   const { isAdmin } = useAuthorizationContext();
-  const eventSettingsButton =
-    isAdmin && !hasStarted ? (
-      <button
-        className="btn btn-primary"
-        onClick={() => setIsSettingsModalOpen(true)}
-      >
-        Event Settings
-      </button>
-    ) : (
-      <></>
-    );
 
   const footer = useMemo(() => {
+    const eventSettingsButton =
+      isAdmin && !hasStarted ? (
+        <button
+          className="btn btn-primary"
+          onClick={() => setIsSettingsModalOpen(true)}
+        >
+          Event Settings
+        </button>
+      ) : (
+        <></>
+      );
+
     return hasEnded ? (
       <p>This event has ended.</p>
     ) : (
@@ -110,7 +111,7 @@ const EventCard = (props: EventCardProps) => {
             {eventSettingsButton}
             <a
               className="btn btn-primary"
-              href={props.event?.detailuri}
+              href={props.event.detailuri}
               target="_blank"
               rel="noreferrer"
             >
@@ -120,7 +121,14 @@ const EventCard = (props: EventCardProps) => {
         )}
       </>
     );
-  }, [props.allowPreregistration]);
+  }, [
+    props.allowPreregistration,
+    hasStarted,
+    hasEnded,
+    isAdmin,
+    props.event.detailuri,
+    props.event.registered,
+  ]);
 
   return (
     <>

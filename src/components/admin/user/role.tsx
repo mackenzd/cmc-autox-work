@@ -25,7 +25,7 @@ const UserRoleAdmin = (props: UserRoleAdminProps) => {
         setRoles((prevRoles) => [...prevRoles, role]);
       }
     },
-    [roles, setRoles]
+    [setRoles]
   );
 
   const onUnsetSuccess = useCallback(
@@ -34,7 +34,7 @@ const UserRoleAdmin = (props: UserRoleAdminProps) => {
         setRoles((prevRoles) => prevRoles.filter((r) => r !== role));
       }
     },
-    [roles, setRoles]
+    [setRoles]
   );
 
   const setRole = useSetRole(onSetSuccess, props.user);

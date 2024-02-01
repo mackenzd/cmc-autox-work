@@ -14,8 +14,9 @@ export function useSetWorkAssignment(
       .then((res) => {
         if (res.ok) {
           onSuccess();
+        } else {
+          return Promise.reject(res);
         }
-        return Promise.reject(res);
       })
       .catch((error) => console.log(error));
   };
@@ -35,8 +36,9 @@ export function useUnsetWorkAssignment(
       .then((res) => {
         if (res.ok) {
           onSuccess();
+        } else {
+          return Promise.reject(res);
         }
-        return Promise.reject(res);
       })
       .catch((error) => console.log(error));
   };
@@ -59,7 +61,7 @@ export function useGetWorkAssignments(event?: MSREvent): WorkAssignment[] {
         setAssignments(data);
       })
       .catch((error) => console.log(error));
-  }, [setAssignments]);
+  }, [event?.id, setAssignments]);
 
   return assignments;
 }

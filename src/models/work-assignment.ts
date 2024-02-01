@@ -36,6 +36,10 @@ export enum Station {
   Station4 = 4,
   Station5 = 5,
   Station6 = 5,
-  Station7 = 6,
-  Station8 = 7,
+  Station7 = 7,
+  Station8 = 8,
+  Station9 = 9,
+  Station10 = 10,
+  Station11 = 11,
+  Station12 = 12,
 }

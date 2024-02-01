@@ -20,7 +20,7 @@ export function useGetOrganizationEvents(
     getOrganizationEvents(start, end).then((events) =>
       setOrganizationEvents(events)
     );
-  }, [setOrganizationEvents]);
+  }, [start, end, setOrganizationEvents]);
 
   return organizationEvents;
 }
@@ -49,7 +49,7 @@ export function useGetEvents(start?: string, end?: string): MSREvent[] {
       ].sort((e1, e2) => (new Date(e1.start) > new Date(e2.start) ? -1 : 1));
       setEvents(events);
     });
-  }, [setEvents]);
+  }, [start, end, setEvents]);
 
   return uniqBy(events, "id");
 }
@@ -100,8 +100,9 @@ export function useSetEventSettings(
       .then((res) => {
         if (res.ok) {
           onSuccess();
+        } else {
+          return Promise.reject(res);
         }
-        return Promise.reject(res);
       })
       .catch((error) => console.log(error));
   };
