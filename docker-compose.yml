@@ -9,7 +9,7 @@ services:
       - ./api/instance:/app/instance
     ports:
       - "5000:5000"
-  frontend:
+  client:
     build:
       context: .
       dockerfile: Dockerfile
@@ -22,6 +22,3 @@ services:
       - "3000:3000"
     environment:
       - WATCHPACK_POLLING=true
-
-volumes:
-  data:
