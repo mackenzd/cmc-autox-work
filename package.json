@@ -2,7 +2,7 @@
   "name": "cmc-autox-work",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://localhost:5000",
+  "proxy": "http://api:5000",
   "dependencies": {
     "@types/jest": "^27.5.2",
     "@types/node": "^16.18.68",

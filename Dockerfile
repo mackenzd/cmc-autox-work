@@ -1,12 +1,13 @@
 FROM python:3.12 as api
 WORKDIR /app
 
-COPY api/requirements.txt api/templates api/config.cfg api/routes.py api/.flaskenv ./
+COPY api/requirements.txt api/config.cfg api/wsgi.py ./
+COPY api/templates ./templates
 RUN pip install -r ./requirements.txt
 ENV FLASK_ENV production
 
 EXPOSE 5000
-CMD ["gunicorn", "-b", ":5000", "routes:app"]
+CMD ["gunicorn", "-b", ":5000", "wsgi:app"]
 
 
 FROM node:20-alpine as build
@@ -20,7 +21,6 @@ COPY ./src ./src
 COPY ./public ./public
 
 RUN npm install
-# RUN npm run build
 
 
 FROM build as development

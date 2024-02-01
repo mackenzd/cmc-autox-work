@@ -5,9 +5,11 @@ services:
       dockerfile: Dockerfile
       target: api
     image: cmc-autox-work-api
+    volumes:
+      - ./api/instance:/app/instance
     ports:
       - "5000:5000"
-  client:
+  frontend:
     build:
       context: .
       dockerfile: Dockerfile
@@ -20,14 +22,6 @@ services:
       - "3000:3000"
     environment:
       - WATCHPACK_POLLING=true
-  database:
-    image: postgres:14-alpine
-    ports:
-      - 5432:5432
-    volumes:
-      - data:/var/lib/postgresql/data
-    env_file:
-      - api/config.cfg
 
 volumes:
   data:
