@@ -1,0 +1,17 @@
+# MSR API
+MSR_CLIENT_ID=''
+MSR_CLIENT_SECRET=''
+MSR_ORGANIZATION_ID=''
+
+MSR_API_BASE_URL='https://api.motorsportreg.com'
+MSR_REQUEST_TOKEN_URL='https://api.motorsportreg.com/rest/tokens/request'
+MSR_ACCESS_TOKEN_URL='https://api.motorsportreg.com/rest/tokens/access'
+MSR_AUTHORIZE_URL='https://www.motorsportreg.com/index.cfm/event/oauth'
+
+# App
+SESSION_SECRET_KEY=''
+APP_URL='http://localhost:3000'
+CALLBACK_URL='http://localhost:5000/auth/callback'
+
+# Database
+DATABASE_NAME='app.db'

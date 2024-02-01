@@ -1,0 +1,27 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: api
+    image: cmc-autox-work-api
+    volumes:
+      - ./api/instance:/app/instance
+    ports:
+      - "5000:5000"
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    image: cmc-autox-work-client
+    volumes:
+      - .:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    environment:
+      - WATCHPACK_POLLING=true
+
+volumes:
+  data:
