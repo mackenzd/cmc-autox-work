@@ -144,6 +144,24 @@ const WorkAssignmentEntry = (props: WorkAssignmentProps) => {
     }
   }, [currentAssignment, user?.id]);
 
+  const assigned = useMemo(() => {
+    const number = currentAssignment?.vehicleNumber ? (
+      "#" + currentAssignment.vehicleNumber
+    ) : (
+      <></>
+    );
+
+    if (currentAssignment) {
+      return (
+        <div className="px-2">
+          {currentAssignment?.user?.firstName}{" "}
+          {currentAssignment?.user?.lastName} {number}
+        </div>
+      );
+    }
+    // eslint-disable-next-line
+  }, [JSON.stringify(currentAssignment)]);
+
   return (
     <div className="py-1 work-assignment">
       <button
@@ -153,18 +171,7 @@ const WorkAssignmentEntry = (props: WorkAssignmentProps) => {
       >
         {props.type}
       </button>
-      {currentAssignment ? (
-        <div className="px-2">
-          {currentAssignment.user?.firstName} {currentAssignment.user?.lastName}{" "}
-          {currentAssignment.vehicleNumber ? (
-            "#" + currentAssignment.vehicleNumber
-          ) : (
-            <></>
-          )}
-        </div>
-      ) : (
-        <></>
-      )}
+      {assigned}
     </div>
   );
 };

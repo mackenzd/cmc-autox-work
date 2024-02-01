@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { MSREvent } from "../models/msr-event";
 import {
   eventHasEnded,
-  getEventAssignments,
   getOrganizationEvents,
   getUserEvents,
 } from "../helpers/events";
@@ -54,16 +53,23 @@ export function useGetEvents(start?: string, end?: string): MSREvent[] {
   return uniqBy(events, "id");
 }
 
-export function useGetEventAssignments(event: MSREvent): MSRAssignment[] {
+export function useGetEventAssignments(event?: MSREvent): MSRAssignment[] {
   const [eventAssignments, setEventAssignments] = useState<MSRAssignment[]>([]);
 
   useEffect(() => {
-    if (event.id && !eventHasEnded(event)) {
-      getEventAssignments(event.id).then((assignments) =>
-        setEventAssignments(assignments)
-      );
+    if (event?.id && !eventHasEnded(event)) {
+      fetch(`/api/events/${event?.id}/entrylist`)
+        .then((res) => {
+          if (res.ok) {
+            return res.json();
+          }
+        })
+        .then((data) => {
+          setEventAssignments(data.response.assignments);
+        })
+        .catch((error) => console.log(error));
     }
-  }, [setEventAssignments, event, event.id]);
+  }, [setEventAssignments, event, event?.id]);
 
   return eventAssignments;
 }

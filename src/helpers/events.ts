@@ -1,4 +1,3 @@
-import { MSRAssignment } from "../models/msr-assignment";
 import { MSREvent, MSREventType } from "../models/msr-event";
 
 // Filters out "administrative" MSR events that aren't actual autocross events.
@@ -65,22 +64,6 @@ export function getUserEvents(): Promise<MSREvent[]> {
       });
 
       return filterEvents(evts);
-    })
-    .catch((error) => {
-      console.log(error);
-      return [];
-    });
-}
-
-export function getEventAssignments(eventId: string): Promise<MSRAssignment[]> {
-  return fetch(`/api/events/${eventId}/entrylist`)
-    .then((res) => {
-      if (res.ok) {
-        return res.json();
-      }
-    })
-    .then((data) => {
-      return data.response.assignments;
     })
     .catch((error) => {
       console.log(error);

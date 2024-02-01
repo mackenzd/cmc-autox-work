@@ -4,10 +4,6 @@ import { MSRUser } from "../models/msr-user";
 import { useGetUser, useGetUserRoles } from "../hooks/users";
 import { Role } from "../models/roles";
 
-const setStateDefaultFunction = () => {
-  return;
-};
-
 interface Props {
   user?: MSRUser;
   roles?: string[];
@@ -20,6 +16,10 @@ interface Props {
   canPreregister: boolean;
   setIsLoading: (isLoading: boolean) => void;
 }
+
+const setStateDefaultFunction = () => {
+  return;
+};
 
 export const DefaultContext: Props = {
   user: undefined,
@@ -57,7 +57,7 @@ export const AuthorizationContextProvider = (props: PropsWithChildren) => {
         isAdmin,
         isUnrestricted,
         isRestricted,
-        canPreregister
+        canPreregister,
       }}
     >
       {props.children}

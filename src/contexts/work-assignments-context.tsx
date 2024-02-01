@@ -17,10 +17,6 @@ import uniq from "lodash/uniq";
 import { useGetWorkAssignments } from "../hooks/work-assignments";
 import { EventSettings } from "../models/event-settings";
 
-const setStateDefaultFunction = () => {
-  return;
-};
-
 interface Props {
   event?: MSREvent;
   assignments: WorkAssignment[];
@@ -36,6 +32,14 @@ interface Props {
   initializeSettings: () => void;
   setInitialSettings: (settings: EventSettings) => void;
 }
+
+interface ContextProps {
+  event: MSREvent;
+}
+
+const setStateDefaultFunction = () => {
+  return;
+};
 
 export const DefaultContext: Props = {
   event: undefined,
@@ -54,10 +58,6 @@ export const DefaultContext: Props = {
 };
 
 const WorkAssignmentsContext = createContext<Props>(DefaultContext);
-
-interface ContextProps {
-  event: MSREvent;
-}
 
 export const WorkAssignmentsContextProvider = (
   props: PropsWithChildren<ContextProps>

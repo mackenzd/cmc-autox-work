@@ -182,7 +182,7 @@ export function getWorksheet(
       var tab = window.open("", "_blank");
       if (tab) {
         tab.document.write(data);
-        tab.document.title = `${event?.name} -- ${segment} ${runGroup}`
+        tab.document.title = `${event?.name} -- ${segment} ${runGroup}`;
         tab.document.close();
       }
     })
