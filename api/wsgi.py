@@ -9,12 +9,10 @@ import json
 db = SQLAlchemy()
 app = Flask(__name__)
 
-app.debug = False
+app.config.from_envvar('CMC_CONFIG')
+app.secret_key = app.config.get('FLASK_SECRET_KEY')
 
-app.config.from_pyfile('config.cfg', silent=True)
-app.secret_key = app.config['SESSION_SECRET_KEY']
-
-app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{app.config['DATABASE_NAME']}'
+app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{app.config['DATABASE_NAME']}"
 
 db.init_app(app)
 
@@ -89,15 +87,15 @@ def assignments_to_dict(assignments):
 
     for assignment in assignments:
         user = assignment.get('user')
-        name = f'{user.get('firstName')} {user.get('lastName')}'
+        name = f"{user.get('firstName')} {user.get('lastName')}"
         vehicle_number = assignment.get('vehicleNumber') or ''
         work_assignment_station = assignment.get('station')
         work_assignment_type = assignment.get('type')
 
         if work_assignment_station:
-            key = f'station{work_assignment_station}_{work_assignment_type.lower().replace(' ', '')}'
+            key = f"station{work_assignment_station}_{work_assignment_type.lower().replace(' ', '')}"
         else:
-            key = f'{work_assignment_type.lower().replace(' ', '')}'
+            key = f"{work_assignment_type.lower().replace(' ', '')}"
         output[key] = [name, vehicle_number]
 
     return output
@@ -142,7 +140,7 @@ def work_assignments_html(event_id):
 ## Auth
 @app.route('/auth/login')
 def login():
-    res = oauth.msr.authorize_redirect(app.config['CALLBACK_URL'])
+    res = oauth.msr.authorize_redirect(app.config['CMC_CALLBACK_URL'])
     return res.location
 
 @app.route('/auth/callback')
@@ -180,7 +178,7 @@ def callback():
     except Exception as e:
         app.logger.error(e)
     finally:
-        return redirect(app.config['APP_URL'])
+        return redirect(app.config['CMC_APP_URL'])
 
 @app.route('/auth/logout')
 def logout():
@@ -204,12 +202,12 @@ def get_organization_events():
     start = request.args.get('start')
     end = request.args.get('end')
 
-    res = oauth.msr.get(f'rest/calendars/organization/{app.config['MSR_ORGANIZATION_ID']}.json', params={'start': start, 'end': end, 'archive': True})
+    res = oauth.msr.get(f"rest/calendars/organization/{app.config['MSR_ORGANIZATION_ID']}.json", params={'start': start, 'end': end, 'archive': True})
     return make_response(res.content, res.status_code)
 
 @app.route('/api/events/<event_id>/entrylist')
 def get_entrylist(event_id):
-    res = oauth.msr.get(f'rest/events/{event_id}/entrylist.json')    
+    res = oauth.msr.get(f"rest/events/{event_id}/entrylist.json")    
     return make_response(res.content, res.status_code)
 
 @app.route('/api/events/<event_id>/assignments', methods=['GET'])

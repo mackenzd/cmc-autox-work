@@ -1,10 +1,9 @@
 FROM python:3.12 as api
 WORKDIR /app
 
-COPY api/requirements.txt api/config.cfg api/wsgi.py ./
+COPY api/requirements.txt api/wsgi.py ./
 COPY api/templates ./templates
 RUN pip install -r ./requirements.txt
-ENV FLASK_ENV production
 
 EXPOSE 5000
 CMD ["gunicorn", "-b", ":5000", "wsgi:app"]
@@ -35,6 +34,7 @@ FROM nginx:stable-alpine as production
 ENV NODE_ENV production
 
 COPY --from=build /app/build /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/nginx.conf
 
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]

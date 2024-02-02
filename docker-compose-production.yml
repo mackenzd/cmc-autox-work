@@ -5,28 +5,19 @@ services:
       dockerfile: Dockerfile
       target: api
     image: cmc-autox-work-api
-    entrypoint:
-      - flask
-      - run
-      - --debug
-      - --host=0.0.0.0
     volumes:
-      - ./api:/app
+      - ./api/instance:/app/instance
+      - ./api/config.cfg:/app/config.cfg
     ports:
       - "5000:5000"
     environment:
-      - FLASK_ENV=development
+      - FLASK_ENV=production
       - CMC_CONFIG=config.cfg
   client:
     build:
       context: .
       dockerfile: Dockerfile
-      target: development
+      target: production
     image: cmc-autox-work-client
-    volumes:
-      - .:/app
-      - /app/node_modules
     ports:
-      - "3000:3000"
-    environment:
-      - WATCHPACK_POLLING=true
+      - "80:80"

@@ -9,9 +9,11 @@ MSR_ACCESS_TOKEN_URL='https://api.motorsportreg.com/rest/tokens/access'
 MSR_AUTHORIZE_URL='https://www.motorsportreg.com/index.cfm/event/oauth'
 
 # App
-SESSION_SECRET_KEY=''
-APP_URL='http://localhost:3000'
-CALLBACK_URL='http://localhost:5000/auth/callback'
+CMC_APP_URL='http://localhost:3000'
+CMC_CALLBACK_URL='http://localhost:5000/auth/callback'
 
 # Database
 DATABASE_NAME='app.db'
+
+# Other
+FLASK_SECRET_KEY=''
