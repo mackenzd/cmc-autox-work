@@ -7,8 +7,12 @@ services:
     image: cmc-autox-work-api
     volumes:
       - ./api/instance:/app/instance
+      - ./api/config.cfg:/app/config.cfg
     ports:
       - "5000:5000"
+    environment:
+      - FLASK_ENV=production
+      - CMC_CONFIG=config.cfg
   client:
     build:
       context: .

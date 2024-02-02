@@ -1,10 +1,9 @@
 FROM python:3.12 as api
 WORKDIR /app
 
-COPY api/requirements.txt api/config.cfg api/wsgi.py ./
+COPY api/requirements.txt api/wsgi.py ./
 COPY api/templates ./templates
 RUN pip install -r ./requirements.txt
-ENV FLASK_ENV production
 
 EXPOSE 5000
 CMD ["gunicorn", "-b", ":5000", "wsgi:app"]

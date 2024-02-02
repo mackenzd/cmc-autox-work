@@ -11,8 +11,8 @@ app = Flask(__name__)
 
 app.debug = False
 
-app.config.from_pyfile('config.cfg', silent=True)
-app.secret_key = app.config['SESSION_SECRET_KEY']
+app.config.from_envvar('CMC_CONFIG')
+app.secret_key = app.config['FLASK_SECRET_KEY']
 
 app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{app.config['DATABASE_NAME']}'
 
@@ -142,7 +142,7 @@ def work_assignments_html(event_id):
 ## Auth
 @app.route('/auth/login')
 def login():
-    res = oauth.msr.authorize_redirect(app.config['CALLBACK_URL'])
+    res = oauth.msr.authorize_redirect(app.config['CMC_CALLBACK_URL'])
     return res.location
 
 @app.route('/auth/callback')
@@ -180,7 +180,7 @@ def callback():
     except Exception as e:
         app.logger.error(e)
     finally:
-        return redirect(app.config['APP_URL'])
+        return redirect(app.config['CMC_APP_URL'])
 
 @app.route('/auth/logout')
 def logout():
