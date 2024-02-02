@@ -1,0 +1,22 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: api
+    image: cmc-autox-work-api
+    volumes:
+      - ./api/instance:/app/instance
+    ports:
+      - "5000:5000"
+  client:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    image: cmc-autox-work-client
+    volumes:
+      - .:/app
+      - /app/node_modules
+    ports:
+      - "80:80"
