@@ -9,10 +9,8 @@ import json
 db = SQLAlchemy()
 app = Flask(__name__)
 
-app.debug = False
-
 app.config.from_envvar('CMC_CONFIG')
-app.secret_key = app.config['FLASK_SECRET_KEY']
+app.secret_key = app.config.get('FLASK_SECRET_KEY')
 
 app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{app.config['DATABASE_NAME']}"
 
@@ -423,6 +421,3 @@ def get_user_preregistration(user_id):
         return make_response(json.dumps({'error': e}), 500)
 
     return jsonify(preregistration)
-
-if __name__ == "__main__":
-    app.run(ssl_context='adhoc')

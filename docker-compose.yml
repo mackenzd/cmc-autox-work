@@ -5,9 +5,13 @@ services:
       dockerfile: Dockerfile
       target: api
     image: cmc-autox-work-api
+    entrypoint:
+      - flask
+      - run
+      - --debug
+      - --host=0.0.0.0
     volumes:
-      - ./api/instance:/app/instance
-      - ./api/config.cfg:/app/config.cfg
+      - ./api:/app
     ports:
       - "5000:5000"
     environment:
