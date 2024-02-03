@@ -19,5 +19,8 @@ services:
       dockerfile: Dockerfile
       target: production
     image: cmc-autox-work-client
+    volumes:
+      - /etc/letsencrypt/live/devinmackenzie.com/fullchain.pem:/etc/nginx/fullchain.pem
+      - /etc/letsencrypt/live/devinmackenzie.com/privkey.pem:/etc/nginx/privkey.pem
     ports:
-      - "80:80"
+      - "443:443"
