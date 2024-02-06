@@ -21,6 +21,7 @@ const WorkAssignmentsModal = (props: WorkAssignmentsModalProps) => {
     runGroup,
     setRunGroup,
     settings,
+    isLoading,
   } = useWorkAssignmentsContext();
   const { isAdmin } = useAuthorizationContext();
 
@@ -34,6 +35,24 @@ const WorkAssignmentsModal = (props: WorkAssignmentsModalProps) => {
 
     return stations;
   }, [settings.stations]);
+
+  const modalContent = useMemo(
+    () =>
+      isLoading ? (
+        <div className="skeleton h-96 mt-4"></div>
+      ) : (
+        <>
+          <div className="py-4">
+            <WorkAssignmentsOther />
+          </div>
+
+          <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {workAssignmentStations}
+          </div>
+        </>
+      ),
+    [isLoading]
+  );
 
   return props.isOpen ? (
     <dialog className="modal" open={props.isOpen}>
@@ -99,16 +118,11 @@ const WorkAssignmentsModal = (props: WorkAssignmentsModalProps) => {
           </div>
         </div>
 
-        <div className="py-4">
-          <WorkAssignmentsOther />
-        </div>
+        {modalContent}
 
-        <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {workAssignmentStations}
-        </div>
         <div className="">
           <div className="modal-action">
-            {isAdmin ? (
+            {isAdmin && !isLoading ? (
               <button
                 className="btn btn-outline btn-sm"
                 onClick={() => getWorksheet(event, segment, runGroup)}

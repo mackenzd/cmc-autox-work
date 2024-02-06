@@ -46,7 +46,10 @@ export function useUnsetWorkAssignment(
   return unsetWorkAssignment;
 }
 
-export function useGetWorkAssignments(event?: MSREvent): WorkAssignment[] {
+export function useGetWorkAssignments(
+  onFinish: () => void,
+  event?: MSREvent
+): WorkAssignment[] {
   const [assignments, setAssignments] = useState<WorkAssignment[]>([]);
 
   useEffect(() => {
@@ -60,7 +63,8 @@ export function useGetWorkAssignments(event?: MSREvent): WorkAssignment[] {
       .then((data) => {
         setAssignments(data);
       })
-      .catch((error) => console.log(error));
+      .catch((error) => console.log(error))
+      .finally(() => onFinish());
   }, [event?.id, setAssignments]);
 
   return assignments;
