@@ -6,12 +6,14 @@ import {
 } from "../../../hooks/users";
 import { MSRUser } from "../../../models/msr-user";
 import { Role } from "../../../models/roles";
+import { useAuthorizationContext } from "../../../contexts/authorization-context";
 
 export interface UserRoleAdminProps {
   user?: MSRUser;
 }
 
 const UserRoleAdmin = (props: UserRoleAdminProps) => {
+  const { user } = useAuthorizationContext();
   const getUserRoles = useGetUserRoles(props.user);
   const [roles, setRoles] = useState<Role[]>([]);
 
@@ -57,21 +59,25 @@ const UserRoleAdmin = (props: UserRoleAdminProps) => {
   const badges = useMemo(() => {
     return roles.map((role) => (
       <div key={role} className="badge badge-primary gap-2 p-3 mt-1 mb-1 mr-3">
-        <button onClick={() => onRemoveRole(role)}>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            className="w-4 h-4 stroke-current"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M6 18L18 6M6 6l12 12"
-            ></path>
-          </svg>
-        </button>
+        {props.user?.id === user?.id ? (
+          <></>
+        ) : (
+          <button onClick={() => onRemoveRole(role)}>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              className="w-4 h-4 stroke-current"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M6 18L18 6M6 6l12 12"
+              ></path>
+            </svg>
+          </button>
+        )}
         {role}
       </div>
     ));
@@ -96,7 +102,9 @@ const UserRoleAdmin = (props: UserRoleAdminProps) => {
   }, [roles, onAddRole]);
 
   const dropdown = useMemo(() => {
-    return (
+    return props.user?.id === user?.id ? (
+      <></>
+    ) : (
       <div className="dropdown dropdown-right badge badge-outline p-3 mt-1 mb-1 flex">
         <button className="font-bold">Add Role</button>
         <div className="dropdown-content z-[1] shadow bg-base-100 rounded-box w-52">
