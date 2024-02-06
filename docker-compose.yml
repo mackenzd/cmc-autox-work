@@ -4,13 +4,14 @@ services:
       context: .
       dockerfile: Dockerfile
       target: api
-    image: cmc-autox-work-api
+    image: cmc-autox-work-api-dev
     entrypoint:
       - flask
       - run
       - --debug
       - --host=0.0.0.0
     volumes:
+      - ./api/instance:/app/instance
       - ./api:/app
     ports:
       - "5000:5000"
@@ -22,7 +23,7 @@ services:
       context: .
       dockerfile: Dockerfile
       target: development
-    image: cmc-autox-work-client
+    image: cmc-autox-work-client-dev
     volumes:
       - .:/app
       - /app/node_modules
