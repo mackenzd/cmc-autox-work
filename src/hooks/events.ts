@@ -53,7 +53,10 @@ export function useGetEvents(start?: string, end?: string): MSREvent[] {
   return uniqBy(events, "id");
 }
 
-export function useGetEventAssignments(event?: MSREvent): MSRAssignment[] {
+export function useGetEventAssignments(
+  onFinish: () => void,
+  event?: MSREvent
+): MSRAssignment[] {
   const [eventAssignments, setEventAssignments] = useState<MSRAssignment[]>([]);
 
   useEffect(() => {
@@ -67,14 +70,18 @@ export function useGetEventAssignments(event?: MSREvent): MSRAssignment[] {
         .then((data) => {
           setEventAssignments(data.response.assignments);
         })
-        .catch((error) => console.log(error));
+        .catch((error) => console.log(error))
+        .finally(() => onFinish());
     }
   }, [setEventAssignments, event, event?.id]);
 
   return eventAssignments;
 }
 
-export function useGetEventSettings(event?: MSREvent): EventSettings {
+export function useGetEventSettings(
+  onFinish: () => void,
+  event?: MSREvent
+): EventSettings {
   const [settings, setSettings] = useState<EventSettings>({});
 
   useEffect(() => {
@@ -88,7 +95,8 @@ export function useGetEventSettings(event?: MSREvent): EventSettings {
       .then((data) => {
         setSettings(data);
       })
-      .catch((error) => console.log(error));
+      .catch((error) => console.log(error))
+      .finally(() => onFinish());
   }, [event?.id, setSettings]);
 
   return settings;

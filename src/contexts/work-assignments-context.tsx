@@ -31,6 +31,8 @@ interface Props {
   setSettings: (settings: EventSettings) => void;
   initializeSettings: () => void;
   setInitialSettings: (settings: EventSettings) => void;
+  isLoading: boolean;
+  setIsLoading: (isLoading: boolean) => void;
 }
 
 interface ContextProps {
@@ -55,6 +57,8 @@ export const DefaultContext: Props = {
   setSettings: setStateDefaultFunction,
   initializeSettings: setStateDefaultFunction,
   setInitialSettings: setStateDefaultFunction,
+  isLoading: true,
+  setIsLoading: setStateDefaultFunction,
 };
 
 const WorkAssignmentsContext = createContext<Props>(DefaultContext);
@@ -62,9 +66,41 @@ const WorkAssignmentsContext = createContext<Props>(DefaultContext);
 export const WorkAssignmentsContextProvider = (
   props: PropsWithChildren<ContextProps>
 ) => {
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const { user } = useAuthorizationContext();
-  const eventAssignments = useGetEventAssignments(props.event);
-  const workAssignments = useGetWorkAssignments(props.event);
+
+  const [eventAssignmentsIsLoading, setEventAssignmentsIsLoading] =
+    useState<boolean>(true);
+  const eventAssignments = useGetEventAssignments(
+    () => setEventAssignmentsIsLoading(false),
+    props.event
+  );
+  const [workAssignmentsIsLoading, setWorkAssignmentsIsLoading] =
+    useState<boolean>(true);
+  const workAssignments = useGetWorkAssignments(
+    () => setWorkAssignmentsIsLoading(false),
+    props.event
+  );
+  const [eventSettingsIsLoading, setEventSettingsIsLoading] =
+    useState<boolean>(true);
+  const eventSettings = useGetEventSettings(
+    () => setEventSettingsIsLoading(false),
+    props.event
+  );
+
+  useEffect(() => {
+    if (
+      !eventAssignmentsIsLoading &&
+      !workAssignmentsIsLoading &&
+      !eventSettingsIsLoading
+    ) {
+      setIsLoading(false);
+    }
+  }, [
+    eventAssignmentsIsLoading,
+    workAssignmentsIsLoading,
+    eventSettingsIsLoading,
+  ]);
 
   const [assignments, setAssignments] = useState<WorkAssignment[]>([]);
 
@@ -102,7 +138,6 @@ export const WorkAssignmentsContextProvider = (
     stations: 8,
     preregistrationAccess: [],
   };
-  const eventSettings = useGetEventSettings(props.event);
   const [initialSettings, setInitialSettings] =
     useState<EventSettings>(eventSettings);
   const [settings, setSettings] = useState<EventSettings>(defaultSettings);
@@ -144,6 +179,8 @@ export const WorkAssignmentsContextProvider = (
         setSettings,
         initializeSettings,
         setInitialSettings,
+        isLoading,
+        setIsLoading,
       }}
     >
       {props.children}
