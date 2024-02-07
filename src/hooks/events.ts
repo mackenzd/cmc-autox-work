@@ -73,6 +73,7 @@ export function useGetEventAssignments(
         .catch((error) => console.log(error))
         .finally(() => onFinish());
     }
+    // eslint-disable-next-line
   }, [setEventAssignments, event, event?.id]);
 
   return eventAssignments;
@@ -97,6 +98,7 @@ export function useGetEventSettings(
       })
       .catch((error) => console.log(error))
       .finally(() => onFinish());
+      // eslint-disable-next-line
   }, [event?.id, setSettings]);
 
   return settings;
