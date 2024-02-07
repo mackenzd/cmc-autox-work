@@ -41,15 +41,13 @@ const WorkAssignmentsModal = (props: WorkAssignmentsModalProps) => {
       isLoading ? (
         <div className="skeleton h-96 mt-4"></div>
       ) : (
-        <>
-          <div className="py-4">
-            <WorkAssignmentsOther />
-          </div>
+        <div className="h-96 md:h-fit overflow-y-auto mt-4">
+          <WorkAssignmentsOther />
 
           <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {workAssignmentStations}
           </div>
-        </>
+        </div>
       ),
     [isLoading, workAssignmentStations]
   );
@@ -57,16 +55,15 @@ const WorkAssignmentsModal = (props: WorkAssignmentsModalProps) => {
   return props.isOpen ? (
     <dialog className="modal" open={props.isOpen}>
       <div className="modal-box border border-current work-assignments-content">
-        <button
-          className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
-          onClick={props.onClose}
-        >
-          ✕
-        </button>
-
         <div className="gap-4 work-assignments-header">
+          <button
+            className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+            onClick={props.onClose}
+          >
+            ✕
+          </button>
           <h3 className="font-bold text-lg">Work Assignment Request</h3>
-          <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
             <label className="form-control w-full max-w-xs">
               <div className="label">
                 <span className="font-bold label-text">Day</span>
@@ -120,22 +117,20 @@ const WorkAssignmentsModal = (props: WorkAssignmentsModalProps) => {
 
         {modalContent}
 
-        <div className="">
-          <div className="modal-action">
-            {isAdmin && !isLoading ? (
-              <button
-                className="btn btn-outline btn-sm"
-                onClick={() => getWorksheet(event, segment, runGroup)}
-              >
-                Print
-              </button>
-            ) : (
-              <></>
-            )}
-            <button className="btn btn-outline btn-sm" onClick={props.onClose}>
-              Close
+        <div className="modal-action">
+          {isAdmin && !isLoading ? (
+            <button
+              className="btn btn-outline btn-sm"
+              onClick={() => getWorksheet(event, segment, runGroup)}
+            >
+              Print
             </button>
-          </div>
+          ) : (
+            <></>
+          )}
+          <button className="btn btn-outline btn-sm" onClick={props.onClose}>
+            Close
+          </button>
         </div>
       </div>
     </dialog>

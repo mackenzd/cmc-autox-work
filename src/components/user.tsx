@@ -59,7 +59,7 @@ const UserAvatar = () => {
         </div>
         <ul
           tabIndex={0}
-          className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52"
+          className="menu menu-compact dropdown-content z-[1] shadow bg-base-100 rounded-box w-52"
         >
           {dropdownItems}
         </ul>
