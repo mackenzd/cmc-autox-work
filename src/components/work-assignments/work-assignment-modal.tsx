@@ -51,7 +51,7 @@ const WorkAssignmentsModal = (props: WorkAssignmentsModalProps) => {
           </div>
         </>
       ),
-    [isLoading]
+    [isLoading, workAssignmentStations]
   );
 
   return props.isOpen ? (

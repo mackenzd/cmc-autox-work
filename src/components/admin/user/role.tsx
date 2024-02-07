@@ -81,7 +81,7 @@ const UserRoleAdmin = (props: UserRoleAdminProps) => {
         {role}
       </div>
     ));
-  }, [roles, onRemoveRole]);
+  }, [roles, onRemoveRole, props.user?.id, user?.id]);
 
   const options = useMemo(() => {
     return (
@@ -112,7 +112,7 @@ const UserRoleAdmin = (props: UserRoleAdminProps) => {
         </div>
       </div>
     );
-  }, [options]);
+  }, [options, props.user?.id, user?.id]);
 
   return (
     <div>

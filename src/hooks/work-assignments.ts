@@ -65,6 +65,7 @@ export function useGetWorkAssignments(
       })
       .catch((error) => console.log(error))
       .finally(() => onFinish());
+      // eslint-disable-next-line
   }, [event?.id, setAssignments]);
 
   return assignments;
