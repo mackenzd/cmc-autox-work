@@ -33,17 +33,19 @@ export function useGetUserRoles(user?: MSRUser): Role[] {
   const [roles, setRoles] = useState<Role[]>([]);
 
   useEffect(() => {
-    fetch(`/api/user/${user?.id}/roles`)
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-        return Promise.reject(res);
-      })
-      .then((data) => {
-        setRoles(data);
-      })
-      .catch((error) => console.log(error));
+    if (user?.id) {
+      fetch(`/api/user/${user?.id}/roles`)
+        .then((res) => {
+          if (res.ok) {
+            return res.json();
+          }
+          return Promise.reject(res);
+        })
+        .then((data) => {
+          setRoles(data);
+        })
+        .catch((error) => console.log(error));
+    }
   }, [user?.id, setRoles]);
 
   return roles;
@@ -117,17 +119,19 @@ export function useGetPreregistration(user?: MSRUser): string[] {
   const [getPreregistration, setGetPreregistration] = useState<string[]>([]);
 
   useEffect(() => {
-    fetch(`/api/user/${user?.id}/preregistration`)
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-        return Promise.reject(res);
-      })
-      .then((data) => {
-        setGetPreregistration(data);
-      })
-      .catch((error) => console.log(error));
+    if (user?.id) {
+      fetch(`/api/user/${user?.id}/preregistration`)
+        .then((res) => {
+          if (res.ok) {
+            return res.json();
+          }
+          return Promise.reject(res);
+        })
+        .then((data) => {
+          setGetPreregistration(data);
+        })
+        .catch((error) => console.log(error));
+    }
   }, [user?.id, setGetPreregistration]);
 
   return getPreregistration;

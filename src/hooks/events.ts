@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { MSREvent } from "../models/msr-event";
 import {
-  eventHasEnded,
   getOrganizationEvents,
   getUserEvents,
 } from "../helpers/events";
@@ -60,7 +59,7 @@ export function useGetEventAssignments(
   const [eventAssignments, setEventAssignments] = useState<MSRAssignment[]>([]);
 
   useEffect(() => {
-    if (event?.id && !eventHasEnded(event)) {
+    if (event?.id) {
       fetch(`/api/events/${event?.id}/entrylist`)
         .then((res) => {
           if (res.ok) {
@@ -86,19 +85,21 @@ export function useGetEventSettings(
   const [settings, setSettings] = useState<EventSettings>({});
 
   useEffect(() => {
-    fetch(`/api/events/${event?.id}/settings`)
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-        return Promise.reject(res);
-      })
-      .then((data) => {
-        setSettings(data);
-      })
-      .catch((error) => console.log(error))
-      .finally(() => onFinish());
-      // eslint-disable-next-line
+    if (event?.id) {
+      fetch(`/api/events/${event?.id}/settings`)
+        .then((res) => {
+          if (res.ok) {
+            return res.json();
+          }
+          return Promise.reject(res);
+        })
+        .then((data) => {
+          setSettings(data);
+        })
+        .catch((error) => console.log(error))
+        .finally(() => onFinish());
+    }
+    // eslint-disable-next-line
   }, [event?.id, setSettings]);
 
   return settings;
