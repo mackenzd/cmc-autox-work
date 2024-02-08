@@ -1,7 +1,7 @@
 import EventCard from "../components/events/event";
 import { useGetEvents } from "../hooks/events";
 import moment from "moment";
-import { useGetPreregistration } from "../hooks/users";
+import { useGetCurrentUserPreregistration } from "../hooks/users";
 import { useMemo } from "react";
 import { useAuthorizationContext } from "../contexts/authorization-context";
 
@@ -13,7 +13,7 @@ const Events = () => {
   const end = moment().add(1, "year").format("YYYY-MM-DD");
 
   const getEvents = useGetEvents(start, end);
-  const getPreregistration = useGetPreregistration(user);
+  const getPreregistration = useGetCurrentUserPreregistration();
 
   const events = useMemo(() => {
     return (

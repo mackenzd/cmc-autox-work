@@ -34,6 +34,10 @@ class User(db.Model, UserMixin):
     work_assignments = db.relationship('WorkAssignment', backref='user', cascade='all, delete, delete-orphan')
     roles = db.relationship('Role', backref='user', cascade='all, delete, delete-orphan')
 
+    def has_role(self, role: str):
+        roles = [r.role for r in self.roles]
+        return role in roles
+
 @dataclass
 class Role(db.Model, UserMixin):
     __tablename__ = 'role'
@@ -82,12 +86,8 @@ def load_user(user_id):
 def admin_required(f):
     @wraps(f)
     def wrap(*args, **kwargs):
-        if current_user.is_authenticated:
-            roles = [r.role for r in current_user.roles]
-            if 'Admin' in roles:
-                return f(*args, **kwargs)
-            else:
-                return current_app.login_manager.unauthorized()
+        if current_user.is_authenticated and current_user.has_role('Admin'):
+            return f(*args, **kwargs)
         else:
             return current_app.login_manager.unauthorized()
 
@@ -169,13 +169,37 @@ def logout():
 ## API
 @app.route('/api/me')
 @login_required
-def get_user():
+def get_me():
     res = oauth.msr.get('rest/me.json')
     return make_response(res.content, res.status_code)
 
+@app.route('/api/me/roles')
+@login_required
+def get_my_roles():
+    try:
+        q = Role.query.where(Role.user_id == current_user.id)
+        roles = [a.role for a in q]
+    except Exception as e:
+        app.logger.error(e)
+        return make_response(json.dumps({'error': e}), 500)
+
+    return jsonify(roles)
+
+@app.route('/api/me/preregistration')
+@login_required
+def get_my_preregistration():
+    try:
+        q = PreregistrationAccess.query.where(PreregistrationAccess.user_id == current_user.id).all()
+        preregistration = [a.event_id for a in q]
+    except Exception as e:
+        app.logger.error(e)
+        return make_response(json.dumps({'error': e}), 500)
+
+    return jsonify(preregistration)
+
 @app.route('/api/me/events')
 @login_required
-def get_user_events():
+def get_my_events():
     res = oauth.msr.get('rest/me/events.json')    
     return make_response(res.content, res.status_code)
 
@@ -224,11 +248,11 @@ def get_work_assignments(event_id):
 @app.route('/api/events/<event_id>/assignments', methods=['POST'])
 @login_required
 def post_work_assignment(event_id):
-    if current_user.id != data.get('user').get('id'):
-        return current_app.login_manager.unauthorized()
-
     try:
         data = json.loads(request.data)
+        if current_user.id != data.get('user').get('id') and not current_user.has_role('Admin'):
+            return current_app.login_manager.unauthorized()
+
         stmt = insert(WorkAssignment).values(
             event_id = event_id,
             user_id = data.get('user').get('id'),
@@ -258,11 +282,11 @@ def post_work_assignment(event_id):
 @app.route('/api/events/<event_id>/assignments', methods=['DELETE'])
 @login_required
 def delete_work_assignment(event_id):
-    if current_user.id != data.get('user').get('id'):
-        return current_app.login_manager.unauthorized()
-
     try:
         data = json.loads(request.data)
+        if current_user.id != data.get('user').get('id') and not current_user.has_role('Admin'):
+            return current_app.login_manager.unauthorized()
+
         stmt = delete(WorkAssignment) \
             .where(WorkAssignment.event_id == event_id) \
             .where(WorkAssignment.user_id == data.get('user').get('id')) \
@@ -363,11 +387,8 @@ def get_users():
     return jsonify(users)
 
 @app.route('/api/user/<user_id>/roles')
-@login_required
+@admin_required
 def get_user_roles(user_id):
-    if current_user.id != user_id:
-        return current_app.login_manager.unauthorized()
-
     try:
         q = Role.query.where(Role.user_id == user_id)
         roles = [a.role for a in q]
@@ -414,11 +435,8 @@ def delete_user_role(user_id):
     return make_response({}, 200)
 
 @app.route('/api/user/<user_id>/preregistration')
-@login_required
+@admin_required
 def get_user_preregistration(user_id):
-    if current_user.id != user_id:
-        return current_app.login_manager.unauthorized()
-
     try:
         q = PreregistrationAccess.query.where(PreregistrationAccess.user_id == user_id).all()
         preregistration = [a.event_id for a in q]
