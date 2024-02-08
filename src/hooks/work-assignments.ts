@@ -14,6 +14,8 @@ export function useSetWorkAssignment(
       .then((res) => {
         if (res.ok) {
           onSuccess();
+        } else if (res.status === 400) {
+          return Promise.resolve(res.json()).then((res) => alert(res.error));
         } else {
           return Promise.reject(res);
         }
@@ -65,7 +67,7 @@ export function useGetWorkAssignments(
       })
       .catch((error) => console.log(error))
       .finally(() => onFinish());
-      // eslint-disable-next-line
+    // eslint-disable-next-line
   }, [event?.id, setAssignments]);
 
   return assignments;

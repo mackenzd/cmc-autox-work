@@ -253,6 +253,14 @@ def post_work_assignment(event_id):
         if current_user.id != data.get('user').get('id') and not current_user.has_role('Admin'):
             return current_app.login_manager.unauthorized()
 
+        q = WorkAssignment.query.where(WorkAssignment.event_id == event_id) \
+            .where(WorkAssignment.type == data.get('type')) \
+            .where(WorkAssignment.station == data.get('station')) \
+            .where(WorkAssignment.run_group == data.get('runGroup')) \
+            .where(WorkAssignment.segment == data.get('segment')).first()
+        if q:
+            return make_response(json.dumps({'error': 'This work assignment has been requested by another member.'}), 400)
+
         stmt = insert(WorkAssignment).values(
             event_id = event_id,
             user_id = data.get('user').get('id'),
