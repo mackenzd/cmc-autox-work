@@ -1,9 +1,11 @@
-from flask import Flask, redirect, session, make_response, request, jsonify, render_template
+from flask import Flask, current_app, redirect, session, make_response, request, jsonify, render_template
 from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager, UserMixin, current_user, login_required, login_user, logout_user
 from authlib.integrations.flask_client import OAuth
 from sqlalchemy.dialects.sqlite import insert
 from sqlalchemy import UniqueConstraint, delete
 from dataclasses import dataclass
+from functools import wraps
 import json
 
 db = SQLAlchemy()
@@ -14,10 +16,13 @@ app.secret_key = app.config.get('FLASK_SECRET_KEY')
 
 app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{app.config['DATABASE_NAME']}"
 
+login_manager = LoginManager(app)
+
 db.init_app(app)
+login_manager.init_app(app)
 
 @dataclass
-class User(db.Model):
+class User(db.Model, UserMixin):
     __tablename__ = 'user'
 
     id = db.Column(db.String(35), primary_key=True)
@@ -30,7 +35,7 @@ class User(db.Model):
     roles = db.relationship('Role', backref='user', cascade='all, delete, delete-orphan')
 
 @dataclass
-class Role(db.Model):
+class Role(db.Model, UserMixin):
     __tablename__ = 'role'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -69,6 +74,23 @@ class PreregistrationAccess(db.Model):
     user_id = db.Column(db.String(35), unique=False, nullable=False)
     UniqueConstraint(event_id, user_id, name='uq_preregistration_access_event_user_segment')
 
+@login_manager.user_loader
+def load_user(user_id):
+    user = User.query.get(user_id)
+    return user
+
+def admin_required(f):
+    @wraps(f)
+    def wrap(*args, **kwargs):
+        if current_user.is_authenticated:
+            roles = [r.role for r in current_user.roles]
+            if 'Admin' in roles:
+                return f(*args, **kwargs)
+        else:
+            return current_app.login_manager.unauthorized()
+
+    return wrap
+
 def fetch_token():
     token = session.get('token')
     if token is None:
@@ -81,61 +103,6 @@ with app.app_context():
 
     oauth = OAuth(app)
     oauth.register('msr', fetch_token=fetch_token)
-
-def assignments_to_dict(assignments):
-    output = {}
-
-    for assignment in assignments:
-        user = assignment.get('user')
-        name = f"{user.get('firstName')} {user.get('lastName')}"
-        vehicle_number = assignment.get('vehicleNumber') or ''
-        work_assignment_station = assignment.get('station')
-        work_assignment_type = assignment.get('type')
-
-        if work_assignment_station:
-            key = f"station{work_assignment_station}_{work_assignment_type.lower().replace(' ', '')}"
-        else:
-            key = f"{work_assignment_type.lower().replace(' ', '')}"
-        output[key] = [name, vehicle_number]
-
-    return output
-
-## Template
-@app.route('/templates/events/<event_id>/work_assignments.html')
-def work_assignments_html(event_id):
-    title = request.args.get('title')
-    segment = request.args.get('segment')
-    run_group = request.args.get('runGroup')
-
-    q = WorkAssignment.query.join(User, WorkAssignment.user_id == User.id) \
-            .where(WorkAssignment.event_id == event_id) \
-            .add_columns(User.id, User.first_name, User.last_name)
-    
-    if segment:
-        q = q.where(WorkAssignment.segment == segment)
-    if run_group:
-        q = q.where(WorkAssignment.run_group == run_group)
-
-    assignments = [{
-            'id': a[0].id,
-            'eventId': a[0].event_id,
-            'user': {
-                'id': a.id,
-                'firstName': a.first_name,
-                'lastName': a.last_name
-            },
-            'vehicleNumber': a[0].vehicle_number,
-            'type': a[0].type,
-            'station': a[0].station,
-            'runGroup': a[0].run_group,
-            'segment': a[0].segment
-        } for a in q.all()]
-
-    return render_template('work_assignments.html',
-                           title=title,
-                           segment=segment,
-                           run_group=run_group,
-                           assignments=assignments_to_dict(assignments))
 
 ## Auth
 @app.route('/auth/login')
@@ -154,6 +121,13 @@ def callback():
 
         profile = json.loads(res.content).get('response').get('profile')
         member_id = next((org.get("memberId") for org in profile.get('organizations') if org.get('id') == app.config['MSR_ORGANIZATION_ID']), None)
+
+        user = User(id = profile.get('id'),
+                    member_id = member_id,
+                    email = profile.get('email'),
+                    first_name = profile.get('firstName'),
+                    last_name = profile.get('lastName'),
+                    avatar = profile.get('avatar'))
 
         stmt = insert(User).values(
             id = profile.get('id'),
@@ -175,29 +149,36 @@ def callback():
         )
         db.session.execute(stmt)
         db.session.commit()
+
+        login_user(user)
     except Exception as e:
         app.logger.error(e)
     finally:
         return redirect(app.config['CMC_APP_URL'])
 
 @app.route('/auth/logout')
+@login_required
 def logout():
+    logout_user()
     session.pop('token', None)
 
     return make_response({}, 200)
 
 ## API
 @app.route('/api/me')
+@login_required
 def get_user():
     res = oauth.msr.get('rest/me.json')
     return make_response(res.content, res.status_code)
 
 @app.route('/api/me/events')
+@login_required
 def get_user_events():
     res = oauth.msr.get('rest/me/events.json')    
     return make_response(res.content, res.status_code)
 
 @app.route('/api/organization/events')
+@login_required
 def get_organization_events():
     start = request.args.get('start')
     end = request.args.get('end')
@@ -206,11 +187,13 @@ def get_organization_events():
     return make_response(res.content, res.status_code)
 
 @app.route('/api/events/<event_id>/entrylist')
+@login_required
 def get_entrylist(event_id):
     res = oauth.msr.get(f"rest/events/{event_id}/entrylist.json")    
     return make_response(res.content, res.status_code)
 
 @app.route('/api/events/<event_id>/assignments', methods=['GET'])
+@login_required
 def get_work_assignments(event_id):
     try:
         q = WorkAssignment.query.join(User, WorkAssignment.user_id == User.id) \
@@ -237,7 +220,11 @@ def get_work_assignments(event_id):
     return jsonify(assignments)
 
 @app.route('/api/events/<event_id>/assignments', methods=['POST'])
+@login_required
 def post_work_assignment(event_id):
+    if current_user.id != data.get('user').get('id'):
+        return current_app.login_manager.unauthorized()
+
     try:
         data = json.loads(request.data)
         stmt = insert(WorkAssignment).values(
@@ -267,7 +254,11 @@ def post_work_assignment(event_id):
     return make_response({}, 200)
 
 @app.route('/api/events/<event_id>/assignments', methods=['DELETE'])
+@login_required
 def delete_work_assignment(event_id):
+    if current_user.id != data.get('user').get('id'):
+        return current_app.login_manager.unauthorized()
+
     try:
         data = json.loads(request.data)
         stmt = delete(WorkAssignment) \
@@ -286,6 +277,7 @@ def delete_work_assignment(event_id):
     return make_response({}, 200)
 
 @app.route('/api/events/<event_id>/settings')
+@login_required
 def get_event_settings(event_id):
     try:
         q1 = EventSettings.query.where(EventSettings.event_id == event_id).first()
@@ -311,6 +303,7 @@ def get_event_settings(event_id):
     return jsonify(settings)
 
 @app.route('/api/events/<event_id>/settings', methods=['POST'])
+@admin_required
 def post_event_settings(event_id):
     try:
         data = json.loads(request.data)
@@ -350,6 +343,7 @@ def post_event_settings(event_id):
     return make_response({}, 200)
 
 @app.route('/api/user/all')
+@admin_required
 def get_users():
     try:
         q = User.query.all()
@@ -367,7 +361,11 @@ def get_users():
     return jsonify(users)
 
 @app.route('/api/user/<user_id>/roles')
+@login_required
 def get_user_roles(user_id):
+    if current_user.id != user_id:
+        return current_app.login_manager.unauthorized()
+
     try:
         q = Role.query.where(Role.user_id == user_id)
         roles = [a.role for a in q]
@@ -378,6 +376,7 @@ def get_user_roles(user_id):
     return jsonify(roles)
 
 @app.route('/api/user/<user_id>/roles', methods=['POST'])
+@admin_required
 def post_user_role(user_id):
     try:
         data = json.loads(request.data)
@@ -397,6 +396,7 @@ def post_user_role(user_id):
     return make_response({}, 200)
 
 @app.route('/api/user/<user_id>/roles', methods=['DELETE'])
+@admin_required
 def delete_user_role(user_id):
     try:
         data = json.loads(request.data)
@@ -412,7 +412,11 @@ def delete_user_role(user_id):
     return make_response({}, 200)
 
 @app.route('/api/user/<user_id>/preregistration')
+@login_required
 def get_user_preregistration(user_id):
+    if current_user.id != user_id:
+        return current_app.login_manager.unauthorized()
+
     try:
         q = PreregistrationAccess.query.where(PreregistrationAccess.user_id == user_id).all()
         preregistration = [a.event_id for a in q]
@@ -421,3 +425,60 @@ def get_user_preregistration(user_id):
         return make_response(json.dumps({'error': e}), 500)
 
     return jsonify(preregistration)
+
+## Templates
+@app.route('/templates/events/<event_id>/work_assignments.html')
+@admin_required
+def work_assignments_html(event_id):
+    title = request.args.get('title')
+    segment = request.args.get('segment')
+    run_group = request.args.get('runGroup')
+
+    q = WorkAssignment.query.join(User, WorkAssignment.user_id == User.id) \
+            .where(WorkAssignment.event_id == event_id) \
+            .add_columns(User.id, User.first_name, User.last_name)
+    
+    if segment:
+        q = q.where(WorkAssignment.segment == segment)
+    if run_group:
+        q = q.where(WorkAssignment.run_group == run_group)
+
+    assignments = [{
+            'id': a[0].id,
+            'eventId': a[0].event_id,
+            'user': {
+                'id': a.id,
+                'firstName': a.first_name,
+                'lastName': a.last_name
+            },
+            'vehicleNumber': a[0].vehicle_number,
+            'type': a[0].type,
+            'station': a[0].station,
+            'runGroup': a[0].run_group,
+            'segment': a[0].segment
+        } for a in q.all()]
+
+    return render_template('work_assignments.html',
+                           title=title,
+                           segment=segment,
+                           run_group=run_group,
+                           assignments=assignments_to_dict(assignments))
+
+## Helpers
+def assignments_to_dict(assignments):
+    output = {}
+
+    for assignment in assignments:
+        user = assignment.get('user')
+        name = f"{user.get('firstName')} {user.get('lastName')}"
+        vehicle_number = assignment.get('vehicleNumber') or ''
+        work_assignment_station = assignment.get('station')
+        work_assignment_type = assignment.get('type')
+
+        if work_assignment_station:
+            key = f"station{work_assignment_station}_{work_assignment_type.lower().replace(' ', '')}"
+        else:
+            key = f"{work_assignment_type.lower().replace(' ', '')}"
+        output[key] = [name, vehicle_number]
+
+    return output
