@@ -6,7 +6,7 @@ import { useMemo } from "react";
 import { useAuthorizationContext } from "../contexts/authorization-context";
 
 const Events = () => {
-  const { user, canPreregister } = useAuthorizationContext();
+  const { canPreregister } = useAuthorizationContext();
 
   // TODO: Configure appropriate date range for displayed events.
   const start = moment().subtract(1, "year").format("YYYY-MM-DD");

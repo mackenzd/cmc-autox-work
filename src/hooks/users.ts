@@ -45,6 +45,7 @@ export function useGetCurrentUserRoles(onFinish: () => void): Role[] {
       })
       .catch((error) => console.log(error))
       .finally(() => onFinish());
+    // eslint-disable-next-line
   }, [setRoles]);
 
   return roles;
