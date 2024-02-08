@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { MSRUser } from "../models/msr-user";
 import { Role } from "../models/roles";
 
-export function useGetUser(
+export function useGetCurrentUser(
   onFinish: () => void
 ): [
   MSRUser | undefined,
@@ -27,6 +27,48 @@ export function useGetUser(
   }, [setUser]);
 
   return [user, setUser];
+}
+
+export function useGetCurrentUserRoles(onFinish: () => void): Role[] {
+  const [roles, setRoles] = useState<Role[]>([]);
+
+  useEffect(() => {
+    fetch(`/api/me/roles`)
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        }
+        return Promise.reject(res);
+      })
+      .then((data) => {
+        setRoles(data);
+      })
+      .catch((error) => console.log(error))
+      .finally(() => onFinish());
+    // eslint-disable-next-line
+  }, [setRoles]);
+
+  return roles;
+}
+
+export function useGetCurrentUserPreregistration(): string[] {
+  const [getPreregistration, setGetPreregistration] = useState<string[]>([]);
+
+  useEffect(() => {
+    fetch(`/api/me/preregistration`)
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        }
+        return Promise.reject(res);
+      })
+      .then((data) => {
+        setGetPreregistration(data);
+      })
+      .catch((error) => console.log(error));
+  }, [setGetPreregistration]);
+
+  return getPreregistration;
 }
 
 export function useGetUserRoles(user?: MSRUser): Role[] {
@@ -115,8 +157,10 @@ export function useUnsetRole(
   return unsetRole;
 }
 
-export function useGetPreregistration(user?: MSRUser): string[] {
-  const [getPreregistration, setGetPreregistration] = useState<string[]>([]);
+export function useGetUserPreregistration(user?: MSRUser): string[] {
+  const [getUserPreregistration, setGetUserPreregistration] = useState<
+    string[]
+  >([]);
 
   useEffect(() => {
     if (user?.id) {
@@ -128,11 +172,11 @@ export function useGetPreregistration(user?: MSRUser): string[] {
           return Promise.reject(res);
         })
         .then((data) => {
-          setGetPreregistration(data);
+          setGetUserPreregistration(data);
         })
         .catch((error) => console.log(error));
     }
-  }, [user?.id, setGetPreregistration]);
+  }, [user?.id, setGetUserPreregistration]);
 
-  return getPreregistration;
+  return getUserPreregistration;
 }
