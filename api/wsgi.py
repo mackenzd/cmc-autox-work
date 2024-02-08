@@ -86,6 +86,8 @@ def admin_required(f):
             roles = [r.role for r in current_user.roles]
             if 'Admin' in roles:
                 return f(*args, **kwargs)
+            else:
+                return current_app.login_manager.unauthorized()
         else:
             return current_app.login_manager.unauthorized()
 
