@@ -17,7 +17,6 @@ import uniq from "lodash/uniq";
 import { useGetWorkAssignments } from "../hooks/work-assignments";
 import { EventSettings } from "../models/event-settings";
 import { useGetCurrentUserPreregistration } from "../hooks/users";
-import { eventHasStarted } from "../helpers/events";
 
 interface Props {
   event?: MSREvent;
