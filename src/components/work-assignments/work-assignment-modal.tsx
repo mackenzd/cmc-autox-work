@@ -25,6 +25,44 @@ const WorkAssignmentsModal = (props: WorkAssignmentsModalProps) => {
   } = useWorkAssignmentsContext();
   const { isAdmin } = useAuthorizationContext();
 
+  const segmentSelector = useMemo(() => {
+    return (
+      <select
+        className="select select-primary select-xs max-w-xs"
+        key={segment}
+        value={segment}
+        onChange={(e) => {
+          setSegment(e.target.value as MSRSegment);
+        }}
+      >
+        {Object.values(availableSegments).map((sg) => (
+          <option key={sg} value={sg}>
+            {sg}
+          </option>
+        ))}
+      </select>
+    );
+  }, [availableSegments, segment, setSegment]);
+
+  const runGroupSelector = useMemo(() => {
+    return (
+      <select
+        className="select select-primary select-xs max-w-xs"
+        key={runGroup}
+        value={runGroup}
+        onChange={(e) => {
+          setRunGroup(e.target.value as RunGroup);
+        }}
+      >
+        {Object.values(RunGroup).map((rg) => (
+          <option key={rg} value={rg}>
+            {rg}
+          </option>
+        ))}
+      </select>
+    );
+  }, [runGroup, setRunGroup]);
+
   const workAssignmentStations = useMemo(() => {
     const stations = [];
     for (let i = 1; i <= settings.stations!; i++) {
@@ -43,7 +81,6 @@ const WorkAssignmentsModal = (props: WorkAssignmentsModalProps) => {
       ) : (
         <div className="h-96 md:h-fit overflow-y-auto mt-4">
           <WorkAssignmentsOther />
-
           <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {workAssignmentStations}
           </div>
@@ -68,20 +105,7 @@ const WorkAssignmentsModal = (props: WorkAssignmentsModalProps) => {
               <div className="label">
                 <span className="font-bold label-text">Day</span>
               </div>
-              <select
-                className="select select-primary select-xs max-w-xs"
-                key={segment}
-                value={segment}
-                onChange={(e) => {
-                  setSegment(e.target.value as MSRSegment);
-                }}
-              >
-                {Object.values(availableSegments).map((sg) => (
-                  <option key={sg} value={sg}>
-                    {sg}
-                  </option>
-                ))}
-              </select>
+              {segmentSelector}
               <div className="label">
                 <span className="label-text-alt">
                   Choose the day for your work assignment request.
@@ -92,20 +116,7 @@ const WorkAssignmentsModal = (props: WorkAssignmentsModalProps) => {
               <div className="label">
                 <span className="font-bold label-text">Run Group</span>
               </div>
-              <select
-                className="select select-primary select-xs max-w-xs"
-                key={runGroup}
-                value={runGroup}
-                onChange={(e) => {
-                  setRunGroup(e.target.value as RunGroup);
-                }}
-              >
-                {Object.values(RunGroup).map((rg) => (
-                  <option key={rg} value={rg}>
-                    {rg}
-                  </option>
-                ))}
-              </select>
+              {runGroupSelector}
               <div className="label">
                 <span className="label-text-alt">
                   Your run group is determined by your car number.
