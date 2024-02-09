@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { Station, WorkAssignmentType } from "../../models/work-assignment";
 import {
   getWorkAssignment,
@@ -10,6 +10,7 @@ import {
   useSetWorkAssignment,
   useUnsetWorkAssignment,
 } from "../../hooks/work-assignments";
+import ConfirmationDialog from "../dialogs/confirmation-dialog";
 
 export interface WorkAssignmentProps {
   type: WorkAssignmentType;
@@ -77,6 +78,8 @@ const WorkAssignmentEntry = (props: WorkAssignmentProps) => {
       }
     } else if (currentAssignment.user?.id === user?.id) {
       setAssignments(assignments.filter((a) => a !== currentAssignment));
+    } else if (currentAssignment.user?.id !== user?.id && isAdmin) {
+      setAssignments(assignments.filter((a) => a !== currentAssignment));
     }
     // eslint-disable-next-line
   }, [
@@ -100,6 +103,7 @@ const WorkAssignmentEntry = (props: WorkAssignmentProps) => {
 
   const onClickWorkAssignment = useCallback(() => {
     if (
+      // Clicked on your own work assignment
       currentAssignment?.user?.id === user?.id &&
       currentAssignment?.runGroup === runGroup &&
       currentAssignment.segment === segment &&
@@ -108,7 +112,11 @@ const WorkAssignmentEntry = (props: WorkAssignmentProps) => {
     ) {
       unsetWorkAssignment(currentAssignment);
     } else if (currentAssignment?.user?.id === undefined) {
+      // Clicked on an empty work assignment
       setWorkAssignment(newAssignment);
+    } else if (currentAssignment?.user?.id !== user?.id && isAdmin) {
+      // Clicked on an assigned work assignment
+      setIsConfirmationDialogOpen(true);
     }
   }, [
     currentAssignment,
@@ -120,6 +128,7 @@ const WorkAssignmentEntry = (props: WorkAssignmentProps) => {
     user?.id,
     setWorkAssignment,
     newAssignment,
+    isAdmin
   ]);
 
   const requiredRole = roleForWorkAssignment(props.type);
@@ -162,6 +171,29 @@ const WorkAssignmentEntry = (props: WorkAssignmentProps) => {
     // eslint-disable-next-line
   }, [JSON.stringify(currentAssignment)]);
 
+  const [isConfirmationDialogOpen, setIsConfirmationDialogOpen] =
+    useState<boolean>(false);
+  const confirmationDialog = useMemo(
+    () =>
+      isConfirmationDialogOpen && (
+        <ConfirmationDialog
+          isOpen={isConfirmationDialogOpen}
+          title="Remove Work Assignment?"
+          message={`Are you sure you want to remove ${currentAssignment?.segment}'s work assignment for ${currentAssignment?.user?.firstName} ${currentAssignment?.user?.lastName}?`}
+          onConfirm={() => {
+            if (currentAssignment) {
+              unsetWorkAssignment(currentAssignment);
+            }
+            setIsConfirmationDialogOpen(false);
+          }}
+          onClose={() => {
+            setIsConfirmationDialogOpen(false);
+          }}
+        />
+      ),
+    [isConfirmationDialogOpen, setIsConfirmationDialogOpen, currentAssignment, unsetWorkAssignment]
+  );
+
   return (
     <div className="py-1 work-assignment">
       <button
@@ -172,6 +204,7 @@ const WorkAssignmentEntry = (props: WorkAssignmentProps) => {
         {props.type}
       </button>
       {assigned}
+      {confirmationDialog}
     </div>
   );
 };
