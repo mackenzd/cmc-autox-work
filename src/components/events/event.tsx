@@ -2,7 +2,11 @@ import { useMemo, useState } from "react";
 import { MSREvent } from "../../models/msr-event";
 import WorkAssignmentsModal from "../work-assignments/work-assignment-modal";
 import { WorkAssignmentsContextProvider } from "../../contexts/work-assignments-context";
-import { eventHasEnded, eventHasStarted } from "../../helpers/events";
+import {
+  eventHasEnded,
+  eventRegistrationHasStarted,
+  eventRegistraionHasEnded,
+} from "../../helpers/events";
 import EventSettingsModal from "./event-settings-modal";
 import { useAuthorizationContext } from "../../contexts/authorization-context";
 
@@ -28,8 +32,15 @@ const EventCard = (props: EventCardProps) => {
     [props.event.end]
   );
 
-  const hasStarted = useMemo(() => eventHasStarted(props.event), [props.event]);
   const hasEnded = useMemo(() => eventHasEnded(props.event), [props.event]);
+  const hasRegistrationStarted = useMemo(
+    () => eventRegistrationHasStarted(props.event),
+    [props.event]
+  );
+  const hasRegistrationEnded = useMemo(
+    () => eventRegistraionHasEnded(props.event),
+    [props.event]
+  );
 
   const [isSettingsModalOpen, setIsSettingsModalOpen] =
     useState<boolean>(false);
@@ -83,17 +94,16 @@ const EventCard = (props: EventCardProps) => {
   );
 
   const footer = useMemo(() => {
-    const eventSettingsButton =
-      isAdmin && !hasStarted ? (
-        <button
-          className="btn btn-primary"
-          onClick={() => setIsSettingsModalOpen(true)}
-        >
-          Event Settings
-        </button>
-      ) : (
-        <></>
-      );
+    const eventSettingsButton = isAdmin ? (
+      <button
+        className="btn btn-primary"
+        onClick={() => setIsSettingsModalOpen(true)}
+      >
+        Event Settings
+      </button>
+    ) : (
+      <></>
+    );
 
     if (hasEnded) {
       return <p>This event has ended.</p>;
@@ -114,12 +124,21 @@ const EventCard = (props: EventCardProps) => {
         </>
       );
     } else {
+      let classNames: string;
+      let message: string;
+      if (hasRegistrationStarted && !hasRegistrationEnded) {
+        classNames = "btn btn-primary";
+        message = "You are not registered for this event.";
+      } else {
+        classNames = "btn btn-disabled";
+        message = "Registration is not open for this event.";
+      }
+
       return (
         <>
-          <p>You are not registered for this event.</p>
-          {eventSettingsButton}
+          <p>{message}</p>
           <a
-            className="btn btn-primary"
+            className={classNames}
             href={props.event.detailuri}
             target="_blank"
             rel="noreferrer"
@@ -131,11 +150,12 @@ const EventCard = (props: EventCardProps) => {
     }
   }, [
     props.allowPreregistration,
-    hasStarted,
     hasEnded,
     isAdmin,
     props.event.detailuri,
     props.event.registered,
+    hasRegistrationStarted,
+    hasRegistrationEnded,
   ]);
 
   return (

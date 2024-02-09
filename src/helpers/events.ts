@@ -19,6 +19,16 @@ export function eventHasEnded(event: MSREvent): boolean {
   return endDate < new Date();
 }
 
+export function eventRegistrationHasStarted(event: MSREvent): boolean {
+  const startDate = new Date(`${event?.registration?.start} UTC`);
+  return startDate < new Date();
+}
+
+export function eventRegistraionHasEnded(event: MSREvent): boolean {
+  const endDate = new Date(`${event?.registration?.end} UTC`);
+  return endDate < new Date();
+}
+
 export function getOrganizationEvents(
   start?: string,
   end?: string
