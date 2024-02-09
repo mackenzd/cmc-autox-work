@@ -13,7 +13,7 @@ const Events = () => {
   const end = moment().add(1, "year").format("YYYY-MM-DD");
 
   const getEvents = useGetEvents(start, end);
-  const getPreregistration = useGetCurrentUserPreregistration();
+  const getPreregistration = useGetCurrentUserPreregistration(() => {});
 
   const events = useMemo(() => {
     return (

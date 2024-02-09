@@ -16,6 +16,8 @@ import { MSRSegment } from "../models/msr-segment";
 import uniq from "lodash/uniq";
 import { useGetWorkAssignments } from "../hooks/work-assignments";
 import { EventSettings } from "../models/event-settings";
+import { useGetCurrentUserPreregistration } from "../hooks/users";
+import { eventHasStarted } from "../helpers/events";
 
 interface Props {
   event?: MSREvent;
@@ -67,32 +69,40 @@ export const WorkAssignmentsContextProvider = (
   props: PropsWithChildren<ContextProps>
 ) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const { user } = useAuthorizationContext();
+  const { user, canPreregister } = useAuthorizationContext();
 
   const [eventAssignmentsIsLoading, setEventAssignmentsIsLoading] =
     useState<boolean>(true);
-  const eventAssignments = useGetEventAssignments(
+  const getEventAssignments = useGetEventAssignments(
     () => setEventAssignmentsIsLoading(false),
     props.event
   );
   const [workAssignmentsIsLoading, setWorkAssignmentsIsLoading] =
     useState<boolean>(true);
-  const workAssignments = useGetWorkAssignments(
+  const getWorkAssignments = useGetWorkAssignments(
     () => setWorkAssignmentsIsLoading(false),
     props.event
   );
   const [eventSettingsIsLoading, setEventSettingsIsLoading] =
     useState<boolean>(true);
-  const eventSettings = useGetEventSettings(
+  const getEventSettings = useGetEventSettings(
     () => setEventSettingsIsLoading(false),
     props.event
+  );
+  const [
+    currentUserPreregistrationIsLoading,
+    setCurrentUserPreregistrationIsLoading,
+  ] = useState<boolean>(true);
+  const getCurrentUserPreregistration = useGetCurrentUserPreregistration(() =>
+    setCurrentUserPreregistrationIsLoading(false)
   );
 
   useEffect(() => {
     if (
       !eventAssignmentsIsLoading &&
       !workAssignmentsIsLoading &&
-      !eventSettingsIsLoading
+      !eventSettingsIsLoading &&
+      !currentUserPreregistrationIsLoading
     ) {
       setIsLoading(false);
     }
@@ -100,25 +110,35 @@ export const WorkAssignmentsContextProvider = (
     eventAssignmentsIsLoading,
     workAssignmentsIsLoading,
     eventSettingsIsLoading,
+    currentUserPreregistrationIsLoading,
   ]);
 
   const [assignments, setAssignments] = useState<WorkAssignment[]>([]);
 
-  const entries = eventAssignments?.filter(
+  const entries = getEventAssignments?.filter(
     (assignment) =>
       assignment.firstName === user?.firstName &&
       assignment.lastName === user?.lastName
   );
 
   useEffect(() => {
-    setAssignments(workAssignments);
+    setAssignments(getWorkAssignments);
     // eslint-disable-next-line
-  }, [JSON.stringify(workAssignments)]);
+  }, [JSON.stringify(getWorkAssignments)]);
 
   const availableSegments = useMemo(
-    () => uniq(entries.map((e) => e.segment as MSRSegment)),
+    () => {
+      if (
+        canPreregister ||
+        getCurrentUserPreregistration.some((e) => e === props.event.id)
+      ) {
+        return Object.values(MSRSegment);
+      } else {
+        return uniq(entries.map((e) => e.segment as MSRSegment));
+      }
+    },
     // eslint-disable-next-line
-    [JSON.stringify(entries)]
+    [JSON.stringify(entries), canPreregister, getCurrentUserPreregistration]
   );
   const [segment, setSegment] = useState<MSRSegment>(availableSegments.at(0)!);
 
@@ -139,7 +159,7 @@ export const WorkAssignmentsContextProvider = (
     preregistrationAccess: [],
   };
   const [initialSettings, setInitialSettings] =
-    useState<EventSettings>(eventSettings);
+    useState<EventSettings>(getEventSettings);
   const [settings, setSettings] = useState<EventSettings>(defaultSettings);
 
   const initializeSettings = useCallback(() => {
@@ -152,7 +172,7 @@ export const WorkAssignmentsContextProvider = (
   }, [JSON.stringify(initialSettings), setSettings]);
 
   useEffect(() => {
-    if (!initialSettings?.stations) setInitialSettings(eventSettings);
+    if (!initialSettings?.stations) setInitialSettings(getEventSettings);
     initializeSettings();
     // eslint-disable-next-line
   }, [
@@ -160,7 +180,7 @@ export const WorkAssignmentsContextProvider = (
     initializeSettings,
     setInitialSettings,
     // eslint-disable-next-line
-    JSON.stringify(eventSettings),
+    JSON.stringify(getEventSettings),
   ]);
 
   return (
