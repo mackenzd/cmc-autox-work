@@ -2,27 +2,19 @@ import { useNavigate } from "react-router-dom";
 import { useAuthorizationContext } from "../contexts/authorization-context";
 import { useLogout } from "../hooks/auth";
 import { useMemo } from "react";
+import { closeDropdownOnClick } from "../helpers/utils";
 
 const UserAvatar = () => {
   const { user, isAdmin } = useAuthorizationContext();
   const logout = useLogout();
   const navigate = useNavigate();
 
-  // TODO: put this in a helper
-  const handleClick = () => {
-    const elem = document.activeElement;
-    if (elem) {
-      (elem as HTMLElement).blur();
-    }
-  };
-
-  const dropdownItems = useMemo(() => {
+  const options = useMemo(() => {
     const logoutButton = (
       <li>
         <button
           onClick={() => {
-            handleClick();
-            logout();
+            closeDropdownOnClick(() => logout());
           }}
         >
           Logout
@@ -36,8 +28,7 @@ const UserAvatar = () => {
           <li>
             <button
               onClick={() => {
-                handleClick();
-                navigate("/admin");
+                closeDropdownOnClick(() => navigate("/admin"));
               }}
             >
               Admin
@@ -61,7 +52,7 @@ const UserAvatar = () => {
           tabIndex={0}
           className="menu menu-compact dropdown-content z-[1] shadow bg-base-100 rounded-box w-52"
         >
-          {dropdownItems}
+          {options}
         </ul>
       </div>
     </div>

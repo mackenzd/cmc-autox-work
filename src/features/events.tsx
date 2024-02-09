@@ -8,9 +8,8 @@ import { useAuthorizationContext } from "../contexts/authorization-context";
 const Events = () => {
   const { canPreregister } = useAuthorizationContext();
 
-  // TODO: Configure appropriate date range for displayed events.
-  const start = moment().subtract(1, "year").format("YYYY-MM-DD");
-  const end = moment().add(1, "year").format("YYYY-MM-DD");
+  const start = moment().startOf("year").format("YYYY-MM-DD");
+  const end = moment().endOf("year").format("YYYY-MM-DD");
 
   const getEvents = useGetEvents(start, end);
   const getPreregistration = useGetCurrentUserPreregistration(() => {});

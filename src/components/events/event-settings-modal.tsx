@@ -4,6 +4,7 @@ import { useWorkAssignmentsContext } from "../../contexts/work-assignments-conte
 import { useSetEventSettings } from "../../hooks/events";
 import { useGetUsers } from "../../hooks/users";
 import { MSRUser } from "../../models/msr-user";
+import { closeDropdownOnClick } from "../../helpers/utils";
 
 export interface EventSettingsModalProps {
   event: MSREvent;
@@ -21,7 +22,7 @@ const EventSettingsModal = (props: EventSettingsModalProps) => {
     setSettings(settings);
   }, props.event);
 
-  const [value, setValue] = useState<string>("");
+  const [userInput, setUserInput] = useState<string>("");
   const getUsers = useGetUsers();
 
   const onChangeStations = useCallback(
@@ -33,21 +34,18 @@ const EventSettingsModal = (props: EventSettingsModalProps) => {
 
   const onAddUser = useCallback(
     (user: MSRUser) => {
-      const elem = document.activeElement;
-      if (elem) {
-        (elem as HTMLElement).blur();
-      }
-
-      setValue("");
-      setSettings({
-        ...settings,
-        preregistrationAccess: [
-          ...(settings.preregistrationAccess || []),
-          user,
-        ],
+      closeDropdownOnClick(() => {
+        setSettings({
+          ...settings,
+          preregistrationAccess: [
+            ...(settings.preregistrationAccess || []),
+            user,
+          ],
+        });
+        setUserInput("");
       });
     },
-    [setValue, setSettings, settings]
+    [setUserInput, setSettings, settings]
   );
 
   const onRemoveUser = useCallback(
@@ -74,7 +72,7 @@ const EventSettingsModal = (props: EventSettingsModalProps) => {
     props.onClose();
   };
 
-  const stationsInput = useMemo(
+  const stationsSelector = useMemo(
     () => (
       <select
         className="select select-primary select-md"
@@ -110,20 +108,21 @@ const EventSettingsModal = (props: EventSettingsModalProps) => {
               }) &&
               `${user.firstName} ${user.lastName}`
                 .toLowerCase()
-                .includes(value.toLowerCase())
+                .includes(userInput.toLowerCase())
             );
           })
           .map((user, index) => {
-            const userFullName = `${user.firstName} ${user.lastName}`;
             return (
               <li key={index} tabIndex={index + 1}>
-                <button onClick={() => onAddUser(user)}>{userFullName}</button>
+                <button
+                  onClick={() => closeDropdownOnClick(() => onAddUser(user))}
+                >{`${user.firstName} ${user.lastName}`}</button>
               </li>
             );
           })}
       </>
     );
-  }, [getUsers, settings.preregistrationAccess, value, onAddUser]);
+  }, [getUsers, settings.preregistrationAccess, userInput, onAddUser]);
 
   const usersInput = useMemo(() => {
     return (
@@ -133,9 +132,9 @@ const EventSettingsModal = (props: EventSettingsModalProps) => {
             type="text"
             placeholder="Enter member's name..."
             className="input input-primary input-bordered w-full"
-            value={value}
+            value={userInput}
             onChange={(e) => {
-              setValue(e.target.value);
+              setUserInput(e.target.value);
             }}
           />
         </label>
@@ -144,7 +143,7 @@ const EventSettingsModal = (props: EventSettingsModalProps) => {
         </div>
       </div>
     );
-  }, [value, usersOptions]);
+  }, [userInput, usersOptions]);
 
   const usersBadges = useMemo(() => {
     return (
@@ -169,7 +168,7 @@ const EventSettingsModal = (props: EventSettingsModalProps) => {
                 ></path>
               </svg>
             </button>
-            {user.firstName} {user.lastName}
+            {`${user.firstName} ${user.lastName}`}
           </div>
         ))}
       </div>
@@ -185,7 +184,6 @@ const EventSettingsModal = (props: EventSettingsModalProps) => {
         >
           ✕
         </button>
-
         <div className="gap-4 work-assignments-header">
           <h3 className="font-bold text-lg">
             Event Settings - {props.event.name}
@@ -196,7 +194,7 @@ const EventSettingsModal = (props: EventSettingsModalProps) => {
             <div className="label">
               <span className="font-bold label-text">Cone Stations</span>
             </div>
-            {stationsInput}
+            {stationsSelector}
             <div className="label">
               <span className="label-text-alt">
                 The number of cone stations to display on the work assignment

@@ -2,21 +2,12 @@ import { useMemo, useState } from "react";
 import { useGetUsers } from "../../../hooks/users";
 import { MSRUser } from "../../../models/msr-user";
 import UserRoleAdmin from "./role";
+import { closeDropdownOnClick } from "../../../helpers/utils";
 
 const UserAdmin = () => {
-  const [value, setValue] = useState<string>("");
+  const [userInput, setUserInput] = useState<string>("");
   const [user, setUser] = useState<MSRUser | undefined>(undefined);
   const users = useGetUsers();
-
-  const handleClick = (user: MSRUser) => {
-    const elem = document.activeElement;
-    if (elem) {
-      (elem as HTMLElement).blur();
-    }
-
-    setUser(user);
-    setValue("");
-  };
 
   const options = useMemo(() => {
     return (
@@ -25,21 +16,27 @@ const UserAdmin = () => {
           .filter((user) => {
             return `${user.firstName} ${user.lastName}`
               .toLowerCase()
-              .includes(value.toLowerCase());
+              .includes(userInput.toLowerCase());
           })
           .map((user, index) => {
-            const userFullName = `${user.firstName} ${user.lastName}`;
             return (
               <li key={index} tabIndex={index + 1}>
-                <button onClick={() => handleClick(user)}>
-                  {userFullName}
+                <button
+                  onClick={() =>
+                    closeDropdownOnClick(() => {
+                      setUser(user);
+                      setUserInput("");
+                    })
+                  }
+                >
+                  {`${user.firstName} ${user.lastName}`}
                 </button>
               </li>
             );
           })}
       </>
     );
-  }, [users, value]);
+  }, [users, userInput]);
 
   const dropdown = useMemo(() => {
     return (
@@ -52,9 +49,9 @@ const UserAdmin = () => {
             type="text"
             placeholder="Enter member's name..."
             className="input input-bordered w-full"
-            value={value}
+            value={userInput}
             onChange={(e) => {
-              setValue(e.target.value);
+              setUserInput(e.target.value);
             }}
           />
         </label>
@@ -63,7 +60,7 @@ const UserAdmin = () => {
         </div>
       </div>
     );
-  }, [value, options]);
+  }, [userInput, options]);
 
   return (
     <>

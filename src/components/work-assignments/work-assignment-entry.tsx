@@ -115,7 +115,7 @@ const WorkAssignmentEntry = (props: WorkAssignmentProps) => {
       // Clicked on an empty work assignment
       setWorkAssignment(newAssignment);
     } else if (currentAssignment?.user?.id !== user?.id && isAdmin) {
-      // Clicked on an assigned work assignment
+      // Clicked on an assigned work assignment as an admin
       setIsConfirmationDialogOpen(true);
     }
   }, [
@@ -128,7 +128,7 @@ const WorkAssignmentEntry = (props: WorkAssignmentProps) => {
     user?.id,
     setWorkAssignment,
     newAssignment,
-    isAdmin
+    isAdmin,
   ]);
 
   const requiredRole = roleForWorkAssignment(props.type);
@@ -175,11 +175,11 @@ const WorkAssignmentEntry = (props: WorkAssignmentProps) => {
     useState<boolean>(false);
   const confirmationDialog = useMemo(
     () =>
-      isConfirmationDialogOpen && (
+      isConfirmationDialogOpen ? (
         <ConfirmationDialog
           isOpen={isConfirmationDialogOpen}
           title="Remove Work Assignment?"
-          message={`Are you sure you want to remove ${currentAssignment?.segment}'s work assignment for ${currentAssignment?.user?.firstName} ${currentAssignment?.user?.lastName}?`}
+          message={`Are you sure you want to remove ${currentAssignment?.user?.firstName} ${currentAssignment?.user?.lastName}'s work assignment for ${currentAssignment?.segment}?`}
           onConfirm={() => {
             if (currentAssignment) {
               unsetWorkAssignment(currentAssignment);
@@ -190,8 +190,15 @@ const WorkAssignmentEntry = (props: WorkAssignmentProps) => {
             setIsConfirmationDialogOpen(false);
           }}
         />
+      ) : (
+        <></>
       ),
-    [isConfirmationDialogOpen, setIsConfirmationDialogOpen, currentAssignment, unsetWorkAssignment]
+    [
+      isConfirmationDialogOpen,
+      setIsConfirmationDialogOpen,
+      currentAssignment,
+      unsetWorkAssignment,
+    ]
   );
 
   return (

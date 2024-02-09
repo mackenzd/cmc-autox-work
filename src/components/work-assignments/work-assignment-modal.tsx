@@ -89,6 +89,27 @@ const WorkAssignmentsModal = (props: WorkAssignmentsModalProps) => {
     [isLoading, workAssignmentStations]
   );
 
+  const modalActions = useMemo(() => {
+    return (
+      <div className="modal-action">
+        {isAdmin && !isLoading ? (
+          <button
+            className="btn btn-outline btn-sm"
+            onClick={() => getWorksheet(event, segment, runGroup)}
+          >
+            Print
+          </button>
+        ) : (
+          <></>
+        )}
+        <button className="btn btn-outline btn-sm" onClick={props.onClose}>
+          Close
+        </button>
+      </div>
+    );
+    // eslint-disable-next-line
+  }, [event, isAdmin, isLoading, runGroup, segment]);
+
   return props.isOpen ? (
     <dialog className="modal" open={props.isOpen}>
       <div className="modal-box border border-current work-assignments-content">
@@ -125,24 +146,8 @@ const WorkAssignmentsModal = (props: WorkAssignmentsModalProps) => {
             </label>
           </div>
         </div>
-
         {modalContent}
-
-        <div className="modal-action">
-          {isAdmin && !isLoading ? (
-            <button
-              className="btn btn-outline btn-sm"
-              onClick={() => getWorksheet(event, segment, runGroup)}
-            >
-              Print
-            </button>
-          ) : (
-            <></>
-          )}
-          <button className="btn btn-outline btn-sm" onClick={props.onClose}>
-            Close
-          </button>
-        </div>
+        {modalActions}
       </div>
     </dialog>
   ) : (

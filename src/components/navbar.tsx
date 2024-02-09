@@ -6,15 +6,13 @@ const Navbar = () => {
   const { isAuthenticated } = useAuthorizationContext();
 
   const avatar = useMemo(() => {
-    if (isAuthenticated) {
-      return (
-        <div className="p-3">
-          <UserAvatar />
-        </div>
-      );
-    } else {
-      return <></>;
-    }
+    return isAuthenticated ? (
+      <div className="p-3">
+        <UserAvatar />
+      </div>
+    ) : (
+      <></>
+    );
   }, [isAuthenticated]);
 
   return (
