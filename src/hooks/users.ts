@@ -51,7 +51,9 @@ export function useGetCurrentUserRoles(onFinish: () => void): Role[] {
   return roles;
 }
 
-export function useGetCurrentUserPreregistration(): string[] {
+export function useGetCurrentUserPreregistration(
+  onFinish: () => void
+): string[] {
   const [getPreregistration, setGetPreregistration] = useState<string[]>([]);
 
   useEffect(() => {
@@ -65,7 +67,9 @@ export function useGetCurrentUserPreregistration(): string[] {
       .then((data) => {
         setGetPreregistration(data);
       })
-      .catch((error) => console.log(error));
+      .catch((error) => console.log(error))
+      .finally(() => onFinish());
+    // eslint-disable-next-line
   }, [setGetPreregistration]);
 
   return getPreregistration;
