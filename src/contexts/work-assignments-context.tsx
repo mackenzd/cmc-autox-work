@@ -113,17 +113,18 @@ export const WorkAssignmentsContextProvider = (
   ]);
 
   const [assignments, setAssignments] = useState<WorkAssignment[]>([]);
-
-  const entries = getEventAssignments?.filter(
-    (assignment) =>
-      assignment.firstName === user?.firstName &&
-      assignment.lastName === user?.lastName
-  );
-
   useEffect(() => {
     setAssignments(getWorkAssignments);
     // eslint-disable-next-line
   }, [JSON.stringify(getWorkAssignments)]);
+
+  const entries = useMemo(() => {
+    return getEventAssignments?.filter(
+      (assignment) =>
+        assignment.firstName === user?.firstName &&
+        assignment.lastName === user?.lastName
+    );
+  }, [getEventAssignments, user?.firstName, user?.lastName]);
 
   const availableSegments = useMemo(
     () => {
@@ -157,6 +158,7 @@ export const WorkAssignmentsContextProvider = (
     stations: 8,
     preregistrationAccess: [],
   };
+
   const [initialSettings, setInitialSettings] =
     useState<EventSettings>(getEventSettings);
   const [settings, setSettings] = useState<EventSettings>(defaultSettings);

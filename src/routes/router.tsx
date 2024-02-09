@@ -1,8 +1,4 @@
-import {
-  createBrowserRouter,
-  Navigate,
-  Outlet
-} from "react-router-dom";
+import { createBrowserRouter, Navigate, Outlet } from "react-router-dom";
 import App from "../App";
 import Events from "../features/events";
 import { ErrorBoundary } from "react-error-boundary";
@@ -60,7 +56,7 @@ const router = createBrowserRouter([
             path: Path.Logout,
             element: <Navigate replace to={Path.Logout} />,
             errorElement: <PageNotFound />,
-          }
+          },
         ],
       },
     ],
@@ -68,7 +64,7 @@ const router = createBrowserRouter([
   {
     path: "*",
     element: <PageNotFound />,
-    errorElement: <PageNotFound />
+    errorElement: <PageNotFound />,
   },
 ]);
 

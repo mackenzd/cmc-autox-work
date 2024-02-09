@@ -12,6 +12,8 @@ export interface EventCardProps {
 }
 
 const EventCard = (props: EventCardProps) => {
+  const { isAdmin } = useAuthorizationContext();
+
   const isSingleDayEvent = useMemo(
     () => props.event.start === props.event.end,
     [props.event.start, props.event.end]
@@ -31,52 +33,54 @@ const EventCard = (props: EventCardProps) => {
 
   const [isSettingsModalOpen, setIsSettingsModalOpen] =
     useState<boolean>(false);
-  const [isWorkAssignmentModalOpen, setIsWorkAssignmentModalOpen] =
+  const [isWorkAssignmentsModalOpen, setIsWorkAssignmentsModalOpen] =
     useState<boolean>(false);
 
   const settingsModal = useMemo(
     () =>
-      isSettingsModalOpen && (
+      isSettingsModalOpen ? (
         <EventSettingsModal
           event={props.event}
           isOpen={isSettingsModalOpen}
-          onClose={() => {
-            setIsSettingsModalOpen(false);
-          }}
+          onClose={() => setIsSettingsModalOpen(false)}
         />
+      ) : (
+        <></>
       ),
     [isSettingsModalOpen, props.event, setIsSettingsModalOpen]
   );
 
-  const workAssignmentModal = useMemo(
+  const workAssignmentsModal = useMemo(
     () =>
-      isWorkAssignmentModalOpen && (
+      isWorkAssignmentsModalOpen ? (
         <WorkAssignmentsModal
-          isOpen={isWorkAssignmentModalOpen}
-          onClose={() => setIsWorkAssignmentModalOpen(false)}
+          isOpen={isWorkAssignmentsModalOpen}
+          onClose={() => setIsWorkAssignmentsModalOpen(false)}
         />
+      ) : (
+        <></>
       ),
-    [isWorkAssignmentModalOpen, setIsWorkAssignmentModalOpen]
+    [isWorkAssignmentsModalOpen, setIsWorkAssignmentsModalOpen]
   );
 
   const modals = useMemo(
     () =>
-      (isWorkAssignmentModalOpen || isSettingsModalOpen) && (
+      isWorkAssignmentsModalOpen || isSettingsModalOpen ? (
         <WorkAssignmentsContextProvider event={props.event}>
           {settingsModal}
-          {workAssignmentModal}
+          {workAssignmentsModal}
         </WorkAssignmentsContextProvider>
+      ) : (
+        <></>
       ),
     [
-      isWorkAssignmentModalOpen,
+      isWorkAssignmentsModalOpen,
       isSettingsModalOpen,
       settingsModal,
-      workAssignmentModal,
+      workAssignmentsModal,
       props.event,
     ]
   );
-
-  const { isAdmin } = useAuthorizationContext();
 
   const footer = useMemo(() => {
     const eventSettingsButton =
@@ -91,36 +95,40 @@ const EventCard = (props: EventCardProps) => {
         <></>
       );
 
-    return hasEnded ? (
-      <p>This event has ended.</p>
-    ) : (
-      <>
-        {props.event.registered || props.allowPreregistration || isAdmin ? (
-          <>
-            {eventSettingsButton}
-            <button
-              className="btn btn-primary"
-              onClick={() => setIsWorkAssignmentModalOpen(true)}
-            >
-              Work Assignments
-            </button>
-          </>
-        ) : (
-          <>
-            <p>You are not registered for this event.</p>
-            {eventSettingsButton}
-            <a
-              className="btn btn-primary"
-              href={props.event.detailuri}
-              target="_blank"
-              rel="noreferrer"
-            >
-              Register
-            </a>
-          </>
-        )}
-      </>
-    );
+    if (hasEnded) {
+      return <p>This event has ended.</p>;
+    } else if (
+      props.event.registered ||
+      props.allowPreregistration ||
+      isAdmin
+    ) {
+      return (
+        <>
+          {eventSettingsButton}
+          <button
+            className="btn btn-primary"
+            onClick={() => setIsWorkAssignmentsModalOpen(true)}
+          >
+            Work Assignments
+          </button>
+        </>
+      );
+    } else {
+      return (
+        <>
+          <p>You are not registered for this event.</p>
+          {eventSettingsButton}
+          <a
+            className="btn btn-primary"
+            href={props.event.detailuri}
+            target="_blank"
+            rel="noreferrer"
+          >
+            Register
+          </a>
+        </>
+      );
+    }
   }, [
     props.allowPreregistration,
     hasStarted,
@@ -132,10 +140,10 @@ const EventCard = (props: EventCardProps) => {
 
   return (
     <>
-      <div className="card bg-base-100 shadow-xl">
+      <div className="card bg-base-100 shadow-xl max-h-72">
         <div className="card-body">
           <a
-            className="card-title"
+            className="card-title sm:truncate"
             href={props.event?.detailuri}
             target="_blank"
             rel="noreferrer"

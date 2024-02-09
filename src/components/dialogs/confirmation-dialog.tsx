@@ -17,9 +17,7 @@ const ConfirmationDialog = (props: ConfirmationDialogProps) => {
           ✕
         </button>
         <div className="gap-4 work-assignments-header">
-          <h3 className="font-bold text-lg">
-            {props.title}
-          </h3>
+          <h3 className="font-bold text-lg">{props.title}</h3>
         </div>
         <div className="whitespace-pre-line pt-4">{props.message}</div>
         <div className="modal-action">

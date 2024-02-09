@@ -7,6 +7,7 @@ import {
 import { MSRUser } from "../../../models/msr-user";
 import { Role } from "../../../models/roles";
 import { useAuthorizationContext } from "../../../contexts/authorization-context";
+import { closeDropdownOnClick } from "../../../helpers/utils";
 
 export interface UserRoleAdminProps {
   user?: MSRUser;
@@ -14,9 +15,9 @@ export interface UserRoleAdminProps {
 
 const UserRoleAdmin = (props: UserRoleAdminProps) => {
   const { user } = useAuthorizationContext();
-  const getUserRoles = useGetUserRoles(props.user);
-  const [roles, setRoles] = useState<Role[]>([]);
 
+  const [roles, setRoles] = useState<Role[]>([]);
+  const getUserRoles = useGetUserRoles(props.user);
   useEffect(() => {
     setRoles(getUserRoles);
   }, [getUserRoles, setRoles]);
@@ -42,46 +43,39 @@ const UserRoleAdmin = (props: UserRoleAdminProps) => {
   const setRole = useSetRole(onSetSuccess, props.user);
   const unsetRole = useUnsetRole(onUnsetSuccess, props.user);
 
-  const onAddRole = useCallback(
-    (role: Role) => {
-      setRole(role);
-    },
-    [setRole]
-  );
-
-  const onRemoveRole = useCallback(
-    (role: Role) => {
-      unsetRole(role);
-    },
-    [unsetRole]
-  );
-
   const badges = useMemo(() => {
-    return roles.map((role) => (
-      <div key={role} className="badge badge-primary gap-2 p-3 mt-1 mb-1 mr-3">
-        {props.user?.id === user?.id ? (
-          <></>
-        ) : (
-          <button onClick={() => onRemoveRole(role)}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              className="w-4 h-4 stroke-current"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M6 18L18 6M6 6l12 12"
-              ></path>
-            </svg>
-          </button>
-        )}
-        {role}
+    return (
+      <div className="flex flex-col">
+        {roles.map((role) => (
+          <div
+            key={role}
+            className="badge badge-primary gap-2 p-3 mt-1 mb-1 mr-3"
+          >
+            {props.user?.id === user?.id ? (
+              <></>
+            ) : (
+              <button onClick={() => unsetRole(role)}>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  className="w-4 h-4 stroke-current"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  ></path>
+                </svg>
+              </button>
+            )}
+            {role}
+          </div>
+        ))}
       </div>
-    ));
-  }, [roles, onRemoveRole, props.user?.id, user?.id]);
+    );
+  }, [roles, unsetRole, props.user?.id, user?.id]);
 
   const options = useMemo(() => {
     return (
@@ -93,13 +87,21 @@ const UserRoleAdmin = (props: UserRoleAdminProps) => {
           .map((role, index) => {
             return (
               <li key={index} tabIndex={index + 1}>
-                <button onClick={() => onAddRole(role)}>{role}</button>
+                <button
+                  onClick={() =>
+                    closeDropdownOnClick(() => {
+                      setRole(role);
+                    })
+                  }
+                >
+                  {role}
+                </button>
               </li>
             );
           })}
       </>
     );
-  }, [roles, onAddRole]);
+  }, [roles, setRole]);
 
   const dropdown = useMemo(() => {
     return props.user?.id === user?.id ? (
@@ -117,7 +119,7 @@ const UserRoleAdmin = (props: UserRoleAdminProps) => {
   return (
     <div>
       <div className="font-bold">Roles</div>
-      <div className="flex flex-row">
+      <div className="flex flex-col">
         {badges}
         {dropdown}
       </div>
