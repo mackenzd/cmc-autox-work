@@ -5,6 +5,7 @@ import { useSetEventSettings } from "../../hooks/events";
 import { useGetUsers } from "../../hooks/users";
 import { MSRUser } from "../../models/msr-user";
 import { closeDropdownOnClick } from "../../helpers/utils";
+import { eventRegistrationHasStarted } from "../../helpers/events";
 
 export interface EventSettingsModalProps {
   event: MSREvent;
@@ -24,6 +25,11 @@ const EventSettingsModal = (props: EventSettingsModalProps) => {
 
   const [userInput, setUserInput] = useState<string>("");
   const getUsers = useGetUsers();
+
+  const hasRegistrationStarted = useMemo(
+    () => eventRegistrationHasStarted(props.event),
+    [props.event]
+  );
 
   const onChangeStations = useCallback(
     (stations: string) => {
@@ -76,6 +82,7 @@ const EventSettingsModal = (props: EventSettingsModalProps) => {
     () => (
       <select
         className="select select-primary select-md"
+        disabled={hasRegistrationStarted}
         value={settings.stations}
         onChange={(e) => {
           onChangeStations(e.target.value);
@@ -94,7 +101,7 @@ const EventSettingsModal = (props: EventSettingsModalProps) => {
         })()}
       </select>
     ),
-    [settings.stations, onChangeStations]
+    [settings.stations, onChangeStations, hasRegistrationStarted]
   );
 
   const usersOptions = useMemo(() => {
@@ -130,6 +137,7 @@ const EventSettingsModal = (props: EventSettingsModalProps) => {
         <label className="form-control w-full">
           <input
             type="text"
+            disabled={hasRegistrationStarted}
             placeholder="Enter member's name..."
             className="input input-primary input-bordered w-full"
             value={userInput}
@@ -143,7 +151,7 @@ const EventSettingsModal = (props: EventSettingsModalProps) => {
         </div>
       </div>
     );
-  }, [userInput, usersOptions]);
+  }, [userInput, usersOptions, hasRegistrationStarted]);
 
   const usersBadges = useMemo(() => {
     return (
@@ -153,27 +161,52 @@ const EventSettingsModal = (props: EventSettingsModalProps) => {
             key={user.id}
             className="badge badge-primary gap-2 p-3 mt-1 mb-1 mr-3"
           >
-            <button onClick={() => onRemoveUser(user)}>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                className="w-4 h-4 stroke-current"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M6 18L18 6M6 6l12 12"
-                ></path>
-              </svg>
-            </button>
+            {!hasRegistrationStarted ? (
+              <button onClick={() => onRemoveUser(user)}>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  className="w-4 h-4 stroke-current"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  ></path>
+                </svg>
+              </button>
+            ) : (
+              <></>
+            )}
             {`${user.firstName} ${user.lastName}`}
           </div>
         ))}
       </div>
     );
-  }, [settings.preregistrationAccess, onRemoveUser]);
+  }, [settings.preregistrationAccess, onRemoveUser, hasRegistrationStarted]);
+
+  const modalActions = useMemo(() => {
+    return (
+      <div className="modal-action">
+        {hasRegistrationStarted ? (
+          <div className="label-text self-center">
+            Event settings are disabled once registration has started.
+          </div>
+        ) : (
+          <></>
+        )}
+        <button
+          className="btn btn-outline btn-sm self-center"
+          disabled={hasRegistrationStarted}
+          onClick={onSave}
+        >
+          Save
+        </button>
+      </div>
+    );
+  }, [hasRegistrationStarted, onSave]);
 
   return props.isOpen ? (
     <dialog className="modal" open={props.isOpen}>
@@ -218,11 +251,7 @@ const EventSettingsModal = (props: EventSettingsModalProps) => {
           </label>
           <div className="flex flex-row mt-1">{usersBadges}</div>
         </div>
-        <div className="modal-action">
-          <button className="btn btn-outline btn-sm" onClick={onSave}>
-            Save
-          </button>
-        </div>
+        {modalActions}
       </div>
     </dialog>
   ) : (
