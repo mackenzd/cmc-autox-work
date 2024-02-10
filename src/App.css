@@ -49,17 +49,6 @@
   font-size: large;
 }
 
-.event-header {
-  display: flex;
-  justify-content: space-between;
-}
-
-.event-footer {
-  flex-flow: row;
-  align-items: end;
-  height: 48px;
-}
-
 .work-assignments-header {
   display: flex;
   justify-content: space-between;
@@ -75,5 +64,5 @@
 .work-assignment {
   display: flex;
   align-items: center;
-  min-width: 128px;
+  min-width: 110px;
 }

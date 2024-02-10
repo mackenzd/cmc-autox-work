@@ -99,21 +99,21 @@ const EventCard = (props: EventCardProps) => {
         className="btn btn-primary"
         onClick={() => setIsSettingsModalOpen(true)}
       >
-        Event Settings
+        Settings
       </button>
     ) : (
       <></>
     );
 
     if (hasEnded) {
-      return <p>This event has ended.</p>;
+      return <p className="h-12 flex justify-start items-end">This event has ended.</p>;
     } else if (
       props.event.registered ||
       props.allowPreregistration ||
       isAdmin
-    ) {
+    ) {      
       return (
-        <>
+        <div className="flex flex-row gap-2 justify-end">
           {eventSettingsButton}
           <button
             className="btn btn-primary"
@@ -121,7 +121,7 @@ const EventCard = (props: EventCardProps) => {
           >
             Work Assignments
           </button>
-        </>
+        </div>
       );
     } else {
       let classNames: string;
@@ -135,8 +135,8 @@ const EventCard = (props: EventCardProps) => {
       }
 
       return (
-        <>
-          <p>{message}</p>
+        <div className="flex flex-row gap-2 justify-between">
+          <p className="self-end">{message}</p>
           <a
             className={classNames}
             href={props.event.detailuri}
@@ -145,7 +145,7 @@ const EventCard = (props: EventCardProps) => {
           >
             Register
           </a>
-        </>
+        </div>
       );
     }
   }, [
@@ -160,7 +160,7 @@ const EventCard = (props: EventCardProps) => {
 
   return (
     <>
-      <div className="card bg-base-100 shadow-xl max-h-72">
+      <div className="card bg-base-100 shadow-xl min-h-52 max-h-72">
         <div className="card-body">
           <a
             className="card-title sm:truncate"
@@ -179,7 +179,7 @@ const EventCard = (props: EventCardProps) => {
                 " - " +
                 endDate.toLocaleDateString()}
           </p>
-          <div className="card-actions justify-end event-footer">{footer}</div>
+          <div className="h-12">{footer}</div>
         </div>
       </div>
       {modals}
