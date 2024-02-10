@@ -5,7 +5,7 @@ import { useWorkAssignmentsContext } from "../../contexts/work-assignments-conte
 import { MSRSegment } from "../../models/msr-segment";
 import { useMemo } from "react";
 import { useAuthorizationContext } from "../../contexts/authorization-context";
-import { getWorksheet } from "../../helpers/work-assignments";
+import { getRegistrations, getWorksheet } from "../../helpers/work-assignments";
 
 export interface WorkAssignmentsModalProps {
   isOpen: boolean;
@@ -93,12 +93,20 @@ const WorkAssignmentsModal = (props: WorkAssignmentsModalProps) => {
     return (
       <div className="modal-action">
         {isAdmin && !isLoading ? (
-          <button
-            className="btn btn-outline btn-sm"
-            onClick={() => getWorksheet(event, segment, runGroup)}
-          >
-            Print
-          </button>
+          <>
+            <button
+              className="btn btn-outline btn-sm"
+              onClick={() => getRegistrations(event, segment)}
+            >
+              Print Registration List
+            </button>
+            <button
+              className="btn btn-outline btn-sm"
+              onClick={() => getWorksheet(event, segment, runGroup)}
+            >
+              Print Work Assignments
+            </button>
+          </>
         ) : (
           <></>
         )}
