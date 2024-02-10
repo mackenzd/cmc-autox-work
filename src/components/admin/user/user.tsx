@@ -65,7 +65,7 @@ const UserAdmin = () => {
   }, [userInput, options]);
 
   return (
-    <>
+    <div className="flex flex-col">
       <div className="font-bold text-lg">User Administration</div>
       <div className="flex flex-row gap-5">{dropdown}</div>
       <div className="flex flex-col mt-10 gap-3">
@@ -97,7 +97,7 @@ const UserAdmin = () => {
           <></>
         )}
       </div>
-    </>
+    </div>
   );
 };
 
