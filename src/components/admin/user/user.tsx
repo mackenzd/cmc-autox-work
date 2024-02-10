@@ -18,6 +18,8 @@ const UserAdmin = () => {
               .toLowerCase()
               .includes(userInput.toLowerCase());
           })
+          .sort((u1, u2) => u1.lastName > u2.lastName ? 1 : -1)
+          .slice(0, 5)
           .map((user, index) => {
             return (
               <li key={index} tabIndex={index + 1}>
