@@ -16,9 +16,9 @@ function PageContent() {
   );
 
   return (
-    <div className="root">
+    <div data-theme="dark" className="root">
       <Navbar />
-      <div className="p-5 border-t bg-base-200 border-indigo-400 content">
+      <div className="p-5 border-t bg-base-200 border-primary content">
         {isLoading ? <LoadingSpinner /> : <>{pageContent}</>}
       </div>
       <footer className="footer border-t bg-base-200 border-base-300">
