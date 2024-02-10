@@ -13,5 +13,8 @@ module.exports = {
       'xxl': '3840px'
     },
   },
+  daisyui: {
+    themes: ["dark"]
+  },
   plugins: [require("daisyui")],
 }
