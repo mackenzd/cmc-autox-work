@@ -145,11 +145,11 @@ const WorkAssignmentEntry = (props: WorkAssignmentProps) => {
 
   const classNames = useMemo(() => {
     if (currentAssignment && currentAssignment.user?.id === user?.id) {
-      return "btn btn-sm btn-warning no-animation work-assignment";
+      return "btn btn-xs btn-warning no-animation work-assignment sm:btn-sm";
     } else if (currentAssignment) {
-      return "btn btn-sm btn-error no-animation work-assignment";
+      return "btn btn-xs btn-error no-animation work-assignment sm:btn-sm";
     } else {
-      return "btn btn-sm btn-success no-animation work-assignment";
+      return "btn btn-xs btn-success no-animation work-assignment sm:btn-sm";
     }
   }, [currentAssignment, user?.id]);
 
@@ -162,7 +162,7 @@ const WorkAssignmentEntry = (props: WorkAssignmentProps) => {
 
     if (currentAssignment) {
       return (
-        <div className="px-2">
+        <div className="text-xs px-2 truncate sm:text-base">
           {currentAssignment?.user?.firstName}{" "}
           {currentAssignment?.user?.lastName} {number}
         </div>

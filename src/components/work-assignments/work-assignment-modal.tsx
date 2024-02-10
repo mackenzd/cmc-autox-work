@@ -77,9 +77,9 @@ const WorkAssignmentsModal = (props: WorkAssignmentsModalProps) => {
   const modalContent = useMemo(
     () =>
       isLoading ? (
-        <div className="skeleton h-96 mt-4"></div>
+        <div className="skeleton h-72 md:h-96 mt-4"></div>
       ) : (
-        <div className="h-96 md:h-fit overflow-y-auto mt-4">
+        <div className="h-72 md:h-fit overflow-y-auto mt-4">
           <WorkAssignmentsOther />
           <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {workAssignmentStations}
