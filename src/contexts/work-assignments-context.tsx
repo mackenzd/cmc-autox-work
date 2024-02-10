@@ -68,7 +68,7 @@ export const WorkAssignmentsContextProvider = (
   props: PropsWithChildren<ContextProps>
 ) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const { user, canPreregister } = useAuthorizationContext();
+  const { user, canPreregister, isAdmin } = useAuthorizationContext();
 
   const [eventAssignmentsIsLoading, setEventAssignmentsIsLoading] =
     useState<boolean>(true);
@@ -129,6 +129,7 @@ export const WorkAssignmentsContextProvider = (
   const availableSegments = useMemo(
     () => {
       if (
+        isAdmin ||
         canPreregister ||
         getCurrentUserPreregistration.some((e) => e === props.event.id)
       ) {
@@ -138,7 +139,7 @@ export const WorkAssignmentsContextProvider = (
       }
     },
     // eslint-disable-next-line
-    [JSON.stringify(entries), canPreregister, getCurrentUserPreregistration]
+    [JSON.stringify(entries), isAdmin, canPreregister, getCurrentUserPreregistration]
   );
   const [segment, setSegment] = useState<MSRSegment>(availableSegments.at(0)!);
 
