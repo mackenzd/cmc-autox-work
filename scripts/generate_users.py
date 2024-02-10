@@ -70,8 +70,6 @@ def main():
     members = server.get_members()
     with open(f'users_{str(time.time())}.csv', 'a', newline='') as csvfile:
         w = csv.writer(csvfile)
-        field = ["id", "member_id", "first_name", "last_name", "email"]
-        w.writerow(field)
         for m in members:
             print(m)
             if m['status'] == "Approved":
@@ -79,11 +77,12 @@ def main():
 
                 user_id = member['profileuri'].split('/')[2]
                 member_id = member['id']
+                email = member['email']
                 first_name = member['firstName']
                 last_name = member['lastName']
-                email = member['email']
+                avatar = ""
 
-                w.writerow([user_id, member_id, first_name, last_name, email])
+                w.writerow([user_id, member_id, email, first_name, last_name, avatar])
 
     print("Finish")
 
