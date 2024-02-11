@@ -23,7 +23,7 @@
         {{ title if title is not none }} {{ (" -- " + segment) if segment is not none }}
       </div>
     </div>
-    <div id="registrations" class="grid grid-cols-2 gap-2 text-sm">
+    <div id="registrations" class="grid grid-cols-2 gap-2 h-full text-sm">
       <div class="border-black border-r">
         <div class="font-bold py-1">Assignments by Run Group</div>
         {% for run_group, data in assigned_users_by_run_group.items() %}
