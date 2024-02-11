@@ -5,6 +5,7 @@ export function filterEvents(events: MSREvent[]): MSREvent[] {
   return events.filter(
     (e: MSREvent) =>
       e.organization.name === "Cumberland Motor Club" &&
+      e.venue.name !== "Cumberland Motor Club" &&
       e.type === MSREventType.Autocross
   );
 }
