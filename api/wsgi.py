@@ -1,3 +1,4 @@
+from collections import defaultdict
 from flask import Flask, current_app, redirect, session, make_response, request, jsonify, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, current_user, login_required, login_user, logout_user
@@ -515,34 +516,29 @@ def registrations_html(event_id):
         }
      for a in q.all()]        
 
-    assigned_users_by_run_group = {}
-    for user in assigned_users:
-        run_group = user['runGroup']
-        if run_group in assigned_users_by_run_group:
-            assigned_users_by_run_group[run_group]['users'].append(user)
-            assigned_users_by_run_group[run_group]['count'] += 1
-        else:
-            assigned_users_by_run_group[run_group] = {'users': [user], 'count': 1}
+    assigned_users_by_run_group = defaultdict(lambda: {'users': [], 'count': 0})
+    for user in sorted(assigned_users, key=lambda x: x['lastName']):
+        assigned_users_by_run_group[user['runGroup']]['users'].append(user)
+        assigned_users_by_run_group[user['runGroup']]['count'] += 1
 
     res = oauth.msr.get(f"rest/events/{event_id}/entrylist.json")    
     entries = json.loads(res.content).get('response').get('assignments')
 
     unassigned_users = []
     added_users = set()
-    for entry in entries:
+    for entry in sorted(entries, key=lambda x: x.get('lastName')):
         user = {
-            'firstName': entry['firstName'],
-            'lastName': entry['lastName']
+            'firstName': entry.get('firstName'),
+            'lastName': entry.get('lastName'),
+            'vehicleNumber': entry.get('vehicleNumber')
         }
-        if (segment is not None) and (entry.get('segment') == segment) and \
-            (user['firstName'], user['lastName']) not in added_users and \
-            not any(u['firstName'] == user['firstName'] \
-                    and u['lastName'] == user['lastName'] \
-            for u in assigned_users):
+        if (segment is not None) and (entry.get('segment') == segment) \
+            and (user['firstName'], user['lastName']) not in added_users \
+            and not any(u['firstName'] == user['firstName'] \
+                        and u['lastName'] == user['lastName'] \
+                        for u in assigned_users):
             unassigned_users.append(user)
             added_users.add((user['firstName'], user['lastName']))
-
-
 
     return render_template('registrations.html',
                            title=title,
