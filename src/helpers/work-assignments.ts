@@ -1,3 +1,4 @@
+import { useGetEventAssignments } from "../hooks/events";
 import { MSREvent } from "../models/msr-event";
 import { MSRSegment } from "../models/msr-segment";
 import { MSRUser } from "../models/msr-user";
@@ -183,6 +184,37 @@ export function getWorksheet(
       if (tab) {
         tab.document.write(data);
         tab.document.title = `${event?.name} -- ${segment} ${runGroup}`;
+        tab.document.close();
+      }
+    })
+    .catch((error) => console.log(error));
+}
+
+export function getRegistrations(event?: MSREvent, segment?: MSRSegment): void {
+  const params: string[] = [];
+  if (event?.name) {
+    params.push(`title=${encodeURIComponent(event.name)}`);
+  }
+  if (segment) {
+    params.push(`segment=${encodeURIComponent(segment)}`);
+  }
+
+  fetch(
+    `/templates/events/${event?.id}/registrations.html${
+      params.length > 0 ? `?${params.join("&")}` : ""
+    }`
+  )
+    .then((res) => {
+      if (res.ok) {
+        return res.text();
+      }
+      return Promise.reject(res);
+    })
+    .then((data) => {
+      var tab = window.open("", "_blank");
+      if (tab) {
+        tab.document.write(data);
+        tab.document.title = `${event?.name} -- ${segment}`;
         tab.document.close();
       }
     })

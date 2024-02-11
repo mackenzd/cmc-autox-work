@@ -1,3 +1,4 @@
+from collections import defaultdict
 from flask import Flask, current_app, redirect, session, make_response, request, jsonify, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, current_user, login_required, login_user, logout_user
@@ -491,6 +492,59 @@ def work_assignments_html(event_id):
                            segment=segment,
                            run_group=run_group,
                            assignments=assignments_to_dict(assignments))
+
+@app.route('/templates/events/<event_id>/registrations.html')
+@login_required
+@admin_required
+def registrations_html(event_id):
+    title = request.args.get('title')
+    segment = request.args.get('segment')
+
+    q = WorkAssignment.query.join(User, WorkAssignment.user_id == User.id) \
+            .where(WorkAssignment.event_id == event_id) \
+            .add_columns(User.id, User.first_name, User.last_name)
+    
+    if segment:
+        q = q.where(WorkAssignment.segment == segment)
+
+    assigned_users = [
+        {
+            'firstName': a.first_name,
+            'lastName': a.last_name,
+            'vehicleNumber': a[0].vehicle_number,
+            'runGroup': a[0].run_group
+        }
+     for a in q.all()]        
+
+    assigned_users_by_run_group = defaultdict(lambda: {'users': [], 'count': 0})
+    for user in sorted(assigned_users, key=lambda x: x['lastName']):
+        assigned_users_by_run_group[user['runGroup']]['users'].append(user)
+        assigned_users_by_run_group[user['runGroup']]['count'] += 1
+
+    res = oauth.msr.get(f"rest/events/{event_id}/entrylist.json")    
+    entries = json.loads(res.content).get('response').get('assignments')
+
+    unassigned_users = []
+    added_users = set()
+    for entry in sorted(entries, key=lambda x: x.get('lastName')):
+        user = {
+            'firstName': entry.get('firstName'),
+            'lastName': entry.get('lastName'),
+            'vehicleNumber': entry.get('vehicleNumber')
+        }
+        if (segment is not None) and (entry.get('segment') == segment) \
+            and (user['firstName'], user['lastName']) not in added_users \
+            and not any(u['firstName'] == user['firstName'] \
+                        and u['lastName'] == user['lastName'] \
+                        for u in assigned_users):
+            unassigned_users.append(user)
+            added_users.add((user['firstName'], user['lastName']))
+
+    return render_template('registrations.html',
+                           title=title,
+                           segment=segment,
+                           assigned_users_by_run_group=assigned_users_by_run_group,
+                           unassigned_users=unassigned_users)
 
 ## Helpers
 def assignments_to_dict(assignments):
