@@ -6,6 +6,7 @@ import { MSRSegment } from "../../models/msr-segment";
 import { useMemo } from "react";
 import { useAuthorizationContext } from "../../contexts/authorization-context";
 import { getRegistrations, getWorksheet } from "../../helpers/work-assignments";
+import { closeDropdownOnClick } from "../../helpers/utils";
 
 export interface WorkAssignmentsModalProps {
   isOpen: boolean;
@@ -93,24 +94,60 @@ const WorkAssignmentsModal = (props: WorkAssignmentsModalProps) => {
     return (
       <div className="modal-action">
         {isAdmin && !isLoading ? (
-          <>
-            <button
-              className="btn btn-outline btn-sm"
-              onClick={() => getRegistrations(event, segment)}
+          <div className="dropdown dropdown-top dropdown-end">
+            <div
+              tabIndex={0}
+              role="button"
+              className="btn btn-outline btn-sm m-1"
             >
-              Print Registration List
-            </button>
-            <button
-              className="btn btn-outline btn-sm"
-              onClick={() => getWorksheet(event, segment, runGroup)}
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="currentColor"
+                className="bi bi-printer"
+                viewBox="0 0 16 16"
+              >
+                <path d="M2.5 8a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1" />
+                <path d="M5 1a2 2 0 0 0-2 2v2H2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1v1a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-1h1a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1V3a2 2 0 0 0-2-2zM4 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2H4zm1 5a2 2 0 0 0-2 2v1H2a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v-1a2 2 0 0 0-2-2zm7 2v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1" />
+              </svg>{" "}
+              Print
+            </div>
+            <ul
+              tabIndex={0}
+              className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-48 outline outline-1"
             >
-              Print Work Assignments
-            </button>
-          </>
+              <li>
+                <button
+                  onClick={() =>
+                    closeDropdownOnClick(() => {
+                      getRegistrations(event, segment);
+                    })
+                  }
+                >
+                  Registration List
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() =>
+                    closeDropdownOnClick(() => {
+                      getWorksheet(event, segment, runGroup);
+                    })
+                  }
+                >
+                  Work Assignments
+                </button>
+              </li>
+            </ul>
+          </div>
         ) : (
           <></>
         )}
-        <button className="btn btn-outline btn-sm" onClick={props.onClose}>
+        <button
+          className="btn btn-outline btn-sm self-center"
+          onClick={props.onClose}
+        >
           Close
         </button>
       </div>
