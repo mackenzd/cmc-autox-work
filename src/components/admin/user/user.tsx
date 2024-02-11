@@ -57,7 +57,7 @@ const UserAdmin = () => {
             }}
           />
         </label>
-        <div className="dropdown-content z-[1] shadow bg-base-100 rounded-box w-52">
+        <div className="dropdown-content z-[1] shadow bg-base-100 rounded-box w-52 outline outline-1">
           <ul className="menu menu-compact">{options}</ul>
         </div>
       </div>
