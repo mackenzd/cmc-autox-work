@@ -1,4 +1,3 @@
-import { useGetEventAssignments } from "../hooks/events";
 import { MSREvent } from "../models/msr-event";
 import { MSRSegment } from "../models/msr-segment";
 import { MSRUser } from "../models/msr-user";
