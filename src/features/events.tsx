@@ -4,6 +4,7 @@ import moment from "moment";
 import { useGetCurrentUserPreregistration } from "../hooks/users";
 import { useMemo } from "react";
 import { useAuthorizationContext } from "../contexts/authorization-context";
+import { eventHasEnded } from "../helpers/events";
 
 const Events = () => {
   const { canPreregister } = useAuthorizationContext();
@@ -17,17 +18,19 @@ const Events = () => {
   const events = useMemo(() => {
     return (
       <>
-        {getEvents?.map((event) => {
-          const allowPreregistration =
-            canPreregister || getPreregistration.some((e) => e === event.id);
-          return (
-            <EventCard
-              key={event.id}
-              event={event}
-              allowPreregistration={allowPreregistration}
-            />
-          );
-        })}
+        {getEvents
+          ?.sort((e1, e2) => (eventHasEnded(e1) < eventHasEnded(e2) ? -1 : 1))
+          .map((event) => {
+            const allowPreregistration =
+              canPreregister || getPreregistration.some((e) => e === event.id);
+            return (
+              <EventCard
+                key={event.id}
+                event={event}
+                allowPreregistration={allowPreregistration}
+              />
+            );
+          })}
       </>
     );
   }, [getEvents, canPreregister, getPreregistration]);

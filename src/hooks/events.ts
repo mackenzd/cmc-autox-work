@@ -1,9 +1,6 @@
 import { useEffect, useState } from "react";
 import { MSREvent } from "../models/msr-event";
-import {
-  getOrganizationEvents,
-  getUserEvents,
-} from "../helpers/events";
+import { getOrganizationEvents, getUserEvents } from "../helpers/events";
 import uniqBy from "lodash/uniqBy";
 import { MSRAssignment } from "../models/msr-assignment";
 import { EventSettings } from "../models/event-settings";
@@ -44,7 +41,7 @@ export function useGetEvents(start?: string, end?: string): MSREvent[] {
       const events = [
         ...(userEvents ?? []),
         ...(organizationEvents ?? []),
-      ].sort((e1, e2) => (new Date(e1.start) > new Date(e2.start) ? -1 : 1));
+      ].sort((e1, e2) => (new Date(e1.start) > new Date(e2.start) ? 1 : -1));
       setEvents(events);
     });
   }, [start, end, setEvents]);
