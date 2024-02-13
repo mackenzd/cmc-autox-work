@@ -1,4 +1,5 @@
 from collections import defaultdict
+from datetime import timedelta
 from flask import Flask, current_app, redirect, session, make_response, request, jsonify, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, current_user, login_required, login_user, logout_user
@@ -14,6 +15,7 @@ app = Flask(__name__)
 
 app.config.from_envvar('CMC_CONFIG')
 app.secret_key = app.config.get('FLASK_SECRET_KEY')
+app.permanent_session_lifetime = timedelta(weeks=4)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{app.config['DATABASE_NAME']}"
 
@@ -153,6 +155,7 @@ def callback():
         db.session.execute(stmt)
         db.session.commit()
 
+        session.permanent = True
         login_user(user)
     except Exception as e:
         app.logger.error(e)
