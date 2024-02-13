@@ -24,11 +24,11 @@ const EventCard = (props: EventCardProps) => {
   );
 
   const startDate = useMemo(
-    () => new Date(`${props.event?.start} UTC`),
+    () => new Date(`${props.event?.start} EST`),
     [props.event.start]
   );
   const endDate = useMemo(
-    () => new Date(`${props.event?.end} UTC`),
+    () => new Date(`${props.event?.end} EST`),
     [props.event.end]
   );
 
