@@ -42,11 +42,19 @@ const UserAvatar = () => {
     }
   }, [logout, isAdmin, navigate]);
 
+  const avatarImage = useMemo(() => {
+    if (user?.avatar) {
+      return <img src={user?.avatar} alt="User avatar" />
+    } else {
+      return <span className="text-xl">{user?.firstName.charAt(0)}{user?.lastName.charAt(0)}</span>
+    }
+  }, [user?.avatar, user?.firstName, user?.lastName])
+
   return (
-    <div className="avatar rounded-full ring-1 ring-primary ring-offset-base-200 ring-offset-2 dropdown dropdown-bottom dropdown-end align-middle">
+    <div className="avatar placeholder rounded-full ring-1 ring-primary ring-offset-base-200 ring-offset-2 dropdown dropdown-bottom dropdown-end align-middle">
       <div className="bg-neutral text-neutral-content rounded-full w-12">
         <div tabIndex={0} role="button">
-          <img src={user?.avatar} alt="User avatar" />
+          {avatarImage}
         </div>
         <ul
           tabIndex={0}
