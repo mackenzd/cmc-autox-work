@@ -30,11 +30,6 @@ EXPOSE 3000
 CMD ["npm", "start"]
 
 
-FROM nginx:stable-alpine as production
-ENV NODE_ENV production
+FROM build as production
 
-COPY --from=build /app/build /usr/share/nginx/html
-COPY nginx.conf /etc/nginx/nginx.conf
-
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+COPY --from=build /app/build .
