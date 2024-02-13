@@ -14,17 +14,19 @@ const UserAdmin = () => {
       <>
         {users
           .filter((user) => {
-            return `${user.firstName} ${user.lastName}`
-              .toLowerCase()
-              .includes(userInput.toLowerCase()) ||
+            return (
+              `${user.firstName} ${user.lastName}`
+                .toLowerCase()
+                .includes(userInput.toLowerCase()) ||
               `${user.lastName} ${user.firstName}`
-              .toLowerCase()
-              .includes(userInput.toLowerCase()) ||
+                .toLowerCase()
+                .includes(userInput.toLowerCase()) ||
               `${user.lastName}, ${user.firstName}`
-              .toLowerCase()
-              .includes(userInput.toLowerCase());
+                .toLowerCase()
+                .includes(userInput.toLowerCase())
+            );
           })
-          .sort((u1, u2) => u1.lastName > u2.lastName ? 1 : -1)
+          .sort((u1, u2) => (u1.lastName > u2.lastName ? 1 : -1))
           .slice(0, 5)
           .map((user, index) => {
             return (
