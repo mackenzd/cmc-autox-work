@@ -30,6 +30,6 @@ EXPOSE 3000
 CMD ["npm", "start"]
 
 
-FROM build as production
+FROM scratch as production
 
-COPY --from=build /app/build .
+COPY --from=build /app/build ./
