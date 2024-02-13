@@ -113,19 +113,25 @@ const EventSettingsModal = (props: EventSettingsModalProps) => {
               !settings.preregistrationAccess?.some((u) => {
                 return u.id === user.id;
               }) &&
-              `${user.firstName} ${user.lastName}`
+              (`${user.firstName} ${user.lastName}`
                 .toLowerCase()
-                .includes(userInput.toLowerCase())
+                .includes(userInput.toLowerCase()) ||
+                `${user.lastName} ${user.firstName}`
+                  .toLowerCase()
+                  .includes(userInput.toLowerCase()) ||
+                `${user.lastName}, ${user.firstName}`
+                  .toLowerCase()
+                  .includes(userInput.toLowerCase()))
             );
           })
-          .sort((u1, u2) => u1.lastName > u2.lastName ? 1 : -1)
+          .sort((u1, u2) => (u1.lastName > u2.lastName ? 1 : -1))
           .slice(0, 5)
           .map((user, index) => {
             return (
               <li key={index} tabIndex={index + 1}>
                 <button
                   onClick={() => closeDropdownOnClick(() => onAddUser(user))}
-                >{`${user.firstName} ${user.lastName}`}</button>
+                >{`${user.lastName}, ${user.firstName}`}</button>
               </li>
             );
           })}
