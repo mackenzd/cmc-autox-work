@@ -27,23 +27,37 @@ const WorkAssignmentsModal = (props: WorkAssignmentsModalProps) => {
   const { isAdmin } = useAuthorizationContext();
 
   const segmentSelector = useMemo(() => {
+    const isSingleDayEvent = event?.start === event?.end;
+
     return (
-      <select
-        className="select select-primary select-xs max-w-xs"
-        key={segment}
-        value={segment}
-        onChange={(e) => {
-          setSegment(e.target.value as MSRSegment);
-        }}
-      >
-        {Object.values(availableSegments).map((sg) => (
-          <option key={sg} value={sg}>
-            {sg}
-          </option>
-        ))}
-      </select>
+      <>
+        <select
+          className="select select-primary select-xs max-w-xs"
+          disabled={isSingleDayEvent}
+          key={segment}
+          value={segment}
+          onChange={(e) => {
+            setSegment(e.target.value as MSRSegment);
+          }}
+        >
+          {Object.values(availableSegments).map((sg) => (
+            <option key={sg} value={sg}>
+              {sg}
+            </option>
+          ))}
+        </select>
+        {isSingleDayEvent ? (
+          <></>
+        ) : (
+          <div className="label">
+            <span className="label-text-alt">
+              Choose the day for your work assignment request.
+            </span>
+          </div>
+        )}
+      </>
     );
-  }, [availableSegments, segment, setSegment]);
+  }, [availableSegments, segment, setSegment, event?.start, event?.end]);
 
   const runGroupSelector = useMemo(() => {
     return (
@@ -172,11 +186,6 @@ const WorkAssignmentsModal = (props: WorkAssignmentsModalProps) => {
                 <span className="font-bold label-text">Day</span>
               </div>
               {segmentSelector}
-              <div className="label">
-                <span className="label-text-alt">
-                  Choose the day for your work assignment request.
-                </span>
-              </div>
             </label>
             <label className="form-control w-full max-w-xs">
               <div className="label">

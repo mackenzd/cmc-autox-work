@@ -17,6 +17,7 @@ import uniq from "lodash/uniq";
 import { useGetWorkAssignments } from "../hooks/work-assignments";
 import { EventSettings } from "../models/event-settings";
 import { useGetCurrentUserPreregistration } from "../hooks/users";
+import moment from "moment";
 
 interface Props {
   event?: MSREvent;
@@ -128,18 +129,23 @@ export const WorkAssignmentsContextProvider = (
 
   const availableSegments = useMemo(
     () => {
+      const isSingleDayEvent = props.event.start === props.event.end;
+
       if (
-        isAdmin ||
+        !isSingleDayEvent &&
+        (isAdmin ||
         canPreregister ||
-        getCurrentUserPreregistration.some((e) => e === props.event.id)
+        getCurrentUserPreregistration.some((e) => e === props.event.id))
       ) {
         return Object.values(MSRSegment);
+      } else if (isSingleDayEvent) {
+        return [moment(props.event.start).format('dddd')] as MSRSegment[];
       } else {
         return uniq(entries.map((e) => e.segment as MSRSegment));
       }
     },
     // eslint-disable-next-line
-    [JSON.stringify(entries), isAdmin, canPreregister, getCurrentUserPreregistration]
+    [JSON.stringify(entries), isAdmin, canPreregister, getCurrentUserPreregistration, props.event.start, props.event.end]
   );
   const [segment, setSegment] = useState<MSRSegment>(availableSegments.at(0)!);
 
