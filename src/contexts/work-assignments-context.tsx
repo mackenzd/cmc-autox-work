@@ -127,26 +127,32 @@ export const WorkAssignmentsContextProvider = (
     );
   }, [getEventAssignments, user?.firstName, user?.lastName]);
 
-  const availableSegments = useMemo(
-    () => {
-      const isSingleDayEvent = props.event.start === props.event.end;
+  const availableSegments = useMemo(() => {
+    const isSingleDayEvent = props.event.start === props.event.end;
 
-      if (
-        !isSingleDayEvent &&
-        (isAdmin ||
+    if (
+      !isSingleDayEvent &&
+      (isAdmin ||
         canPreregister ||
         getCurrentUserPreregistration.some((e) => e === props.event.id))
-      ) {
-        return Object.values(MSRSegment);
-      } else if (isSingleDayEvent) {
-        return [moment(props.event.start).format('dddd')] as MSRSegment[];
-      } else {
-        return uniq(entries.map((e) => e.segment as MSRSegment));
-      }
-    },
+    ) {
+      return Object.values(MSRSegment);
+    } else if (isSingleDayEvent) {
+      return [moment(props.event.start).format("dddd")] as MSRSegment[];
+    } else {
+      return uniq(entries.map((e) => e.segment as MSRSegment));
+    }
     // eslint-disable-next-line
-    [JSON.stringify(entries), isAdmin, canPreregister, getCurrentUserPreregistration, props.event.start, props.event.end]
-  );
+  }, [
+    // eslint-disable-next-line
+    JSON.stringify(entries),
+    isAdmin,
+    canPreregister,
+    getCurrentUserPreregistration,
+    props.event.start,
+    props.event.end,
+    props.event.id,
+  ]);
   const [segment, setSegment] = useState<MSRSegment>(availableSegments.at(0)!);
 
   useEffect(() => {
@@ -154,12 +160,29 @@ export const WorkAssignmentsContextProvider = (
     // eslint-disable-next-line
   }, [JSON.stringify(availableSegments), segment]);
 
-  let vehicleNumber = entries.find((e) => e.segment === segment)?.vehicleNumber;
-  let defaultRunGroup =
-    !!vehicleNumber && parseInt(vehicleNumber.charAt(-1)) % 2
-      ? RunGroup.Even
-      : RunGroup.Odd;
-  const [runGroup, setRunGroup] = useState<RunGroup>(defaultRunGroup);
+  const vehicleNumber = useMemo(() => {
+    return entries.find((e) => e.segment === segment)?.vehicleNumber;
+    // eslint-disable-next-line
+  }, [JSON.stringify(entries), segment]);
+
+  const [runGroup, setRunGroup] = useState<RunGroup>(RunGroup.Odd);
+  useEffect(() => {
+    const userAssignment = assignments?.find(
+      (a) => a.user?.id === user?.id && a.segment === segment
+    );
+
+    let defaultRunGroup: RunGroup;
+    if (userAssignment) {
+      defaultRunGroup = userAssignment.runGroup;
+    } else {
+      defaultRunGroup =
+        !!vehicleNumber && parseInt(vehicleNumber.slice(-1)) % 2 === 0
+          ? RunGroup.Even
+          : RunGroup.Odd;
+    }
+
+    setRunGroup(defaultRunGroup);
+  }, [vehicleNumber, assignments, segment, user?.id]);
 
   const defaultSettings: EventSettings = {
     stations: 8,

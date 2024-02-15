@@ -33,7 +33,7 @@ const WorkAssignmentsModal = (props: WorkAssignmentsModalProps) => {
       <>
         <select
           className="select select-primary select-xs max-w-xs"
-          disabled={isSingleDayEvent}
+          disabled={isSingleDayEvent || isLoading}
           key={segment}
           value={segment}
           onChange={(e) => {
@@ -57,12 +57,13 @@ const WorkAssignmentsModal = (props: WorkAssignmentsModalProps) => {
         )}
       </>
     );
-  }, [availableSegments, segment, setSegment, event?.start, event?.end]);
+  }, [isLoading, availableSegments, segment, setSegment, event?.start, event?.end]);
 
   const runGroupSelector = useMemo(() => {
     return (
       <select
         className="select select-primary select-xs max-w-xs"
+        disabled={isLoading}
         key={runGroup}
         value={runGroup}
         onChange={(e) => {
@@ -76,7 +77,7 @@ const WorkAssignmentsModal = (props: WorkAssignmentsModalProps) => {
         ))}
       </select>
     );
-  }, [runGroup, setRunGroup]);
+  }, [isLoading, runGroup, setRunGroup]);
 
   const workAssignmentStations = useMemo(() => {
     const stations = [];
