@@ -57,7 +57,14 @@ const WorkAssignmentsModal = (props: WorkAssignmentsModalProps) => {
         )}
       </>
     );
-  }, [isLoading, availableSegments, segment, setSegment, event?.start, event?.end]);
+  }, [
+    isLoading,
+    availableSegments,
+    segment,
+    setSegment,
+    event?.start,
+    event?.end,
+  ]);
 
   const runGroupSelector = useMemo(() => {
     return (
@@ -90,24 +97,22 @@ const WorkAssignmentsModal = (props: WorkAssignmentsModalProps) => {
     return stations;
   }, [settings.stations]);
 
-  const modalContent = useMemo(
-    () =>
-      isLoading ? (
-        <div className="skeleton h-72 md:h-96 mt-4"></div>
-      ) : (
-        <div className="h-72 md:h-fit overflow-y-auto mt-4">
-          <WorkAssignmentsOther />
-          <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {workAssignmentStations}
-          </div>
+  const modalContent = useMemo(() => {
+    return isLoading ? (
+      <div className="skeleton h-60 md:h-96 my-2"></div>
+    ) : (
+      <div className="overflow-y-auto my-2">
+        <WorkAssignmentsOther />
+        <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2">
+          {workAssignmentStations}
         </div>
-      ),
-    [isLoading, workAssignmentStations]
-  );
+      </div>
+    );
+  }, [isLoading, workAssignmentStations]);
 
   const modalActions = useMemo(() => {
     return (
-      <div className="modal-action">
+      <div className="modal-action mt-2">
         {isAdmin && !isLoading ? (
           <div className="dropdown dropdown-top dropdown-end">
             <div
@@ -170,17 +175,26 @@ const WorkAssignmentsModal = (props: WorkAssignmentsModalProps) => {
     // eslint-disable-next-line
   }, [event, isAdmin, isLoading, runGroup, segment]);
 
+  const modalHeader = useMemo(() => {
+    return (
+      <div>
+        <div className="font-bold text-lg">Work Assignment Request</div>
+        <div className="font-bold text-sm">{event?.name}</div>
+      </div>
+    );
+  }, [event?.name]);
+
   return props.isOpen ? (
     <dialog className="modal" open={props.isOpen}>
       <div className="modal-box border border-current work-assignments-content">
-        <div className="gap-4 work-assignments-header">
+        <div className="gap-2 work-assignments-header">
           <button
             className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
             onClick={props.onClose}
           >
             ✕
           </button>
-          <h3 className="font-bold text-lg">Work Assignment Request</h3>
+          {modalHeader}
           <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
             <label className="form-control w-full max-w-xs">
               <div className="label">
