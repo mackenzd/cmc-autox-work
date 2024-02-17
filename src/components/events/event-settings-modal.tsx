@@ -197,7 +197,7 @@ const EventSettingsModal = (props: EventSettingsModalProps) => {
 
   const modalActions = useMemo(() => {
     return (
-      <div className="modal-action">
+      <div className="modal-action mt-2">
         {hasRegistrationStarted ? (
           <div className="label-text self-center">
             Event settings are disabled once registration has started.
@@ -225,10 +225,9 @@ const EventSettingsModal = (props: EventSettingsModalProps) => {
         >
           ✕
         </button>
-        <div className="gap-4 work-assignments-header">
-          <h3 className="font-bold text-lg">
-            Event Settings - {props.event.name}
-          </h3>
+        <div className="mb-2 work-assignments-header">
+          <div className="font-bold text-lg">Event Settings</div>
+          <div className="font-bold text-sm">{props.event.name}</div>
         </div>
         <div>
           <label className="form-control w-full">

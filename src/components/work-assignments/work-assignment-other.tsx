@@ -3,7 +3,7 @@ import { Station, WorkAssignmentType } from "../../models/work-assignment";
 
 const WorkAssignmentOther = () => {
   return (
-    <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 mb-2">
       <div>
         <WorkAssignmentEntry
           type={WorkAssignmentType.Computer}
