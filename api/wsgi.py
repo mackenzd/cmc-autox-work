@@ -515,7 +515,9 @@ def registrations_html(event_id):
             'firstName': a.first_name,
             'lastName': a.last_name,
             'vehicleNumber': a[0].vehicle_number,
-            'runGroup': a[0].run_group
+            'runGroup': a[0].run_group,
+            'type': ''.join(filter(lambda x: not x.isdigit(), a[0].type)).strip(),
+            'station': a[0].station
         }
      for a in q.all()]        
 
