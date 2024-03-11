@@ -185,7 +185,7 @@ export const WorkAssignmentsContextProvider = (
   }, [vehicleNumber, assignments, segment, user?.id]);
 
   const defaultSettings: EventSettings = {
-    stations: 8,
+    stations: 10,
     preregistrationAccess: [],
   };
 
