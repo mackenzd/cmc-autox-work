@@ -158,7 +158,11 @@ export function getWorksheet(
 ): void {
   const params: string[] = [];
   if (event?.name) {
-    params.push(`title=${encodeURIComponent(event.name)}`);
+    let title =
+      event?.start === event?.end
+        ? event.name
+        : [event.name, segment].filter(Boolean).join(" -- ");
+    params.push(`title=${encodeURIComponent(title)}`);
   }
   if (segment) {
     params.push(`segment=${encodeURIComponent(segment)}`);
@@ -179,7 +183,7 @@ export function getWorksheet(
       return Promise.reject(res);
     })
     .then((data) => {
-      var tab = window.open("", "_blank");
+      let tab = window.open("", "_blank");
       if (tab) {
         tab.document.write(data);
         tab.document.title = `${event?.name} -- ${segment} ${runGroup}`;
@@ -192,7 +196,11 @@ export function getWorksheet(
 export function getRegistrations(event?: MSREvent, segment?: MSRSegment): void {
   const params: string[] = [];
   if (event?.name) {
-    params.push(`title=${encodeURIComponent(event.name)}`);
+    let title =
+      event?.start === event?.end
+        ? event.name
+        : [event.name, segment].filter(Boolean).join(" -- ");
+    params.push(`title=${encodeURIComponent(title)}`);
   }
   if (segment) {
     params.push(`segment=${encodeURIComponent(segment)}`);
@@ -210,7 +218,7 @@ export function getRegistrations(event?: MSREvent, segment?: MSRSegment): void {
       return Promise.reject(res);
     })
     .then((data) => {
-      var tab = window.open("", "_blank");
+      let tab = window.open("", "_blank");
       if (tab) {
         tab.document.write(data);
         tab.document.title = `${event?.name} -- ${segment}`;
