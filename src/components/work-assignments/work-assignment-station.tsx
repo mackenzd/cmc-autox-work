@@ -8,7 +8,7 @@ export interface WorkAssignmentStationProps {
 const WorkAssignmentStation = (props: WorkAssignmentStationProps) => {
   return (
     <div>
-      <div className="font-bold text-md py-2">Station {props.station}</div>
+      <div className="font-bold text-md py-1">Station {props.station}</div>
       <div>
         <WorkAssignmentEntry
           type={WorkAssignmentType.Leader}
