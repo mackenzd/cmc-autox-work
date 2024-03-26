@@ -204,9 +204,9 @@ const WorkAssignmentsModal = (props: WorkAssignmentsModalProps) => {
               </div>
               {segmentSelector}
             </label> */}
-            <label className="form-control lg-xl:col-span-4">
+            <label className="form-control md:col-span-2 lg-xl:col-span-4">
               <div className="label">
-              <span className="font-bold label-text">Run Group</span>
+                <span className="font-bold label-text">Run Group</span>
               </div>
               {runGroupSelector}
               <div className="label">
