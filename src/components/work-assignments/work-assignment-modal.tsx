@@ -26,6 +26,8 @@ const WorkAssignmentsModal = (props: WorkAssignmentsModalProps) => {
   } = useWorkAssignmentsContext();
   const { isAdmin } = useAuthorizationContext();
 
+  // Separate MSR events are now being created for each day, instead of one for the whole weekend.
+  // Leaving this here in case this changes. DM 3/26/2024
   const segmentSelector = useMemo(() => {
     const isSingleDayEvent = event?.start === event?.end;
 
@@ -103,7 +105,7 @@ const WorkAssignmentsModal = (props: WorkAssignmentsModalProps) => {
     ) : (
       <div className="overflow-y-auto my-2">
         <WorkAssignmentsOther />
-        <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2">
+        <div className="grid sm:grid-cols-1 md:grid-cols-2 lg-xl:grid-cols-4 gap-2">
           {workAssignmentStations}
         </div>
       </div>
@@ -112,7 +114,7 @@ const WorkAssignmentsModal = (props: WorkAssignmentsModalProps) => {
 
   const modalActions = useMemo(() => {
     return (
-      <div className="modal-action mt-2">
+      <div className="modal-action mt-0">
         {isAdmin && !isLoading ? (
           <div className="dropdown dropdown-top dropdown-end">
             <div
@@ -186,7 +188,7 @@ const WorkAssignmentsModal = (props: WorkAssignmentsModalProps) => {
 
   return props.isOpen ? (
     <dialog className="modal" open={props.isOpen}>
-      <div className="modal-box border border-current work-assignments-content">
+      <div className="modal-box border border-current max-h-[80vh] md:max-h-[90vh] lg-xl:max-h-screen work-assignments-content">
         <div className="gap-2 work-assignments-header">
           <button
             className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
@@ -195,21 +197,21 @@ const WorkAssignmentsModal = (props: WorkAssignmentsModalProps) => {
             ✕
           </button>
           {modalHeader}
-          <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
-            <label className="form-control w-full max-w-xs">
+          <div className="grid sm:grid-cols-1 md:grid-cols-2 lg-xl:grid-cols-4">
+            {/* <label className="form-control">
               <div className="label">
                 <span className="font-bold label-text">Day</span>
               </div>
               {segmentSelector}
-            </label>
-            <label className="form-control w-full max-w-xs">
+            </label> */}
+            <label className="form-control md:col-span-2 lg-xl:col-span-4">
               <div className="label">
                 <span className="font-bold label-text">Run Group</span>
               </div>
               {runGroupSelector}
               <div className="label">
                 <span className="label-text-alt">
-                  Your run group is determined by your car number.
+                  Your default run group is determined by your car number.
                 </span>
               </div>
             </label>
