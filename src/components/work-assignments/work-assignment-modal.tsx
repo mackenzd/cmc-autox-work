@@ -26,6 +26,8 @@ const WorkAssignmentsModal = (props: WorkAssignmentsModalProps) => {
   } = useWorkAssignmentsContext();
   const { isAdmin } = useAuthorizationContext();
 
+  // Separate MSR events are now being created for each day, instead of one for the whole weekend.
+  // Leaving this here in case this changes. DM 3/26/2024
   const segmentSelector = useMemo(() => {
     const isSingleDayEvent = event?.start === event?.end;
 
@@ -195,23 +197,23 @@ const WorkAssignmentsModal = (props: WorkAssignmentsModalProps) => {
             ✕
           </button>
           {modalHeader}
-          <div className="grid sm:grid-cols-1 md:grid-cols-2 lg-xl:grid-cols-4 pb-2">
-            <label className="form-control">
+          <div className="grid sm:grid-cols-1 md:grid-cols-2 lg-xl:grid-cols-4">
+            {/* <label className="form-control">
               <div className="label">
                 <span className="font-bold label-text">Day</span>
               </div>
               {segmentSelector}
-            </label>
-            <label className="form-control lg-xl:col-span-3">
+            </label> */}
+            <label className="form-control lg-xl:col-span-4">
               <div className="label">
-                <span className="font-bold label-text">Run Group</span>
+              <span className="font-bold label-text">Run Group</span>
               </div>
               {runGroupSelector}
-              {/* <div className="label">
+              <div className="label">
                 <span className="label-text-alt">
                   Your default run group is determined by your car number.
                 </span>
-              </div> */}
+              </div>
             </label>
           </div>
         </div>
