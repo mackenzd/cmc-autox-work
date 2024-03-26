@@ -188,7 +188,7 @@ const WorkAssignmentsModal = (props: WorkAssignmentsModalProps) => {
 
   return props.isOpen ? (
     <dialog className="modal" open={props.isOpen}>
-      <div className="modal-box border border-current sm:max-h-[80vh] md:max-h-[90vh] lg-xl:max-h-screen work-assignments-content">
+      <div className="modal-box border border-current max-h-[80vh] md:max-h-[90vh] lg-xl:max-h-screen work-assignments-content">
         <div className="gap-2 work-assignments-header">
           <button
             className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
