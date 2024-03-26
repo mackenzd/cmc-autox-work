@@ -71,7 +71,7 @@ const WorkAssignmentsModal = (props: WorkAssignmentsModalProps) => {
 
   const runGroupSelector = useMemo(() => {
     return (
-      <label className="form-control md:col-span-2 lg-xl:col-span-4">
+      <label className="form-control">
         <div className="label">
           <span className="font-bold label-text">Run Group</span>
         </div>
