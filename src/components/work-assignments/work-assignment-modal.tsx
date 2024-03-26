@@ -26,13 +26,18 @@ const WorkAssignmentsModal = (props: WorkAssignmentsModalProps) => {
   } = useWorkAssignmentsContext();
   const { isAdmin } = useAuthorizationContext();
 
-  // Separate MSR events are now being created for each day, instead of one for the whole weekend.
-  // Leaving this here in case this changes. DM 3/26/2024
   const segmentSelector = useMemo(() => {
     const isSingleDayEvent = event?.start === event?.end;
 
+    if (isSingleDayEvent) {
+      return <></>;
+    }
+
     return (
-      <>
+      <label className="form-control">
+        <div className="label">
+          <span className="font-bold label-text">Day</span>
+        </div>
         <select
           className="select select-primary select-xs max-w-xs"
           disabled={isSingleDayEvent || isLoading}
@@ -48,16 +53,12 @@ const WorkAssignmentsModal = (props: WorkAssignmentsModalProps) => {
             </option>
           ))}
         </select>
-        {isSingleDayEvent ? (
-          <></>
-        ) : (
-          <div className="label">
-            <span className="label-text-alt">
-              Choose the day for your work assignment request.
-            </span>
-          </div>
-        )}
-      </>
+        <div className="label">
+          <span className="label-text-alt">
+            Choose the day for your work assignment request.
+          </span>
+        </div>
+      </label>
     );
   }, [
     isLoading,
@@ -70,21 +71,31 @@ const WorkAssignmentsModal = (props: WorkAssignmentsModalProps) => {
 
   const runGroupSelector = useMemo(() => {
     return (
-      <select
-        className="select select-primary select-xs max-w-xs"
-        disabled={isLoading}
-        key={runGroup}
-        value={runGroup}
-        onChange={(e) => {
-          setRunGroup(e.target.value as RunGroup);
-        }}
-      >
-        {Object.values(RunGroup).map((rg) => (
-          <option key={rg} value={rg}>
-            {rg}
-          </option>
-        ))}
-      </select>
+      <label className="form-control md:col-span-2 lg-xl:col-span-4">
+        <div className="label">
+          <span className="font-bold label-text">Run Group</span>
+        </div>
+        <select
+          className="select select-primary select-xs max-w-xs"
+          disabled={isLoading}
+          key={runGroup}
+          value={runGroup}
+          onChange={(e) => {
+            setRunGroup(e.target.value as RunGroup);
+          }}
+        >
+          {Object.values(RunGroup).map((rg) => (
+            <option key={rg} value={rg}>
+              {rg}
+            </option>
+          ))}
+        </select>
+        <div className="label">
+          <span className="label-text-alt">
+            Your default run group is determined by your car number.
+          </span>
+        </div>
+      </label>
     );
   }, [isLoading, runGroup, setRunGroup]);
 
@@ -198,23 +209,8 @@ const WorkAssignmentsModal = (props: WorkAssignmentsModalProps) => {
           </button>
           {modalHeader}
           <div className="grid sm:grid-cols-1 md:grid-cols-2 lg-xl:grid-cols-4">
-            {/* <label className="form-control">
-              <div className="label">
-                <span className="font-bold label-text">Day</span>
-              </div>
-              {segmentSelector}
-            </label> */}
-            <label className="form-control md:col-span-2 lg-xl:col-span-4">
-              <div className="label">
-                <span className="font-bold label-text">Run Group</span>
-              </div>
-              {runGroupSelector}
-              <div className="label">
-                <span className="label-text-alt">
-                  Your default run group is determined by your car number.
-                </span>
-              </div>
-            </label>
+            {segmentSelector}
+            {runGroupSelector}
           </div>
         </div>
         {modalContent}
