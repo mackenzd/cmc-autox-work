@@ -39,7 +39,7 @@ const WorkAssignmentsModal = (props: WorkAssignmentsModalProps) => {
           <span className="font-bold label-text">Day</span>
         </div>
         <select
-          className="select select-primary select-xs max-w-xs"
+          className="select select-primary select-xs sm:max-w-xs"
           disabled={isSingleDayEvent || isLoading}
           key={segment}
           value={segment}
@@ -76,7 +76,7 @@ const WorkAssignmentsModal = (props: WorkAssignmentsModalProps) => {
           <span className="font-bold label-text">Run Group</span>
         </div>
         <select
-          className="select select-primary select-xs max-w-xs"
+          className="select select-primary select-xs sm:max-w-xs"
           disabled={isLoading}
           key={runGroup}
           value={runGroup}
@@ -92,7 +92,7 @@ const WorkAssignmentsModal = (props: WorkAssignmentsModalProps) => {
         </select>
         <div className="label">
           <span className="label-text-alt">
-            Your default run group is determined by your car number.
+            Your default run group is determined by your car number. You may select another run group if needed to facilitate dual driving, etc.
           </span>
         </div>
       </label>
