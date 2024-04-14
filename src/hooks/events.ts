@@ -38,11 +38,21 @@ export function useGetEvents(start?: string, end?: string): MSREvent[] {
     const p2 = getOrganizationEvents(start, end);
 
     Promise.all([p1, p2]).then(([userEvents, organizationEvents]) => {
-      const events = [
-        ...(userEvents ?? []),
-        ...(organizationEvents ?? []),
-      ].sort((e1, e2) => (new Date(e1.start) > new Date(e2.start) ? 1 : -1));
-      setEvents(events);
+      const mergedEvents = organizationEvents.map((orgEvent) => {
+        const matchingUserEvent = userEvents.find(
+          (userEvent) => userEvent.id === orgEvent.id
+        );
+        if (matchingUserEvent) {
+          return { ...orgEvent, registered: matchingUserEvent.registered };
+        }
+        return orgEvent;
+      });
+
+      const combinedEvents = [...userEvents, ...mergedEvents].sort((e1, e2) =>
+        new Date(e1.start) > new Date(e2.start) ? 1 : -1
+      );
+
+      setEvents(combinedEvents);
     });
   }, [start, end, setEvents]);
 
