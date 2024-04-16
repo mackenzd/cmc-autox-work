@@ -11,6 +11,7 @@ import {
   useUnsetWorkAssignment,
 } from "../../hooks/work-assignments";
 import ConfirmationDialog from "../dialogs/confirmation-dialog";
+import { eventRegistraionHasEnded } from "../../helpers/events";
 
 export interface WorkAssignmentProps {
   type: WorkAssignmentType;
@@ -133,15 +134,33 @@ const WorkAssignmentEntry = (props: WorkAssignmentProps) => {
 
   const requiredRole = roleForWorkAssignment(props.type);
 
-  let canAssign: boolean;
-  if (isRestricted) {
-    canAssign = false;
-  } else if (requiredRole) {
-    canAssign =
-      roles?.some((r) => r === requiredRole) || isAdmin || isUnrestricted;
-  } else {
-    canAssign = true;
-  }
+  const hasRegistrationEnded = useMemo(() => {
+    if (event) {
+      return eventRegistraionHasEnded(event);
+    }
+  }, [event]);
+
+  const canAssign = useMemo(() => {
+    let canAssign: boolean;
+
+    if (isRestricted || hasRegistrationEnded) {
+      canAssign = false;
+    } else if (requiredRole) {
+      canAssign =
+        roles?.some((r) => r === requiredRole) || isAdmin || isUnrestricted;
+    } else {
+      canAssign = true;
+    }
+
+    return canAssign;
+  }, [
+    isRestricted,
+    hasRegistrationEnded,
+    requiredRole,
+    roles,
+    isAdmin,
+    isUnrestricted,
+  ]);
 
   const classNames = useMemo(() => {
     if (currentAssignment && currentAssignment.user?.id === user?.id) {
