@@ -143,7 +143,7 @@ const WorkAssignmentEntry = (props: WorkAssignmentProps) => {
   const canAssign = useMemo(() => {
     let canAssign: boolean;
 
-    if (isRestricted || hasRegistrationEnded) {
+    if (isRestricted || (!isAdmin && hasRegistrationEnded)) {
       canAssign = false;
     } else if (requiredRole) {
       canAssign =
