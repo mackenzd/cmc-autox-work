@@ -7,6 +7,7 @@ import { useMemo } from "react";
 import { useAuthorizationContext } from "../../contexts/authorization-context";
 import { getRegistrations, getWorksheet } from "../../helpers/work-assignments";
 import { closeDropdownOnClick } from "../../helpers/utils";
+import { eventRegistraionHasEnded } from "../../helpers/events";
 
 export interface WorkAssignmentsModalProps {
   isOpen: boolean;
@@ -92,7 +93,8 @@ const WorkAssignmentsModal = (props: WorkAssignmentsModalProps) => {
         </select>
         <div className="label">
           <span className="label-text-alt">
-            Your default run group is determined by your car number. You may select another run group if needed to facilitate dual driving, etc.
+            Your default run group is determined by your car number. You may
+            select another run group if needed to facilitate dual driving, etc.
           </span>
         </div>
       </label>
@@ -188,19 +190,34 @@ const WorkAssignmentsModal = (props: WorkAssignmentsModalProps) => {
     // eslint-disable-next-line
   }, [event, isAdmin, isLoading, runGroup, segment]);
 
+  const hasRegistrationEnded = useMemo(() => {
+    if (event) {
+      return eventRegistraionHasEnded(event);
+    }
+  }, [event]);
+
   const modalHeader = useMemo(() => {
+    const message = hasRegistrationEnded ? (
+      <div className="text-error text-sm pt-2">
+        Online registration for this event has ended.
+      </div>
+    ) : (
+      <></>
+    );
+
     return (
       <div>
         <div className="font-bold text-lg">Work Assignment Request</div>
         <div className="font-bold text-sm">{event?.name}</div>
+        {message}
       </div>
     );
-  }, [event?.name]);
+  }, [event?.name, hasRegistrationEnded]);
 
   return props.isOpen ? (
     <dialog className="modal" open={props.isOpen}>
       <div className="modal-box border border-current max-h-[80vh] md:max-h-[90vh] lg-xl:max-h-screen work-assignments-content">
-        <div className="gap-2 work-assignments-header">
+        <div className="work-assignments-header">
           <button
             className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
             onClick={props.onClose}
