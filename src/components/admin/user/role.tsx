@@ -1,9 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import {
-  useGetUserRoles,
-  useSetRole,
-  useUnsetRole,
-} from "../../../hooks/users";
+import { useSetRole, useUnsetRole } from "../../../hooks/users";
 import { MSRUser } from "../../../models/msr-user";
 import { Role } from "../../../models/roles";
 import { useAuthorizationContext } from "../../../contexts/authorization-context";
@@ -17,10 +13,11 @@ const UserRoleAdmin = (props: UserRoleAdminProps) => {
   const { user } = useAuthorizationContext();
 
   const [roles, setRoles] = useState<Role[]>([]);
-  const getUserRoles = useGetUserRoles(props.user);
   useEffect(() => {
-    setRoles(getUserRoles);
-  }, [getUserRoles, setRoles]);
+    if (props.user?.roles) {
+      setRoles(props.user.roles);
+    }
+  }, [setRoles, props.user?.roles]);
 
   const onSetSuccess = useCallback(
     (role: Role) => {
@@ -45,7 +42,7 @@ const UserRoleAdmin = (props: UserRoleAdminProps) => {
 
   const badges = useMemo(() => {
     return (
-      <div className="flex flex-col">
+      <div className="flex flex-row">
         {roles.map((role) => (
           <div
             key={role}
@@ -118,8 +115,7 @@ const UserRoleAdmin = (props: UserRoleAdminProps) => {
 
   return (
     <div>
-      <div className="font-bold">Roles</div>
-      <div className="flex flex-col">
+      <div className="flex flex-row">
         {badges}
         {dropdown}
       </div>

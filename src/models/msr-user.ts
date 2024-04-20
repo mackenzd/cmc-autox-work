@@ -1,4 +1,5 @@
 import { MSRUserOrganization } from "./msr-organization";
+import { Role } from "./roles";
 
 export type MSRUser = {
   id: string;
@@ -8,4 +9,5 @@ export type MSRUser = {
   avatar: string;
   organizations: MSRUserOrganization[];
   memberId?: string;
+  roles?: Role[];
 };

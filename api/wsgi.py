@@ -390,7 +390,8 @@ def get_users():
             'memberId': a.member_id,
             'firstName': a.first_name,
             'lastName': a.last_name,
-            'email': a.email
+            'email': a.email,
+            'roles': [b.role for b in a.roles]
         } for a in q]
     except Exception as e:
         app.logger.error(e)
