@@ -39,8 +39,10 @@
         {% endfor %}
       </div>
       <div class="basis-1/4">
-        <div class="border-black border-b font-bold pl-2 mb-2">Unassigned</div>
-        {% for user in unassigned_users %}
+        <div class="border-black border-b font-bold pl-2 mb-2">
+          Unassigned <span class="font-normal italic">({{ unassigned_users['users']['count'] }})</span>
+        </div>
+        {% for user in unassigned_users['users']['users'] %}
         <div class="pl-2">
           ___ {{ user['lastName'] }}, {{ user['firstName']}} {{ "#" +
           user['vehicleNumber'] if user['vehicleNumber'] is not none }}

@@ -390,7 +390,8 @@ def get_users():
             'memberId': a.member_id,
             'firstName': a.first_name,
             'lastName': a.last_name,
-            'email': a.email
+            'email': a.email,
+            'roles': [b.role for b in a.roles]
         } for a in q]
     except Exception as e:
         app.logger.error(e)
@@ -529,7 +530,7 @@ def registrations_html(event_id):
     res = oauth.msr.get(f"rest/events/{event_id}/entrylist.json")    
     entries = json.loads(res.content).get('response').get('assignments')
 
-    unassigned_users = []
+    unassigned_users = defaultdict(lambda: {'users': [], 'count': 0})
     added_users = set()
     for entry in sorted(entries, key=lambda x: x.get('lastName')):
         user = {
@@ -542,7 +543,8 @@ def registrations_html(event_id):
             and not any(u['firstName'] == user['firstName'] \
                         and u['lastName'] == user['lastName'] \
                         for u in assigned_users):
-            unassigned_users.append(user)
+            unassigned_users['users']['users'].append(user)
+            unassigned_users['users']['count'] += 1
             added_users.add((user['firstName'], user['lastName']))
 
     return render_template('registrations.html',
