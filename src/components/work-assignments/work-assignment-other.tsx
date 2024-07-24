@@ -10,7 +10,11 @@ const WorkAssignmentOther = () => {
           station={Station.None}
         />
         <WorkAssignmentEntry
-          type={WorkAssignmentType.Assistant}
+          type={WorkAssignmentType.Assistant1}
+          station={Station.None}
+        />
+        <WorkAssignmentEntry
+          type={WorkAssignmentType.Assistant2}
           station={Station.None}
         />
         <WorkAssignmentEntry
