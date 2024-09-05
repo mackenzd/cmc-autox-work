@@ -13,8 +13,7 @@ export type WorkAssignment = {
 
 export enum WorkAssignmentType {
   Computer = "Computer",
-  Assistant1 = "Assistant 1",
-  Assistant2 = "Assistant 2",
+  Assistant = "Assistant",
   Grid1 = "Grid 1",
   Grid2 = "Grid 2",
   GateMarshal = "Gate Marshal",

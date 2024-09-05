@@ -127,8 +127,7 @@ export function roleForWorkAssignment(
     case WorkAssignmentType.Computer:
       return Role.Computer;
 
-    case WorkAssignmentType.Assistant1:
-    case WorkAssignmentType.Assistant2:
+    case WorkAssignmentType.Assistant:
       return Role.Assistant;
 
     case WorkAssignmentType.Grid1:
