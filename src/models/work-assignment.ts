@@ -19,8 +19,6 @@ export enum WorkAssignmentType {
   GateMarshal = "Gate Marshal",
   Instructor1 = "Instructor 1",
   Instructor2 = "Instructor 2",
-  Instructor3 = "Instructor 3",
-  Instructor4 = "Instructor 4",
   Start = "Start",
   Leader = "Leader",
   Runner1 = "Runner 1",

@@ -58,6 +58,31 @@
             </div>
           </div>
         </div>
+        <div id="other-assignments" class="text-center">
+          <div class="flex justify-end">
+            <div class="w-12">Car #</div>
+            <div class="w-8">AM</div>
+            <div class="w-8">PM</div>
+          </div>
+          <div class="flex justify-between">
+            <div class="text-right pr-2 w-52">Start</div>
+            <div class="border-b border-black w-full text-left">{{ assignments['start'][0] if 'start' in assignments }}</div>
+            <div class="flex justify-end">
+              <div class="border border-black w-12">{{ assignments['start'][1] if 'start' in assignments }}</div>
+              <div class="border border-black w-8"></div>
+              <div class="border border-black w-8"></div>
+            </div>
+          </div>
+          <div class="flex justify-between">
+            <div class="text-right pr-2 w-52">Gate Marshal</div>
+            <div class="border-b border-black w-full text-left">{{ assignments['gatemarshal'][0] if 'gatemarshal' in assignments }}</div>
+            <div class="flex justify-end">
+              <div class="border border-black w-12">{{ assignments['gatemarshal'][1] if 'gatemarshal' in assignments }}</div>
+              <div class="border border-black w-8"></div>
+              <div class="border border-black w-8"></div>
+            </div>
+          </div>
+        </div>
         <div id="grid-assignments" class="text-center">
           <div class="flex justify-end">
             <div class="w-12">Car #</div>
@@ -103,63 +128,6 @@
             <div class="border-b border-black w-full text-left">{{ assignments['instructor2'][0] if 'instructor2' in assignments }}</div>
             <div class="flex justify-end">
               <div class="border border-black w-12">{{ assignments['instructor2'][1] if 'instructor2' in assignments }}</div>
-              <div class="border border-black w-8"></div>
-              <div class="border border-black w-8"></div>
-            </div>
-          </div>
-        </div>
-        <div id="instructor2-assignments" class="text-center">
-          <div class="flex justify-end">
-            <div class="w-12">Car #</div>
-            <div class="w-8">AM</div>
-            <div class="w-8">PM</div>
-          </div>
-          <div class="flex justify-between">
-            <div class="text-right pr-2 w-52">Instructor</div>
-            <div class="border-b border-black w-full text-left">{{ assignments['instructor3'][0] if 'instructor3' in assignments }}</div>
-            <div class="flex justify-end">
-              <div class="border border-black w-12">{{ assignments['instructor3'][1] if 'instructor3' in assignments }}</div>
-              <div class="border border-black w-8"></div>
-              <div class="border border-black w-8"></div>
-            </div>
-          </div>
-          <div class="flex justify-between">
-            <div class="text-right pr-2 w-52">Instructor</div>
-            <div class="border-b border-black w-full text-left">{{ assignments['instructor4'][0] if 'instructor4' in assignments }}</div>
-            <div class="flex justify-end">
-              <div class="border border-black w-12">{{ assignments['instructor4'][1] if 'instructor4' in assignments }}</div>
-              <div class="border border-black w-8"></div>
-              <div class="border border-black w-8"></div>
-            </div>
-          </div>
-        </div>
-        <div id="start-assignments" class="text-center">
-          <div class="flex justify-end">
-            <div class="w-12">Car #</div>
-            <div class="w-8">AM</div>
-            <div class="w-8">PM</div>
-          </div>
-          <div class="flex justify-between">
-            <div class="text-right pr-2 w-52">Start</div>
-            <div class="border-b border-black w-full text-left">{{ assignments['start'][0] if 'start' in assignments }}</div>
-            <div class="flex justify-end">
-              <div class="border border-black w-12">{{ assignments['start'][1] if 'start' in assignments }}</div>
-              <div class="border border-black w-8"></div>
-              <div class="border border-black w-8"></div>
-            </div>
-          </div>
-        </div>
-        <div id="gate-marshal-assignments" class="text-center">
-          <div class="flex justify-end">
-            <div class="w-12">Car #</div>
-            <div class="w-8">AM</div>
-            <div class="w-8">PM</div>
-          </div>
-          <div class="flex justify-between">
-            <div class="text-right pr-2 w-52">Gate Marshal</div>
-            <div class="border-b border-black w-full text-left">{{ assignments['gatemarshal'][0] if 'gatemarshal' in assignments }}</div>
-            <div class="flex justify-end">
-              <div class="border border-black w-12">{{ assignments['gatemarshal'][1] if 'gatemarshal' in assignments }}</div>
               <div class="border border-black w-8"></div>
               <div class="border border-black w-8"></div>
             </div>
