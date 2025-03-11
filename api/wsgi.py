@@ -494,11 +494,15 @@ def work_assignments_html(event_id):
             'runGroup': a[0].run_group,
             'segment': a[0].segment
         } for a in q.all()]
+    
+    q2 = EventSettings.query.where(EventSettings.event_id == event_id).first()
+    assistants = q2.assistants if q2 != None else 1
 
     return render_template('work_assignments.html',
                            title=title,
                            segment=segment,
                            run_group=run_group,
+                           assistants=assistants,
                            assignments=assignments_to_dict(assignments))
 
 @app.route('/templates/events/<event_id>/registrations.html')

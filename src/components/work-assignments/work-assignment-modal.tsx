@@ -117,7 +117,7 @@ const WorkAssignmentsModal = (props: WorkAssignmentsModalProps) => {
       <div className="skeleton h-60 md:h-96 my-2"></div>
     ) : (
       <div className="overflow-y-auto my-2">
-        <WorkAssignmentsOther />
+        <WorkAssignmentsOther assistants={settings.assistants ?? 1}/>
         <div className="grid sm:grid-cols-1 md:grid-cols-2 lg-xl:grid-cols-4 gap-2">
           {workAssignmentStations}
         </div>
