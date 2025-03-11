@@ -1,7 +1,32 @@
 import WorkAssignmentEntry from "./work-assignment-entry";
 import { Station, WorkAssignmentType } from "../../models/work-assignment";
+import { useMemo } from "react";
 
-const WorkAssignmentOther = () => {
+export interface WorkAssignmentOtherProps {
+  assistants: number;
+}
+
+const WorkAssignmentOther = (props: WorkAssignmentOtherProps) => {
+  const workAssignmentAssistants = useMemo(() => {
+    const assistants = [
+      <WorkAssignmentEntry
+        type={WorkAssignmentType.Assistant1}
+        station={Station.None}
+      />,
+    ];
+
+    if (props.assistants > 1) {
+      assistants.push(
+        <WorkAssignmentEntry
+          type={WorkAssignmentType.Assistant2}
+          station={Station.None}
+        />
+      );
+    }
+
+    return assistants;
+  }, [props.assistants]);
+
   return (
     <div className="grid sm:grid-cols-1 md:grid-cols-2 lg-xl:grid-cols-4 gap-2 mb-2">
       <div>
@@ -9,10 +34,7 @@ const WorkAssignmentOther = () => {
           type={WorkAssignmentType.Computer}
           station={Station.None}
         />
-        <WorkAssignmentEntry
-          type={WorkAssignmentType.Assistant}
-          station={Station.None}
-        />
+        {workAssignmentAssistants}
       </div>
       <div>
         <WorkAssignmentEntry
