@@ -12,18 +12,22 @@ const WorkAssignmentStation = (props: WorkAssignmentStationProps) => {
       <div>
         <WorkAssignmentEntry
           type={WorkAssignmentType.Leader}
+          display="Leader"
           station={props.station}
         />
         <WorkAssignmentEntry
           type={WorkAssignmentType.Runner1}
+          display="Runner"
           station={props.station}
         />
         <WorkAssignmentEntry
           type={WorkAssignmentType.Runner2}
+          display="Runner"
           station={props.station}
         />
         <WorkAssignmentEntry
           type={WorkAssignmentType.Runner3}
+          display="Runner"
           station={props.station}
         />
       </div>

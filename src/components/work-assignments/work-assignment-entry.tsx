@@ -15,6 +15,7 @@ import { eventRegistraionHasEnded } from "../../helpers/events";
 
 export interface WorkAssignmentProps {
   type: WorkAssignmentType;
+  display: string;
   station: Station;
 }
 
@@ -227,7 +228,7 @@ const WorkAssignmentEntry = (props: WorkAssignmentProps) => {
         disabled={!canAssign}
         onClick={() => onClickWorkAssignment()}
       >
-        {props.type}
+        {props.display}
       </button>
       {assigned}
       {confirmationDialog}

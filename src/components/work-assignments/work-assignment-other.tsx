@@ -11,6 +11,7 @@ const WorkAssignmentOther = (props: WorkAssignmentOtherProps) => {
     const assistants = [
       <WorkAssignmentEntry
         type={WorkAssignmentType.Assistant1}
+        display="Assistant"
         station={Station.None}
       />,
     ];
@@ -19,6 +20,7 @@ const WorkAssignmentOther = (props: WorkAssignmentOtherProps) => {
       assistants.push(
         <WorkAssignmentEntry
           type={WorkAssignmentType.Assistant2}
+          display="Assistant"
           station={Station.None}
         />
       );
@@ -32,6 +34,7 @@ const WorkAssignmentOther = (props: WorkAssignmentOtherProps) => {
       <div>
         <WorkAssignmentEntry
           type={WorkAssignmentType.Computer}
+          display="Computer"
           station={Station.None}
         />
         {workAssignmentAssistants}
@@ -39,30 +42,36 @@ const WorkAssignmentOther = (props: WorkAssignmentOtherProps) => {
       <div>
         <WorkAssignmentEntry
           type={WorkAssignmentType.Start}
+          display="Start"
           station={Station.None}
         />
         <WorkAssignmentEntry
           type={WorkAssignmentType.GateMarshal}
+          display="Gate Marshal"
           station={Station.None}
         />
       </div>
       <div>
         <WorkAssignmentEntry
           type={WorkAssignmentType.Grid1}
+          display="Grid"
           station={Station.None}
         />
         <WorkAssignmentEntry
           type={WorkAssignmentType.Grid2}
+          display="Grid"
           station={Station.None}
         />
       </div>
       <div>
         <WorkAssignmentEntry
           type={WorkAssignmentType.Instructor1}
+          display="Instructor"
           station={Station.None}
         />
         <WorkAssignmentEntry
           type={WorkAssignmentType.Instructor2}
+          display="Instructor"
           station={Station.None}
         />
       </div>
