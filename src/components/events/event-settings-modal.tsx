@@ -38,6 +38,13 @@ const EventSettingsModal = (props: EventSettingsModalProps) => {
     [settings, setSettings]
   );
 
+  const onChangeAssistants = useCallback(
+    (assistants: string) => {
+      setSettings({ ...settings, assistants: +assistants });
+    },
+    [settings, setSettings]
+  );
+
   const onAddUser = useCallback(
     (user: MSRUser) => {
       closeDropdownOnClick(() => {
@@ -102,6 +109,32 @@ const EventSettingsModal = (props: EventSettingsModalProps) => {
       </select>
     ),
     [settings.stations, onChangeStations, hasRegistrationStarted]
+  );
+
+  const assistantsSelector = useMemo(
+    () => (
+      <select
+        className="select select-primary select-md"
+        disabled={hasRegistrationStarted}
+        value={settings.assistants}
+        onChange={(e) => {
+          onChangeAssistants(e.target.value);
+        }}
+      >
+        {(() => {
+          const options = [];
+          for (let i = 1; i <= 2; i++) {
+            options.push(
+              <option key={i} value={i}>
+                {i}
+              </option>
+            );
+          }
+          return options;
+        })()}
+      </select>
+    ),
+    [settings.assistants, onChangeAssistants, hasRegistrationStarted]
   );
 
   const usersOptions = useMemo(() => {
@@ -238,6 +271,18 @@ const EventSettingsModal = (props: EventSettingsModalProps) => {
             <div className="label">
               <span className="label-text-alt">
                 The number of cone stations to display on the work assignment
+                request form.
+              </span>
+            </div>
+          </label>
+          <label className="form-control w-full">
+            <div className="label">
+              <span className="font-bold label-text">Assistants</span>
+            </div>
+            {assistantsSelector}
+            <div className="label">
+              <span className="label-text-alt">
+                The number of assistants to display on the work assignment
                 request form.
               </span>
             </div>
