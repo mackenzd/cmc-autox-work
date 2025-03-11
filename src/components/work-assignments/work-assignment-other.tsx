@@ -13,8 +13,14 @@ const WorkAssignmentOther = () => {
           type={WorkAssignmentType.Assistant}
           station={Station.None}
         />
+      </div>
+      <div>
         <WorkAssignmentEntry
           type={WorkAssignmentType.Start}
+          station={Station.None}
+        />
+        <WorkAssignmentEntry
+          type={WorkAssignmentType.GateMarshal}
           station={Station.None}
         />
       </div>
@@ -27,10 +33,6 @@ const WorkAssignmentOther = () => {
           type={WorkAssignmentType.Grid2}
           station={Station.None}
         />
-        <WorkAssignmentEntry
-          type={WorkAssignmentType.GateMarshal}
-          station={Station.None}
-        />
       </div>
       <div>
         <WorkAssignmentEntry
@@ -39,16 +41,6 @@ const WorkAssignmentOther = () => {
         />
         <WorkAssignmentEntry
           type={WorkAssignmentType.Instructor2}
-          station={Station.None}
-        />
-      </div>
-      <div>
-        <WorkAssignmentEntry
-          type={WorkAssignmentType.Instructor3}
-          station={Station.None}
-        />
-        <WorkAssignmentEntry
-          type={WorkAssignmentType.Instructor4}
           station={Station.None}
         />
       </div>

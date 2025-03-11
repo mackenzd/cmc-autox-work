@@ -139,8 +139,6 @@ export function roleForWorkAssignment(
 
     case WorkAssignmentType.Instructor1:
     case WorkAssignmentType.Instructor2:
-    case WorkAssignmentType.Instructor3:
-    case WorkAssignmentType.Instructor4:
       return Role.Instructor;
 
     case WorkAssignmentType.Start:
