@@ -1,11 +1,14 @@
 import { useCallback, useMemo, useState } from "react";
 import { MSREvent } from "../../models/msr-event";
 import { useWorkAssignmentsContext } from "../../contexts/work-assignments-context";
-import { useSetEventSettings } from "../../hooks/events";
+import { useSetEventResults, useSetEventSettings } from "../../hooks/events";
 import { useGetUsers } from "../../hooks/users";
 import { MSRUser } from "../../models/msr-user";
 import { closeDropdownOnClick } from "../../helpers/utils";
-import { eventRegistrationHasStarted } from "../../helpers/events";
+import {
+  eventHasStarted,
+  eventRegistrationHasStarted,
+} from "../../helpers/events";
 
 export interface EventSettingsModalProps {
   event: MSREvent;
@@ -23,9 +26,12 @@ const EventSettingsModal = (props: EventSettingsModalProps) => {
     setSettings(settings);
   }, props.event);
 
+  const setEventResults = useSetEventResults(() => {}, props.event);
+
   const [userInput, setUserInput] = useState<string>("");
   const getUsers = useGetUsers();
 
+  const hasStarted = useMemo(() => eventHasStarted(props.event), [props.event]);
   const hasRegistrationStarted = useMemo(
     () => eventRegistrationHasStarted(props.event),
     [props.event]
@@ -71,6 +77,13 @@ const EventSettingsModal = (props: EventSettingsModalProps) => {
       });
     },
     [setSettings, settings]
+  );
+
+  const onUploadResults = useCallback(
+    (files: FileList) => {
+      setEventResults(files);
+    },
+    [setEventResults, props.event]
   );
 
   const onSave = useCallback(() => {
@@ -135,6 +148,24 @@ const EventSettingsModal = (props: EventSettingsModalProps) => {
       </select>
     ),
     [settings.assistants, onChangeAssistants, hasRegistrationStarted]
+  );
+
+  const uploadPreliminaryResults = useMemo(
+    () => (
+      <input
+        type="file"
+        className="file-input file-input-primary"
+        multiple
+        disabled={!hasStarted}
+        onChange={(e) => {
+          if (e.target.files) {
+            onUploadResults(e.target.files);
+            e.target.value = "";
+          }
+        }}
+      />
+    ),
+    [onUploadResults, hasStarted]
   );
 
   const usersOptions = useMemo(() => {
@@ -302,6 +333,22 @@ const EventSettingsModal = (props: EventSettingsModalProps) => {
             </div>
           </label>
           <div className="flex flex-row mt-1">{usersBadges}</div>
+
+          <div className="divider divider-neutral"></div>
+
+          <label className="form-control w-full">
+            <div className="label">
+              <span className="font-bold label-text">
+                Upload Preliminary Results
+              </span>
+            </div>
+            {uploadPreliminaryResults}
+            <div className="label">
+              <span className="label-text-alt">
+                Upload preliminary results from AXWare.
+              </span>
+            </div>
+          </label>
         </div>
         {modalActions}
       </div>

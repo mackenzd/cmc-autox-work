@@ -11,6 +11,7 @@ MSR_AUTHORIZE_URL='https://www.motorsportreg.com/index.cfm/event/oauth'
 # App
 CMC_APP_URL='http://localhost:3000'
 CMC_CALLBACK_URL='http://localhost:5000/auth/callback'
+CMC_RESULTS_DIRECTORY='/app/results'
 
 # Database
 DATABASE_NAME='app.db'
