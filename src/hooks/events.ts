@@ -133,3 +133,42 @@ export function useSetEventSettings(
 
   return setEventSettings;
 }
+
+export function useSetEventResults(
+  onSuccess: () => void,
+  event?: MSREvent
+): (files: FileList) => void {
+  const setEventResults = async (files: FileList) => {
+    const promises = Array.from(files).map((file) => {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      return fetch(`/api/events/${event?.id}/results`, {
+        method: "POST",
+        body: formData,
+      });
+    });
+
+    try {
+      const responses = await Promise.all(promises);
+
+      for (const res of responses) {
+        if (!res.ok) {
+          if (res.status === 400) {
+            const data = await res.json();
+            alert(data.error);
+            return;
+          } else {
+            throw res;
+          }
+        }
+      }
+
+      onSuccess();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  return setEventResults;
+}

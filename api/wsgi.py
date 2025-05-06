@@ -8,7 +8,9 @@ from sqlalchemy.dialects.sqlite import insert
 from sqlalchemy import UniqueConstraint, delete
 from dataclasses import dataclass
 from functools import wraps
+from werkzeug.utils import secure_filename
 import json
+import os
 
 db = SQLAlchemy()
 app = Flask(__name__)
@@ -384,6 +386,25 @@ def post_event_settings(event_id):
 
     return make_response({}, 200)
 
+@app.route('/api/events/<event_id>/results', methods=['POST'])
+@admin_required
+def post_event_results(event_id):
+    try:
+        f = request.files['file']
+        if f and allowed_file(f.filename):
+            dest = os.path.join(app.config['CMC_RESULTS_DIRECTORY'], event_id)
+            os.makedirs(dest, exist_ok=True)
+
+            filename = secure_filename(f.filename)
+
+            f.save(os.path.join(dest, filename))
+            return make_response({'filename': filename}, 200)
+        else:
+            return make_response({}, 400)
+    except Exception as e:
+        app.logger.error(e)
+        return make_response(json.dumps({'error': e}), 500)
+
 @app.route('/api/user/all')
 @admin_required
 def get_users():
@@ -579,3 +600,6 @@ def assignments_to_dict(assignments):
         output[key] = [name, vehicle_number]
 
     return output
+
+def allowed_file(filename):
+    return ('.' in filename and filename.rsplit('.', 1)[1].lower() in {'htm', 'html'})

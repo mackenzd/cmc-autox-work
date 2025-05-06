@@ -13,6 +13,7 @@ services:
     volumes:
       - ./api/instance:/app/instance
       - ./api:/app
+      - ./results:/app/results
     ports:
       - "5000:5000"
     environment:
