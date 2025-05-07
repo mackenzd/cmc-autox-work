@@ -139,9 +139,12 @@ const EventCard = (props: EventCardProps) => {
 
     if (hasEnded) {
       return (
-        <p className="h-12 flex justify-start items-end">
-          This event has ended.
-        </p>
+        <div className="flex flex-row gap-2 justify-end">
+          <p className="h-12 flex justify-start items-end">
+            This event has ended.
+          </p>
+          {eventResultsButton}
+        </div>
       );
     } else if (
       props.event.registered ||
