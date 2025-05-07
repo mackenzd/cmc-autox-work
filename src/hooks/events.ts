@@ -135,13 +135,16 @@ export function useSetEventSettings(
 }
 
 export function useSetEventResults(
-  onSuccess: () => void,
+  onSuccess: (filenames: string[]) => void,
   event?: MSREvent
 ): (files: FileList) => void {
   const setEventResults = async (files: FileList) => {
+    let filenames: string[] = [];
+
     const promises = Array.from(files).map((file) => {
       const formData = new FormData();
       formData.append("file", file);
+      filenames.push(file.name);
 
       return fetch(`/api/events/${event?.id}/results`, {
         method: "POST",
@@ -164,11 +167,59 @@ export function useSetEventResults(
         }
       }
 
-      onSuccess();
+      onSuccess(filenames);
     } catch (error) {
       console.error(error);
     }
   };
 
   return setEventResults;
+}
+
+export function useGetEventResults(
+  onFinish: (filenames: string[]) => void,
+  event?: MSREvent
+): string[] {
+  const [results, setResults] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (event?.id) {
+      fetch(`/api/events/${event?.id}/results`)
+        .then((res) => {
+          if (res.ok) {
+            return res.json();
+          }
+          return Promise.reject(res);
+        })
+        .then((data) => {
+          setResults(data);
+        })
+        .catch((error) => console.log(error))
+        .finally(() => onFinish(results));
+    }
+    // eslint-disable-next-line
+  }, [event?.id, setResults]);
+
+  return results;
+}
+
+export function useUnsetEventResult(
+  onSuccess: (filename: string) => void,
+  event?: MSREvent
+): (filename: string) => void {
+  const unsetEventResult = (filename: string) => {
+    fetch(`/api/events/${event?.id}/results/${filename}`, {
+      method: "DELETE",
+    })
+      .then((res) => {
+        if (res.ok) {
+          onSuccess(filename);
+        } else {
+          return Promise.reject(res);
+        }
+      })
+      .catch((error) => console.log(error));
+  };
+
+  return unsetEventResult;
 }

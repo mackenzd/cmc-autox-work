@@ -1,7 +1,12 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { MSREvent } from "../../models/msr-event";
 import { useWorkAssignmentsContext } from "../../contexts/work-assignments-context";
-import { useSetEventResults, useSetEventSettings } from "../../hooks/events";
+import {
+  useGetEventResults,
+  useSetEventResults,
+  useSetEventSettings,
+  useUnsetEventResult,
+} from "../../hooks/events";
 import { useGetUsers } from "../../hooks/users";
 import { MSRUser } from "../../models/msr-user";
 import { closeDropdownOnClick } from "../../helpers/utils";
@@ -21,12 +26,21 @@ const EventSettingsModal = (props: EventSettingsModalProps) => {
 
   const { settings, setSettings, initializeSettings, setInitialSettings } =
     useWorkAssignmentsContext();
-
   const setEventSettings = useSetEventSettings(() => {
     setSettings(settings);
   }, props.event);
 
+  const [results, setResults] = useState<string[]>([]);
+
+  const getEventResults = useGetEventResults(() => {}, props.event);
   const setEventResults = useSetEventResults(() => {}, props.event);
+  const unsetEventResults = useUnsetEventResult(() => {}, props.event);
+
+  useEffect(() => {
+    if (getEventResults && results.length === 0) {
+      setResults(getEventResults);
+    }
+  }, [getEventResults, results, setResults]);
 
   const [userInput, setUserInput] = useState<string>("");
   const getUsers = useGetUsers();
@@ -77,13 +91,6 @@ const EventSettingsModal = (props: EventSettingsModalProps) => {
       });
     },
     [setSettings, settings]
-  );
-
-  const onUploadResults = useCallback(
-    (files: FileList) => {
-      setEventResults(files);
-    },
-    [setEventResults, props.event]
   );
 
   const onSave = useCallback(() => {
@@ -150,6 +157,32 @@ const EventSettingsModal = (props: EventSettingsModalProps) => {
     [settings.assistants, onChangeAssistants, hasRegistrationStarted]
   );
 
+  const onChangeResults = useCallback(
+    (files: FileList) => {
+      let filenames = Array.from(files).map((f) => f.name);
+
+      setResults((prevResults) => {
+        const existingFilenames = new Set(prevResults);
+
+        const uniqueNewFilenames = filenames.filter(
+          (filename) => !existingFilenames.has(filename)
+        );
+
+        return [...prevResults, ...uniqueNewFilenames];
+      });
+    },
+    [setEventResults, setResults]
+  );
+
+  const onRemoveResult = useCallback(
+    (filename: string) => {
+      setResults((prevResults) => prevResults.filter((f) => f !== filename));
+
+      unsetEventResults(filename);
+    },
+    [setResults, unsetEventResults]
+  );
+
   const uploadPreliminaryResults = useMemo(
     () => (
       <input
@@ -159,13 +192,13 @@ const EventSettingsModal = (props: EventSettingsModalProps) => {
         disabled={!hasStarted}
         onChange={(e) => {
           if (e.target.files) {
-            onUploadResults(e.target.files);
+            onChangeResults(e.target.files);
             e.target.value = "";
           }
         }}
       />
     ),
-    [onUploadResults, hasStarted]
+    [onChangeResults, hasStarted]
   );
 
   const usersOptions = useMemo(() => {
@@ -259,6 +292,36 @@ const EventSettingsModal = (props: EventSettingsModalProps) => {
     );
   }, [settings.preregistrationAccess, onRemoveUser, hasRegistrationStarted]);
 
+  const resultsBadges = useMemo(() => {
+    return (
+      <div>
+        {results.map((result) => (
+          <div
+            key={result}
+            className="badge badge-primary gap-2 p-3 mt-1 mb-1 mr-3"
+          >
+            <button onClick={() => onRemoveResult(result)}>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                className="w-4 h-4 stroke-current"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M6 18L18 6M6 6l12 12"
+                ></path>
+              </svg>
+            </button>
+            {result}
+          </div>
+        ))}
+      </div>
+    );
+  }, [results, onRemoveResult]);
+
   const modalActions = useMemo(() => {
     return (
       <div className="modal-action mt-2">
@@ -333,24 +396,23 @@ const EventSettingsModal = (props: EventSettingsModalProps) => {
             </div>
           </label>
           <div className="flex flex-row mt-1">{usersBadges}</div>
-
-          <div className="divider divider-neutral"></div>
-
-          <label className="form-control w-full">
-            <div className="label">
-              <span className="font-bold label-text">
-                Upload Preliminary Results
-              </span>
-            </div>
-            {uploadPreliminaryResults}
-            <div className="label">
-              <span className="label-text-alt">
-                Upload preliminary results from AXWare.
-              </span>
-            </div>
-          </label>
         </div>
         {modalActions}
+        <div className="divider divider-neutral"></div>
+        <label className="form-control w-full">
+          <div className="label">
+            <span className="font-bold label-text">
+              Upload Preliminary Results
+            </span>
+          </div>
+          {uploadPreliminaryResults}
+          <div className="label">
+            <span className="label-text-alt">
+              Upload preliminary results from AXWare.
+            </span>
+          </div>
+        </label>
+        <div className="flex flex-row mt-1">{resultsBadges}</div>
       </div>
     </dialog>
   ) : (
