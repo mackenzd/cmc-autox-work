@@ -115,7 +115,7 @@ const EventCard = (props: EventCardProps) => {
   );
 
   const footer = useMemo(() => {
-    const eventResultsButton = true ? (
+    const eventResultsButton = hasStarted ? (
       <button
         className="btn btn-primary"
         onClick={() => setIsResultsModalOpen(true)}

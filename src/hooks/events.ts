@@ -203,6 +203,39 @@ export function useGetEventResults(
   return results;
 }
 
+export function useGetEventResult(
+  event?: MSREvent
+): (filename: string) => void {
+  const getEventResult = async (filename: string) => {
+    if (event?.id) {
+      fetch(`/api/events/${event?.id}/results/${filename}`)
+        .then((res) => {
+          if (res.ok) {
+            return res.blob();
+          }
+          return Promise.reject(res);
+        })
+        .then((data) => {
+          const fileURL = URL.createObjectURL(data);
+          const newTab = window.open(fileURL, "_blank");
+
+          if (newTab) {
+            newTab.onload = () => {
+              URL.revokeObjectURL(fileURL);
+            };
+          } else {
+            URL.revokeObjectURL(fileURL);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  };
+
+  return getEventResult;
+}
+
 export function useUnsetEventResult(
   onSuccess: (filename: string) => void,
   event?: MSREvent
