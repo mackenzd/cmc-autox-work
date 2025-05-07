@@ -1,6 +1,6 @@
 from collections import defaultdict
 from datetime import timedelta
-from flask import Flask, current_app, redirect, session, make_response, request, jsonify, render_template
+from flask import Flask, current_app, redirect, send_from_directory, session, make_response, request, jsonify, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, current_user, login_required, login_user, logout_user
 from authlib.integrations.flask_client import OAuth
@@ -395,15 +395,55 @@ def post_event_results(event_id):
             dest = os.path.join(app.config['CMC_RESULTS_DIRECTORY'], event_id)
             os.makedirs(dest, exist_ok=True)
 
-            filename = secure_filename(f.filename)
+            secured_filename = secure_filename(f.filename)
 
-            f.save(os.path.join(dest, filename))
-            return make_response({'filename': filename}, 200)
+            f.save(os.path.join(dest, secured_filename))
+            return make_response({'filename': secured_filename}, 200)
         else:
             return make_response({}, 400)
     except Exception as e:
         app.logger.error(e)
         return make_response(json.dumps({'error': e}), 500)
+    
+@app.route('/api/events/<event_id>/results/<filename>', methods=['GET'])
+@login_required
+def get_event_results(event_id, filename):
+    try:
+        path = os.path.join(app.config['CMC_RESULTS_DIRECTORY'], event_id)
+
+        return send_from_directory(path, filename)
+    except FileNotFoundError:
+        return make_response(json.dumps({'error': 'File not found'}), 404)
+    except Exception as e:
+        return make_response(json.dumps({'error': f'Failed to retrieve file: {str(e)}'}), 500)
+
+@app.route('/api/events/<event_id>/results', methods=['GET'])
+@login_required
+def list_event_results(event_id):
+    try:
+        path = os.path.join(app.config['CMC_RESULTS_DIRECTORY'], event_id)
+        entries = os.listdir(path)
+        files = [entry for entry in entries if os.path.isfile(os.path.join(path, entry))]
+
+        return jsonify(files)
+    except Exception as e:
+        return make_response(json.dumps({'error': f'Failed to list files: {str(e)}'}), 500)
+
+@app.route('/api/events/<event_id>/results/<filename>', methods=['DELETE'])
+@admin_required
+def delete_event_result(event_id, filename):
+    secured_filename = secure_filename(filename)
+    path = os.path.join(app.config['CMC_RESULTS_DIRECTORY'], event_id, secured_filename)
+
+    try:
+        if os.path.exists(path):
+            os.remove(path)
+            return make_response(f'File "{secured_filename}" deleted successfully', 200)
+        else:
+            return make_response(json.dumps({'error': f'File "{secured_filename}" not found'}), 404)
+    except Exception as e:
+        return make_response(json.dumps({'error': f'Failed to delete file "{secured_filename}": {str(e)}'}), 500)
+
 
 @app.route('/api/user/all')
 @admin_required
