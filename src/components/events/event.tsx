@@ -6,9 +6,11 @@ import {
   eventHasEnded,
   eventRegistrationHasStarted,
   eventRegistraionHasEnded,
+  eventHasStarted,
 } from "../../helpers/events";
 import EventSettingsModal from "./event-settings-modal";
 import { useAuthorizationContext } from "../../contexts/authorization-context";
+import EventResultsModal from "./event-results-modal";
 
 export interface EventCardProps {
   event: MSREvent;
@@ -32,6 +34,7 @@ const EventCard = (props: EventCardProps) => {
     [props.event.end]
   );
 
+  const hasStarted = useMemo(() => eventHasStarted(props.event), [props.event]);
   const hasEnded = useMemo(() => eventHasEnded(props.event), [props.event]);
   const hasRegistrationStarted = useMemo(
     () => eventRegistrationHasStarted(props.event),
@@ -42,10 +45,25 @@ const EventCard = (props: EventCardProps) => {
     [props.event]
   );
 
+  const [isResultsModalOpen, setIsResultsModalOpen] = useState<boolean>(false);
   const [isSettingsModalOpen, setIsSettingsModalOpen] =
     useState<boolean>(false);
   const [isWorkAssignmentsModalOpen, setIsWorkAssignmentsModalOpen] =
     useState<boolean>(false);
+
+  const resultsModal = useMemo(
+    () =>
+      isResultsModalOpen ? (
+        <EventResultsModal
+          event={props.event}
+          isOpen={isResultsModalOpen}
+          onClose={() => setIsResultsModalOpen(false)}
+        />
+      ) : (
+        <></>
+      ),
+    [isResultsModalOpen, props.event, setIsResultsModalOpen]
+  );
 
   const settingsModal = useMemo(
     () =>
@@ -76,8 +94,9 @@ const EventCard = (props: EventCardProps) => {
 
   const modals = useMemo(
     () =>
-      isWorkAssignmentsModalOpen || isSettingsModalOpen ? (
+      isWorkAssignmentsModalOpen || isSettingsModalOpen || isResultsModalOpen ? (
         <WorkAssignmentsContextProvider event={props.event}>
+          {resultsModal}
           {settingsModal}
           {workAssignmentsModal}
         </WorkAssignmentsContextProvider>
@@ -85,6 +104,8 @@ const EventCard = (props: EventCardProps) => {
         <></>
       ),
     [
+      isResultsModalOpen,
+      resultsModal,
       isWorkAssignmentsModalOpen,
       isSettingsModalOpen,
       settingsModal,
@@ -94,6 +115,17 @@ const EventCard = (props: EventCardProps) => {
   );
 
   const footer = useMemo(() => {
+    const eventResultsButton = true ? (
+      <button
+        className="btn btn-primary"
+        onClick={() => setIsResultsModalOpen(true)}
+      >
+        Results
+      </button>
+    ) : (
+      <></>
+    );
+
     const eventSettingsButton = isAdmin ? (
       <button
         className="btn btn-primary"
@@ -106,14 +138,19 @@ const EventCard = (props: EventCardProps) => {
     );
 
     if (hasEnded) {
-      return <p className="h-12 flex justify-start items-end">This event has ended.</p>;
+      return (
+        <p className="h-12 flex justify-start items-end">
+          This event has ended.
+        </p>
+      );
     } else if (
       props.event.registered ||
       props.allowPreregistration ||
       isAdmin
-    ) {      
+    ) {
       return (
         <div className="flex flex-row gap-2 justify-end">
+          {eventResultsButton}
           {eventSettingsButton}
           <button
             className="btn btn-primary"
