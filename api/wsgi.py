@@ -426,6 +426,8 @@ def list_event_results(event_id):
         files = [entry for entry in entries if os.path.isfile(os.path.join(path, entry))]
 
         return jsonify(files)
+    except FileNotFoundError:
+        return make_response(json.dumps({'error': 'Results not found'}), 404)        
     except Exception as e:
         return make_response(json.dumps({'error': f'Failed to list files: {str(e)}'}), 500)
 
