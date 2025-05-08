@@ -8,6 +8,7 @@ import {
 } from "../../hooks/events";
 import { MSREvent } from "../../models/msr-event";
 import { useAuthorizationContext } from "../../contexts/authorization-context";
+import ConfirmationDialog from "../dialogs/confirmation-dialog";
 
 export interface EventResultsModalProps {
   event: MSREvent;
@@ -37,6 +38,41 @@ const EventResultsModal = (props: EventResultsModalProps) => {
     props.onClose();
   };
 
+  const [removeResult, setRemoveResult] = useState<string>("");
+  const [isConfirmationDialogOpen, setIsConfirmationDialogOpen] =
+    useState<boolean>(false);
+  const confirmationDialog = useMemo(
+    () =>
+      isConfirmationDialogOpen ? (
+        <ConfirmationDialog
+          isOpen={isConfirmationDialogOpen}
+          title="Delete results?"
+          message={`Are you sure you want to delete "${removeResult}"?`}
+          onConfirm={() => {
+            unsetEventResults(removeResult);
+            setResults((prevResults) =>
+              prevResults.filter((f) => f !== removeResult)
+            );
+            setRemoveResult("");
+            setIsConfirmationDialogOpen(false);
+          }}
+          onClose={() => {
+            setIsConfirmationDialogOpen(false);
+          }}
+        />
+      ) : (
+        <></>
+      ),
+    [
+      isConfirmationDialogOpen,
+      setIsConfirmationDialogOpen,
+      unsetEventResults,
+      setResults,
+      removeResult,
+      setRemoveResult,
+    ]
+  );
+
   const onChangeResults = useCallback(
     (files: FileList) => {
       setEventResults(files);
@@ -58,18 +94,17 @@ const EventResultsModal = (props: EventResultsModalProps) => {
 
   const onRemoveResult = useCallback(
     (filename: string) => {
-      unsetEventResults(filename);
-
-      setResults((prevResults) => prevResults.filter((f) => f !== filename));
+      setRemoveResult(filename);
+      setIsConfirmationDialogOpen(true);
     },
-    [unsetEventResults, setResults]
+    [setRemoveResult, setIsConfirmationDialogOpen]
   );
 
   const uploadPreliminaryResults = useMemo(
     () => (
       <input
         type="file"
-        className="file-input file-input-primary"
+        className="file-input file-input-primary file-input-md"
         multiple
         disabled={!hasStarted}
         onChange={(e) => {
@@ -124,7 +159,7 @@ const EventResultsModal = (props: EventResultsModalProps) => {
         ))}
       </div>
     ),
-    [results, openResults]
+    [results, openResults, isAdmin, onRemoveResult]
   );
 
   return props.isOpen ? (
@@ -162,6 +197,7 @@ const EventResultsModal = (props: EventResultsModalProps) => {
           <></>
         )}
       </div>
+      {confirmationDialog}
     </dialog>
   ) : (
     <></>
