@@ -94,7 +94,9 @@ const EventCard = (props: EventCardProps) => {
 
   const modals = useMemo(
     () =>
-      isWorkAssignmentsModalOpen || isSettingsModalOpen || isResultsModalOpen ? (
+      isWorkAssignmentsModalOpen ||
+      isSettingsModalOpen ||
+      isResultsModalOpen ? (
         <WorkAssignmentsContextProvider event={props.event}>
           {resultsModal}
           {settingsModal}
@@ -190,6 +192,7 @@ const EventCard = (props: EventCardProps) => {
     }
   }, [
     props.allowPreregistration,
+    hasStarted,
     hasEnded,
     isAdmin,
     props.event.detailuri,
