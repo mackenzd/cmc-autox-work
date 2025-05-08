@@ -8,6 +8,7 @@ services:
     volumes:
       - ./api/instance:/app/instance
       - ./api/config.cfg:/app/config.cfg
+      - ./results:/app/results
     ports:
       - "5000:5000"
     environment:
