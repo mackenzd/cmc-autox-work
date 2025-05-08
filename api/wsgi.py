@@ -409,11 +409,13 @@ def post_event_results(event_id):
 @login_required
 def get_event_results(event_id, filename):
     try:
-        path = os.path.join(app.config['CMC_RESULTS_DIRECTORY'], event_id)
+        secured_filename = secure_filename(filename)
 
-        return send_from_directory(path, filename)
-    except FileNotFoundError:
-        return make_response(json.dumps({'error': 'File not found'}), 404)
+        path = os.path.join(app.config['CMC_RESULTS_DIRECTORY'], event_id)
+        if os.path.exists(os.path.join(path, secured_filename)):
+            return send_from_directory(path, secured_filename)
+        else:
+            return make_response(json.dumps({'error': 'File not found'}), 404)
     except Exception as e:
         return make_response(json.dumps({'error': f'Failed to retrieve file: {str(e)}'}), 500)
 
