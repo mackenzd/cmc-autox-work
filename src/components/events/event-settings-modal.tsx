@@ -18,6 +18,7 @@ const EventSettingsModal = (props: EventSettingsModalProps) => {
 
   const { settings, setSettings, initializeSettings, setInitialSettings } =
     useWorkAssignmentsContext();
+
   const setEventSettings = useSetEventSettings(() => {
     setSettings(settings);
   }, props.event);
