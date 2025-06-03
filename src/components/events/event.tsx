@@ -7,6 +7,7 @@ import {
   eventRegistrationHasStarted,
   eventRegistraionHasEnded,
   eventHasStarted,
+  getEventDateObject
 } from "../../helpers/events";
 import EventSettingsModal from "./event-settings-modal";
 import { useAuthorizationContext } from "../../contexts/authorization-context";
@@ -26,11 +27,11 @@ const EventCard = (props: EventCardProps) => {
   );
 
   const startDate = useMemo(
-    () => new Date(`${props.event?.start} EST`),
+    () => getEventDateObject(props.event?.start),
     [props.event.start]
   );
   const endDate = useMemo(
-    () => new Date(`${props.event?.end} EST`),
+    () => getEventDateObject(props.event?.end, true),
     [props.event.end]
   );
 

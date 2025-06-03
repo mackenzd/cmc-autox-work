@@ -10,14 +10,18 @@ export function filterEvents(events: MSREvent[]): MSREvent[] {
   );
 }
 
+export function getEventDateObject(dateString: string, eod: boolean = false): Date {
+  const edtTimezoneOffset = '-04:00';
+  const timeString = eod ? 'T23:59:59.999' : 'T00:00:00.000';
+  return new Date(`${dateString}${timeString}${edtTimezoneOffset}`);
+}
+
 export function eventHasStarted(event: MSREvent): boolean {
-  const startDate = new Date(`${event?.start} 00:00:00 EST`);
-  return startDate < new Date();
+  return getEventDateObject(event?.start) < new Date();
 }
 
 export function eventHasEnded(event: MSREvent): boolean {
-  const endDate = new Date(`${event?.end} 23:59:59 EST`);
-  return endDate < new Date();
+  return getEventDateObject(event?.end, true) < new Date();
 }
 
 export function eventRegistrationHasStarted(event: MSREvent): boolean {
