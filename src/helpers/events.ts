@@ -11,9 +11,15 @@ export function filterEvents(events: MSREvent[]): MSREvent[] {
 }
 
 export function getEventDateObject(dateString: string, eod: boolean = false): Date {
+  // Event dates are in the format "YYYY-MM-DD"
   const edtTimezoneOffset = '-04:00';
   const timeString = eod ? 'T23:59:59.999' : 'T00:00:00.000';
   return new Date(`${dateString}${timeString}${edtTimezoneOffset}`);
+}
+
+export function getEventRegistrationDateObject(dateString: string): Date {
+  // Registration dates are in the format "YYYY-MM-DD HH:mm" with UTC times
+  return new Date(`${dateString.replace(' ', 'T')}:00Z`);
 }
 
 export function eventHasStarted(event: MSREvent): boolean {
@@ -25,13 +31,11 @@ export function eventHasEnded(event: MSREvent): boolean {
 }
 
 export function eventRegistrationHasStarted(event: MSREvent): boolean {
-  const startDate = new Date(`${event?.registration?.start} UTC`);
-  return startDate < new Date();
+  return getEventRegistrationDateObject(event?.registration?.start) < new Date();
 }
 
 export function eventRegistraionHasEnded(event: MSREvent): boolean {
-  const endDate = new Date(`${event?.registration?.end} UTC`);
-  return endDate < new Date();
+  return getEventRegistrationDateObject(event?.registration?.end) < new Date();
 }
 
 export function getOrganizationEvents(
