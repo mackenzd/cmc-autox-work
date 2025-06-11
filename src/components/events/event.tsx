@@ -138,7 +138,7 @@ const EventCard = (props: EventCardProps) => {
           cy="12"
           r="4"
           stroke="oklch(var(--bc)/1)"
-          stroke-linejoin="round"
+          strokeLinejoin="round"
         />
       </svg>
     </button>
