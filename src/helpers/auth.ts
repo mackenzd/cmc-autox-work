@@ -4,7 +4,11 @@ export function login(): void {
       if (res.ok) {
         return res.text();
       }
-      return Promise.reject(res);
+      else {
+        res.text().then((res) => console.error(res));
+        alert("Sorry, there was a problem logging in. Please try again later.")
+        return Promise.reject(res);
+      }
     })
     .then((data) => {
       window.location.href = data;
