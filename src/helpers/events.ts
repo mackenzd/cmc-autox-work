@@ -10,14 +10,14 @@ export function filterEvents(events: MSREvent[]): MSREvent[] {
   );
 }
 
-export function getEventDateObject(dateString: string, eod: boolean = false): Date {
+export function getEventDateObject(dateString: string = '1970-01-01', eod: boolean = false): Date {
   // Event dates are in the format "YYYY-MM-DD"
   const edtTimezoneOffset = '-04:00';
   const timeString = eod ? 'T23:59:59.999' : 'T00:00:00.000';
   return new Date(`${dateString}${timeString}${edtTimezoneOffset}`);
 }
 
-export function getEventRegistrationDateObject(dateString: string): Date {
+export function getEventRegistrationDateObject(dateString: string = '1970-01-01 00:00'): Date {
   // Registration dates are in the format "YYYY-MM-DD HH:mm" with UTC times
   return new Date(`${dateString.replace(' ', 'T')}:00Z`);
 }
