@@ -2,7 +2,7 @@ import { MSREvent, MSREventType } from "../models/msr-event";
 
 export enum TimeOfDay {
   BOD = "00:00:00.000",
-  FivePM = "17:00:00.000",
+  FourPM = "16:00:00.000",
   EOD = "23:59:59.999"
 }
 
@@ -32,8 +32,8 @@ export function eventHasStarted(event: MSREvent): boolean {
 }
 
 export function eventHasEnded(event: MSREvent): boolean {
-  // Using 5pm for now since this is currently only used to display results button
-  return getEventDateObject(event?.end, TimeOfDay.FivePM) < new Date();
+  // Using 4pm for now since this is currently only used to display results button
+  return getEventDateObject(event?.end, TimeOfDay.FourPM) < new Date();
 }
 
 export function eventRegistrationHasStarted(event: MSREvent): boolean {
