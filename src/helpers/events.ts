@@ -1,5 +1,11 @@
 import { MSREvent, MSREventType } from "../models/msr-event";
 
+export enum TimeOfDay {
+  BOD = "00:00:00.000",
+  FivePM = "17:00:00.000",
+  EOD = "23:59:59.999"
+}
+
 // Filters out "administrative" MSR events that aren't actual autocross events.
 export function filterEvents(events: MSREvent[]): MSREvent[] {
   return events.filter(
@@ -10,11 +16,10 @@ export function filterEvents(events: MSREvent[]): MSREvent[] {
   );
 }
 
-export function getEventDateObject(dateString: string = '1970-01-01', eod: boolean = false): Date {
+export function getEventDateObject(dateString: string = '1970-01-01', tod: TimeOfDay = TimeOfDay.BOD): Date {
   // Event dates are in the format "YYYY-MM-DD"
   const edtTimezoneOffset = '-04:00';
-  const timeString = eod ? 'T23:59:59.999' : 'T00:00:00.000';
-  return new Date(`${dateString}${timeString}${edtTimezoneOffset}`);
+  return new Date(`${dateString}T${tod}${edtTimezoneOffset}`);
 }
 
 export function getEventRegistrationDateObject(dateString: string = '1970-01-01 00:00'): Date {
@@ -27,7 +32,8 @@ export function eventHasStarted(event: MSREvent): boolean {
 }
 
 export function eventHasEnded(event: MSREvent): boolean {
-  return getEventDateObject(event?.end, true) < new Date();
+  // Using 5pm for now since this is currently only used to display results button
+  return getEventDateObject(event?.end, TimeOfDay.FivePM) < new Date();
 }
 
 export function eventRegistrationHasStarted(event: MSREvent): boolean {
