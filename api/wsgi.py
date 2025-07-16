@@ -74,6 +74,7 @@ class EventSettings(db.Model):
     event_id = db.Column(db.String(35), unique=True, nullable=False)
     stations = db.Column(db.Integer, unique=False, nullable=True)
     assistants = db.Column(db.Integer, unique=False, nullable=True)
+    runners = db.Column(db.Integer, unique=False, nullable=True)
 
 @dataclass
 class PreregistrationAccess(db.Model):
@@ -332,6 +333,7 @@ def get_event_settings(event_id):
             'eventId': q1.event_id,
             'stations': q1.stations,
             'assistants': q1.assistants,
+            'runners': q1.runners,
             'preregistrationAccess': [{
                 'id': u.id,
                 'firstName': u.first_name,
@@ -352,13 +354,15 @@ def post_event_settings(event_id):
         stmt1 = insert(EventSettings).values(
             event_id = event_id,
             stations = data.get('stations'),
-            assistants = data.get('assistants')
+            assistants = data.get('assistants'),
+            runners = data.get('runners')
         )
         stmt1 = stmt1.on_conflict_do_update(
             index_elements=[EventSettings.event_id],
             set_={
                 EventSettings.stations: stmt1.excluded.stations,
-                EventSettings.assistants: stmt1.excluded.assistants
+                EventSettings.assistants: stmt1.excluded.assistants,
+                EventSettings.runners: stmt1.excluded.runners
             }
         )
         db.session.execute(stmt1)

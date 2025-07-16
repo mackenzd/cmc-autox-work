@@ -45,6 +45,13 @@ const EventSettingsModal = (props: EventSettingsModalProps) => {
     [settings, setSettings]
   );
 
+  const onChangeRunners = useCallback(
+    (runners: string) => {
+      setSettings({ ...settings, runners: +runners });
+    },
+    [settings, setSettings]
+  );
+
   const onAddUser = useCallback(
     (user: MSRUser) => {
       closeDropdownOnClick(() => {
@@ -135,6 +142,32 @@ const EventSettingsModal = (props: EventSettingsModalProps) => {
       </select>
     ),
     [settings.assistants, onChangeAssistants, hasRegistrationStarted]
+  );
+
+  const runnersSelector = useMemo(
+    () => (
+      <select
+        className="select select-primary select-md"
+        disabled={hasRegistrationStarted}
+        value={settings.runners}
+        onChange={(e) => {
+          onChangeRunners(e.target.value);
+        }}
+      >
+        {(() => {
+          const options = [];
+          for (let i = 1; i <= 3; i++) {
+            options.push(
+              <option key={i} value={i}>
+                {i}
+              </option>
+            );
+          }
+          return options;
+        })()}
+      </select>
+    ),
+    [settings.runners, onChangeRunners, hasRegistrationStarted]
   );
 
   const usersOptions = useMemo(() => {
@@ -283,6 +316,18 @@ const EventSettingsModal = (props: EventSettingsModalProps) => {
             <div className="label">
               <span className="label-text-alt">
                 The number of assistants to display on the work assignment
+                request form.
+              </span>
+            </div>
+          </label>
+          <label className="form-control w-full">
+            <div className="label">
+              <span className="font-bold label-text">Runners</span>
+            </div>
+            {runnersSelector}
+            <div className="label">
+              <span className="label-text-alt">
+                The number of runners per station to display on the work assignment
                 request form.
               </span>
             </div>

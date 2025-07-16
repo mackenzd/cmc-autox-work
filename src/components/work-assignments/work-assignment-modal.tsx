@@ -105,12 +105,12 @@ const WorkAssignmentsModal = (props: WorkAssignmentsModalProps) => {
     const stations = [];
     for (let i = 1; i <= settings.stations!; i++) {
       stations.push(
-        <WorkAssignmentsStation key={`station-${i}`} station={i} />
+        <WorkAssignmentsStation key={`station-${i}`} station={i} runners={settings.runners ?? 2}/>
       );
     }
 
     return stations;
-  }, [settings.stations]);
+  }, [settings.stations, settings.runners]);
 
   const modalContent = useMemo(() => {
     return isLoading ? (
@@ -123,7 +123,7 @@ const WorkAssignmentsModal = (props: WorkAssignmentsModalProps) => {
         </div>
       </div>
     );
-  }, [isLoading, workAssignmentStations]);
+  }, [isLoading, settings.assistants, workAssignmentStations]);
 
   const modalActions = useMemo(() => {
     return (
