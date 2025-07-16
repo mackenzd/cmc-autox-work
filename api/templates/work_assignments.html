@@ -57,7 +57,7 @@
               <div class="border border-black w-8"></div>
             </div>
           </div>
-          {% if assistants > 1 %}
+          {% if assistants is not none and assistants > 1 %}
           <div class="flex justify-between">
             <div class="text-right pr-2 w-52">Assistant</div>
             <div class="border-b border-black w-full text-left">{{ assignments['assistant2'][0] if 'assistant2' in assignments }}</div>

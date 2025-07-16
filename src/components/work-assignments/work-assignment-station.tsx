@@ -3,6 +3,7 @@ import WorkAssignmentEntry from "./work-assignment-entry";
 
 export interface WorkAssignmentStationProps {
   station: Station;
+  runners: number;
 }
 
 const WorkAssignmentStation = (props: WorkAssignmentStationProps) => {
@@ -15,21 +16,27 @@ const WorkAssignmentStation = (props: WorkAssignmentStationProps) => {
           display="Leader"
           station={props.station}
         />
+        {props.runners > 0 ? 
         <WorkAssignmentEntry
           type={WorkAssignmentType.Runner1}
           display="Runner"
           station={props.station}
         />
+        : <></>}
+        {props.runners > 1 ? 
         <WorkAssignmentEntry
           type={WorkAssignmentType.Runner2}
           display="Runner"
           station={props.station}
         />
+        : <></>}
+        {props.runners > 2 ? 
         <WorkAssignmentEntry
           type={WorkAssignmentType.Runner3}
           display="Runner"
           station={props.station}
         />
+        : <></>}
       </div>
     </div>
   );

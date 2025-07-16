@@ -186,6 +186,7 @@ export const WorkAssignmentsContextProvider = (
 
   const defaultSettings: EventSettings = {
     stations: 10,
+    runners: 2,
     preregistrationAccess: [],
   };
 
