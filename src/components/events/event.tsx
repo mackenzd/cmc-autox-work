@@ -8,6 +8,7 @@ import {
   eventRegistraionHasEnded,
   eventHasStarted,
   getEventDateObject,
+  getEventRegistrationDateObject,
   TimeOfDay
 } from "../../helpers/events";
 import EventSettingsModal from "./event-settings-modal";
@@ -27,6 +28,10 @@ const EventCard = (props: EventCardProps) => {
     [props.event.start, props.event.end]
   );
 
+  const registrationDate = useMemo(
+    () => getEventRegistrationDateObject(props.event?.registration?.start),
+    [props.event.registration]
+  );
   const startDate = useMemo(
     () => getEventDateObject(props.event?.start),
     [props.event.start]
@@ -159,8 +164,8 @@ const EventCard = (props: EventCardProps) => {
       <></>
     );
 
-    const twoWeeksBeforeEvent = startDate.getDate() - 14;
-    console.log("start date: ", startDate);
+    const twoWeeksBeforeEvent = new Date(registrationDate.getDate() - 14);
+    console.log("start date: ", registrationDate);
     console.log("two weeks: ", twoWeeksBeforeEvent)
 
     if (hasEnded) {
