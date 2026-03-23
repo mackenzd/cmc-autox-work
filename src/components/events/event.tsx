@@ -164,9 +164,11 @@ const EventCard = (props: EventCardProps) => {
       <></>
     );
 
-    const twoWeeksBeforeEvent = new Date(registrationDate.getDate() - 14);
-    console.log("start date: ", registrationDate);
-    console.log("two weeks: ", twoWeeksBeforeEvent)
+    const twoWeeksBeforeRegistrationDate = new Date(registrationDate);
+    twoWeeksBeforeRegistrationDate.setDate(twoWeeksBeforeRegistrationDate.getDate() - 14)
+    console.log("registration date: ", registrationDate);
+    console.log("two weeks: ", twoWeeksBeforeRegistrationDate);
+    console.log((new Date() >= twoWeeksBeforeRegistrationDate));
 
     if (hasEnded) {
       return (
@@ -179,7 +181,7 @@ const EventCard = (props: EventCardProps) => {
       );
     } else if (
       props.event.registered ||
-      (props.allowPreregistration && (new Date() >= twoWeeksBeforeEvent)) ||
+      (props.allowPreregistration && (new Date() >= twoWeeksBeforeRegistrationDate)) ||
       isAdmin
     ) {
       return (
