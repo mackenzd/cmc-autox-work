@@ -159,7 +159,7 @@ const EventCard = (props: EventCardProps) => {
       <></>
     );
 
-    const twoWeeksBeforeEvent = new Date(startDate.getDate() - 14);
+    const twoWeeksBeforeEvent = startDate.getDate() - 14;
     console.log("start date: ", startDate);
     console.log("two weeks: ", twoWeeksBeforeEvent)
 
