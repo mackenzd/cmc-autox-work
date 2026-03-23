@@ -166,7 +166,7 @@ const EventCard = (props: EventCardProps) => {
 
     const twoWeeksBeforeRegistrationDate = new Date(registrationDate);
     twoWeeksBeforeRegistrationDate.setDate(twoWeeksBeforeRegistrationDate.getDate() - 14)
-    
+
     if (hasEnded) {
       return (
         <div className="flex flex-row gap-2 justify-end">
@@ -219,7 +219,7 @@ const EventCard = (props: EventCardProps) => {
     }
   }, [
     props.allowPreregistration,
-    startDate,
+    registrationDate,
     hasStarted,
     hasEnded,
     isAdmin,
